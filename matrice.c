@@ -25,5 +25,6 @@ int main (){
 		}
 		if(i%2 == 1) printf("\n|");
 		if(i%2 == 0) printf("\n");
-	}
-// a revoir}
+	}// a marche pas
+
+}
