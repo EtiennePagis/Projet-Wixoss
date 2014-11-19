@@ -1,0 +1,30 @@
+Les règles de notre terra battle : 
+	- Faire au moins 4 races  differentes : (choix a faire chacun)
+		- Elfe 
+		- Pony 
+		- Humain 
+		- Neko-Girl
+	-Faire differentes sous classes : 
+		-Warrior
+		-Archer
+		-Druid(peut etre) 
+		-Mage
+		-Paladin
+		-Singer
+		-Summoner
+		-Thief 
+		-Invoker
+		-Necromancian
+		-Healer
+		-Speed-fighter
+		-Dragonborn
+
+
+
+	- Predefinir des statistique :
+		-Con
+		-Int
+		-For
+		-Def
+		-Agi
+		-...
