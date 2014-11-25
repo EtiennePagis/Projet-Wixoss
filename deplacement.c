@@ -46,7 +46,7 @@ void deplacement(){
 	printf("Donnez les coordonnées du personnage a deplacer : ");
 	scanf("%i%i",&i,&j);
 	while(mat[i][j]!=1){
-		printf("Selection invalide\n");
+		printf("Selection invalide \n");
 		printf("Donnez les coordonnées du personnage a deplacer : ");
 		scanf("%i%i",&i,&j);
 	}
