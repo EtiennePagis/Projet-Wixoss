@@ -50,6 +50,7 @@ void deplacement(){
 		scanf("%i%i",&i,&j);
 	}
 	printf("");
+	
 }
 
 int main(){
