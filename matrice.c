@@ -5,7 +5,8 @@
 #define M 7
 int mat[N][M];
 
-void affichage (){
+void affichage ()
+{ // affiche la matrice 
 	int i,j;
 	printf(" ");
 	for(i=0 ; i< N;i++){
@@ -17,7 +18,9 @@ void affichage (){
 		printf("|\n");
 	}
 }
-void init(){
+void init()
+{ // initialise la matrice a 0 
+
 	int i,j;
 	for(i=0 ; i< N;i++){
 		for(j=0; j < M; j++){
@@ -36,7 +39,7 @@ void init(){
 }
 
 void placement () 
-{
+{ // postionne les entites du joueur et de l'ennemi
 	srand(time(NULL));
 	int pos_x , pos_y;
 	int player , ennemy;
