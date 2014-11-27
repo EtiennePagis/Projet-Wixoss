@@ -30,12 +30,12 @@ int main (void)
 		{
 			case 1 : system("clear"); partie(); break;
 			case 2 : break;
-			default : printf("Your choice is undefined , your most put a number between 1 to 3 \n");
+			default : printf("Your choice is undefined , your most put a number between 1 to 2 \n");
 		
 		}
 	}
 	while(choix != 2);
-	printf("Good bye you fool");
+	printf("Good bye you fool\n");
 	return (EXIT_SUCCESS);
 }
 		
