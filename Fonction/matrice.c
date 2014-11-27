@@ -6,27 +6,22 @@
 #define M 7
 int mat[N][M];
 
-void affichage ()
-{ // affiche la matrice 
-	system("clear");
+void affichage (){
+	//Affiche la matrice de fin
 	int i,j;
+	system("clear");
 	printf("  ");
 	for(i=0 ; i< N;i++){
 		for(j = 0; j < M; j++){
 			if(i!=0||j!=0){
-				if (mat[i][j] != 0){
-					printf("|%i",mat[i][j]) ;
-				}else{
-					printf("| ");
-				}
+				printf("|%i",mat[i][j]) ;
 			}
 		}
 		printf("|\n");
 	}
 }
-void init()
-{ // initialise la matrice a 0 
-
+void init(){
+	// initialisation de la matrice a 0
 	int i,j;
 	for(i=0 ; i< N;i++){
 		for(j=0; j < M; j++){
@@ -45,11 +40,11 @@ void init()
 }
 
 void placement () 
-{ // postionne les entites du joueur et de l'ennemi
+{ // Place les entité des joueurs et des ennemis 
 	srand(time(NULL));
 	int pos_x , pos_y;
 	int player , ennemy;
-	printf(" Veuillez rentrez le nombre d'entité du joueur a placer : ");
+	printf(" Veuillez rentrez le nombre d'entité du joueur a placer : \n ");
 	scanf("%i",&player);
 	ennemy = rand()%(15 - 1)+1;
 	for(player; player > 0; player--) {
@@ -75,6 +70,8 @@ void placement ()
 		mat[pos_x][pos_y] = 2;
 	}
 }
+
+
 	 
 	
 

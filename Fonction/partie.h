@@ -6,5 +6,4 @@
 #endif
 
 
-void deplacement();
-
+void partie () ;
