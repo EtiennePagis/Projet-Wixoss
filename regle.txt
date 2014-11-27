@@ -28,3 +28,4 @@ Les règles de notre terra battle :
 		-Def
 		-Agi
 		-...
+		
