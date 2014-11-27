@@ -6,6 +6,7 @@
 int mat[N][M];
 
 
+// deplacement avec la fonction ncursise
 void deplacement(){
 	int i,j,memoire,nb_dep,dep;
 	nb_dep = 0;
