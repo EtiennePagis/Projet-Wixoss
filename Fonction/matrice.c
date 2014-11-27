@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#inclide <assert.h>
+#include <assert.h>
 #define N 9
 #define M 7
 int mat[N][M];
@@ -10,7 +10,7 @@ void affichage ()
 { // affiche la matrice 
 	system("clear");
 	int i,j;
-	printf(" ");
+	printf("  ");
 	for(i=0 ; i< N;i++){
 		for(j = 0; j < M; j++){
 			if(i!=0||j!=0){
@@ -73,9 +73,4 @@ void placement ()
 }
 	 
 	
-void main ()
-{
-	init();
-	placement();
-	affichage();
-}
+

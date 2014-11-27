@@ -9,6 +9,7 @@ int mat[N][M];
 void deplacement(){
 	int i,j,memoire,nb_dep,dep;
 	nb_dep = 0;
+	dep = 5;
 	printf("Donnez les coordonnées du personnage a deplacer : ");
 	scanf("%i%i",&i,&j);
 	while(mat[i][j]!=1){
@@ -18,7 +19,7 @@ void deplacement(){
 	}
 	while ((nb_dep<4)&&(dep!=0)){
 		
-		printf("Selectionnez une direction \n 8 : up \n 2 : down \n 6 : right \n 4 : left \n 9 : Arreter le deplacement\n");
+		printf("Selectionnez une direction \n 8 : up \n 2 : down \n 6 : right \n 4 : left \n 0 : Arreter le deplacement\n");
 		scanf("%i",&dep);
 		if (dep==8){
 			if(i==1){
@@ -73,7 +74,7 @@ void deplacement(){
 				printf("Deplacement invalide \n");
 			}
 		}else if (dep==0){
-			
+			affichage();
 		}else{
 			printf("Deplacement invalide \n");
 		}
