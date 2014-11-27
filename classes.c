@@ -22,10 +22,10 @@ typedef enum {Humain = 1, Elfe , Neko_Girl , Pony} t_race;
 typedef enum {Orc = 1, Gobelin , Bete , Monstre , Insecte , Golem, Lezard} t_race_ennemie;
 typedef enum {Warrior = 1 , Archer, Brawler, Mage, Lancer, Knight, Sniper, Assassin, Lord, General, White_Mage, Black_Mage, Cleric} t_job;
 typedef enum {Epee = 1, Arc, Lance, Baton, Poing} t_arme;
-typedef enum {Neutre = 0, Feu, Glace, Lumiere , Tenebre ,Soin, Cure} t_attribut;
+typedef enum {Neutre = 0, Feu, Glace, Lumiere , Tenebres ,Soin, Cure} t_attribut;
 typedef enum {D = 1, C, B, A, S, SS} t_rank;
 
-typedef struct {int HP ; int attack ; int mattack ; int def ; int mdef;} t_stat; 
+typedef struct {float HP ; float attack ; float mattack ; float def ; float mdef;} t_stat; 
 typedef struct {char* nom; t_race race ; t_job job ; t_arme arme ; t_attribut attribut ; t_rank rank; t_stat stat; int level ;int exp;} t_personnage;
 typedef struct {t_race_ennemie race_ennemie ; t_job job ; t_arme arme; t_attribut attribut ; t_rank rank; t_stat stat; int level;} t_ennemi;
 typedef struct {t_personnage perso_1 ; t_personnage perso_2 ; t_personnage perso_3 ; t_personnage perso_4 ; t_personnage perso_5 ; t_personnage perso_6 ;} t_escouade;
@@ -54,6 +54,19 @@ t_personnage Neko_Brawler_S_defaut ; //= {"Sijya", Neko_Girl, Brawler, Poing, Ne
 t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level, int exp){
 		
 		t_personnage p;
+		float coef;
+		
+		switch(rank){
+	
+			case D : coef = 0.5; break;
+			case C : coef = 0.8; break;
+			case B : coef = 1; break;
+			case A : coef = 1.1; break;
+			case S : coef = 1.3; break;
+			case SS : coef = 1.6; break;
+		
+		}
+	
 		p.nom = nom; // ATTENTION !!
 		//strcpy();
 		p.race = race;
@@ -61,11 +74,11 @@ t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attri
 		p.arme = arme;
 		p.attribut = attribut;
 		p.rank = rank;
-		p.stat.HP = stat.HP;
-		p.stat.attack = stat.attack;
-		p.stat.mattack = stat.mattack;
-		p.stat.def = stat.def;
-		p.stat.mdef = stat.mdef;
+		p.stat.HP = stat.HP*coef;
+		p.stat.attack = stat.attack*coef;
+		p.stat.mattack = stat.mattack*coef;
+		p.stat.def = stat.def*coef;
+		p.stat.mdef = stat.mdef*coef;
 		p.level = level;
 		p.exp = exp;
 		
@@ -73,11 +86,102 @@ t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attri
 		
 }
 
+void afficher_perso(t_personnage perso){
+	
+	printf("\n");
+	
+	printf("Nom : %s", perso.nom);
+	
+	printf("\n");
+	
+	switch(perso.race){
+	
+		case Humain : printf("Race : Human"); break;
+		case Elfe : printf("Race : Elf"); break;
+		case Neko_Girl : printf("Race : Neko Girl"); break;
+		case Pony : printf("Race : Pony"); break;
+		
+	}
+	
+	printf("\n\n");
+	
+	switch(perso.rank){
+	
+		case D : printf("D-Rank"); break;
+		case C : printf("C-Rank"); break;
+		case B : printf("B-Rank"); break;
+		case A : printf("A-Rang"); break;
+		case S : printf("S-Rang"); break;
+		case SS : printf("SS-Rang"); break;
+	}
+	
+	printf("\n");
+	
+	switch(perso.job){
+	
+		case Warrior : printf("Job : Warrior"); break;
+		case Archer : printf("Job : Archer"); break;
+		case Brawler : printf("Job : Brawler"); break;
+		case Mage : printf("Job : Mage"); break;
+		case Lancer : printf("Job : Lancer"); break;
+		case Knight : printf("Job : Knight"); break;
+		case Sniper : printf("Job : Sniper"); break;
+		case Assassin : printf("Job : Assassin"); break;
+		case Lord : printf("Job : Lord"); break;
+		case General : printf("Job : General"); break;
+		case White_Mage : printf("Job : White Mage"); break;
+		case Black_Mage : printf("Job : Black Mage"); break;
+		case Cleric : printf("Job : Cleric"); break;
+	}
+	
+	printf(" - Lvl %i / %i xp", perso.level, perso.exp);
+	
+	printf("\n");
+	
+	switch(perso.arme){
+	
+		case Epee : printf("Weapon : Sword"); break;
+		case Arc : printf("Weapon : Bow"); break;
+		case Lance : printf("Weapon : Spear"); break;
+		case Baton : printf("Weapon : Rod"); break;
+		case Poing : printf("Weapon : Unarmed"); break;
+
+	}
+	
+	printf("\n");
+	
+	switch(perso.attribut){
+
+		case Neutre : printf("Element : Neutral"); break;
+		case Feu : printf("Element : Fire"); break;
+		case Glace : printf("Element : Ice"); break;
+		case Lumiere : printf("Element : Lightning"); break;
+		case Tenebres : printf("Element : Darkness"); break;
+		case Soin : printf("Element : Healing"); break;
+		case Cure : printf("Element : Remedy"); break;
+
+	}
+	
+	printf("\n\n");
+	
+	printf("===============STATISTICS===============");
+	
+	printf("\n\n");
+	
+	printf("- HP max :    %.0f\n", perso.stat.HP);
+	printf("- Attack :    %.0f\n", perso.stat.attack);
+	printf("- Defense :   %.0f\n", perso.stat.def);
+	printf("- M-Attack :  %.0f\n", perso.stat.mattack);
+	printf("- M-Defense : %.0f\n\n", perso.stat.mdef);	
+	
+
+}	
+
 
 int main(){
 	
-	Neko_Brawler_S_defaut = creer_perso("Sijya", Neko_Girl, Brawler, Poing, Neutre, S, st, 1, 15);
-	//printf("%s est une %i %i, son arme du type %i, son attribut est %i, son rang est %i, ses stats sont : %i %i %i %i %i, elle est au level %i, possédant %i d'xp.", Neko_Brawler_S_defaut.nom, Neko_Brawler_S_defaut.race, Neko_Brawler_S_defaut.job, Neko_Brawler_S_defaut.arme, Neko_Brawler_S_defaut.attribut, Neko_Brawler_S_defaut.rank, Neko_Brawler_S_defaut.stat.HP, Neko_Brawler_S_defaut.stat.attack, Neko_Brawler_S_defaut.stat.mattack, Neko_Brawler_S_defaut.stat.def, Neko_Brawler_S_defaut.stat.mdef, Neko_Brawler_S_defaut.level, Neko_Brawler_S_defaut.exp);
+	Neko_Brawler_S_defaut = creer_perso("Sijya", Neko_Girl, Brawler, Poing, Neutre, S, Brawler_Stats, 1, 15);
+	afficher_perso(Neko_Brawler_S_defaut);
 	return(EXIT_SUCCESS);
 }	
 
