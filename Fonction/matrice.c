@@ -14,7 +14,11 @@ void affichage (){
 	for(i=0 ; i< N;i++){
 		for(j = 0; j < M; j++){
 			if(i!=0||j!=0){
-				printf("|%i",mat[i][j]) ;
+				if (mat[i][j]!=0){
+					printf("|%i",mat[i][j]) ;
+				}else{
+					printf("| ");
+				}
 			}
 		}
 		printf("|\n");
@@ -36,7 +40,7 @@ void init(){
 			}
 		}
 	}
-	//mat[7][5] = 1;
+
 }
 
 void placement () 
@@ -44,7 +48,7 @@ void placement ()
 	srand(time(NULL));
 	int pos_x , pos_y;
 	int player , ennemy;
-	printf(" Veuillez rentrez le nombre d'entité du joueur a placer : \n ");
+	printf("Veuillez rentrez le nombre d'entité du joueur a placer : \n ");
 	scanf("%i",&player);
 	ennemy = rand()%(15 - 1)+1;
 	for(player; player > 0; player--) {
