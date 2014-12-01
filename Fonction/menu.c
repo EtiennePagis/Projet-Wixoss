@@ -13,6 +13,7 @@ int mat[N][M];
 
 int main (void) 
 {
+	srand(time(NULL));
 	int choix; 
 	system("clear");
 	

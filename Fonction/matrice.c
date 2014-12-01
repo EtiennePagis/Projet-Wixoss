@@ -45,7 +45,7 @@ void init(){
 
 void placement () 
 { // Place les entité des joueurs et des ennemis 
-	srand(time(NULL));
+	
 	int pos_x , pos_y;
 	int player , ennemy;
 	printf("Veuillez rentrer le nombre d'entité du joueur a placer : \n");
@@ -55,7 +55,7 @@ void placement ()
 		printf("Veuillez rentrer à nouveaux le nombre d'entité du joueur a placer : \n");
 		scanf("%i",&player);
 	}
-	ennemy = rand()%(15 - 1)+2;
+	ennemy = rand()%(14)+2;
 	for(player; player > 0; player--) {
 		pos_x = rand()%(8-1)+1;
 		pos_y = rand()%(6-1)+1;
