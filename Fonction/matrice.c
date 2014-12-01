@@ -14,7 +14,11 @@ void affichage (){
 	for(i=0 ; i< N;i++){
 		for(j = 0; j < M; j++){
 			if(i!=0||j!=0){
-				printf("|%i",mat[i][j]) ;
+				if (mat[i][j]!=0){
+					printf("|%i",mat[i][j]) ;
+				}else{
+					printf("| ");
+				}
 			}
 		}
 		printf("|\n");
@@ -36,7 +40,7 @@ void init(){
 			}
 		}
 	}
-	//mat[7][5] = 1;
+
 }
 
 void placement () 
