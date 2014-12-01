@@ -11,7 +11,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 		if(*i==1){                                   //deplacement vers le haut
 			affichage();
 			printf("Deplacement invalide \n");
-		}else if(mat[*i-1][*j]!=2){
+		}else if((mat[*i-1][*j]!=2)&&(mat[*i-1][*j]!=3)){
 			memoire = mat[*i-1][*j];
 			mat[*i-1][*j]=mat[*i][*j];
 			mat[*i][*j]=memoire;
@@ -26,7 +26,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 		if(*i==8){
 			affichage();
 			printf("Deplacement invalide \n");
-		}else if(mat[*i+1][*j]!=2){
+		}else if((mat[*i+1][*j]!=2)&&(mat[*i+1][*j]!=3)){
 			memoire = mat[*i+1][*j];
 			mat[*i+1][*j]=mat[*i][*j];
 			mat[*i][*j]=memoire;
@@ -41,7 +41,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 		if(*j==6){
 			affichage();
 			printf("Deplacement invalide \n");
-		}else if(mat[*i][*j+1]!=2){
+		}else if((mat[*i][*j+1]!=2)&&(mat[*i][*j+1]!=3)){
 			memoire = mat[*i][*j+1];
 			mat[*i][*j+1]=mat[*i][*j];
 			mat[*i][*j]=memoire;
@@ -56,7 +56,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 		if(*j==1){
 			affichage();
 			printf("Deplacement invalide \n");
-		}else if(mat[*i][*j-1]!=2){
+		}else if((mat[*i][*j-1]!=2)&&(mat[*i][*j-1]!=3)){
 			memoire = mat[*i][*j-1];
 			mat[*i][*j-1]=mat[*i][*j];
 			mat[*i][*j]=memoire;
@@ -71,7 +71,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 		if((*i==8)||(*j==1)){
 			affichage();
 			printf("Deplacement invalide \n");
-		}else if((mat[*i+1][*j-1]!=2)&&!((mat[*i+1][*j]==2)&&(mat[*i][*j-1]==2))){
+		}else if(((mat[*i+1][*j-1]!=2)&&(mat[*i+1][*j-1]!=3))&&!(((mat[*i+1][*j]==2)||(mat[*i+1][*j]==3))&&((mat[*i][*j-1]==2)||(mat[*i][*j-1]==3)))){
 			memoire = mat[*i+1][*j-1];
 			mat[*i+1][*j-1]=mat[*i][*j];
 			mat[*i][*j]=memoire;
@@ -87,7 +87,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 		if((*i==8)||(*j==6)){
 			affichage();
 			printf("Deplacement invalide \n");
-		}else if((mat[*i+1][*j+1]!=2)&&!((mat[*i+1][*j]==2)&&(mat[*i][*j+1]==2))){
+		}else if(((mat[*i+1][*j+1]!=2)&&(mat[*i+1][*j+1]!=3))&&!(((mat[*i+1][*j]==2)||(mat[*i+1][*j]==3))&&((mat[*i][*j+1]==2)||(mat[*i][*j+1]==3)))){
 			memoire = mat[*i+1][*j+1];
 			mat[*i+1][*j+1]=mat[*i][*j];
 			mat[*i][*j]=memoire;
@@ -103,7 +103,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 		if((*i==1)||(*j==1)){
 			affichage();
 			printf("Deplacement invalide \n");
-		}else if((mat[*i-1][*j-1]!=2)&&!((mat[*i-1][*j]==2)&&(mat[*i][*j-1]==2))){
+		}else if(((mat[*i-1][*j-1]!=2)&&(mat[*i-1][*j-1]!=3))&&!(((mat[*i-1][*j]==2)||(mat[*i-1][*j]==3))&&((mat[*i][*j-1]==2)||(mat[*i][*j-1]==3)))){
 			memoire = mat[*i-1][*j-1];
 			mat[*i-1][*j-1]=mat[*i][*j];
 			mat[*i][*j]=memoire;
@@ -119,7 +119,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 		if((*i==1)||(*j==6)){
 			affichage();
 			printf("Deplacement invalide \n");
-		}else if((mat[*i-1][*j+1]!=2)&&!((mat[*i-1][*j]==2)&&(mat[*i][*j+1]==2))){
+		}else if(((mat[*i-1][*j+1]!=2)&&(mat[*i-1][*j+1]!=3))&&!(((mat[*i-1][*j]==2)||(mat[*i-1][*j]==3))&&((mat[*i][*j+1]==2)||(mat[*i][*j+1]==3)))){
 			memoire = mat[*i-1][*j+1];
 			mat[*i-1][*j+1]=mat[*i][*j];
 			mat[*i][*j]=memoire;
