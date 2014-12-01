@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <time.h>
 #include <assert.h>
-#include <time.h>
 #include "deplacement.h"
 #include "matrice.h"
 #define N 9

@@ -4,7 +4,4 @@
 #ifndef MATRICE_H
 #define MATRICE_H
 #endif
-
-
-void deplacement();
-
+void deplacementpossible();
