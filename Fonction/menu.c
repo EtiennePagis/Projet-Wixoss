@@ -19,18 +19,18 @@ int main (void)
 	do
 	{
 		
-		printf("\n Projet Wixoss \n");
+		printf("\nProjet Wixoss \n");
 		//printf("1 - To create or choose your character \n");
 		printf("1 - Launch game \n");
 		printf("2 - Quit  \n");
-		printf(" What is your choice  ? \n ");
+		printf("What is your choice  ? \n");
 		scanf("%d",&choix); 
 	
 		switch(choix) 
 		{
 			case 1 : system("clear"); partie(); break;
 			case 2 : break;
-			default : printf("Your choice is undefined , your most put a number between 1 to 2 \n");
+			default : printf("Your choice is undefined , your must put a number between 1 to 2 \n");
 		
 		}
 	}
