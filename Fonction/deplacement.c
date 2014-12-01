@@ -139,6 +139,11 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 	}
 }
 
+
+
+
+
+
 void deplacement(){
 	int i,j,nb_dep,dep;
 	nb_dep = 0;
