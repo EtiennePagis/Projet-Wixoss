@@ -48,7 +48,9 @@ t_stat Cleric_Stats = Init_Cleric_Stats;
 
 t_personnage Neko_Brawler_S_defaut ; //= {"Sijya", Neko_Girl, Brawler, Poing, Neutre, S, Init_Brawler_Stats, 1, 15}; 
 //t_personnage Neko_Brawler_S_defaut = {"Sijya", Neko_Girl, Brawler, Poing, Neutre, S, {Init_Brawler_Stats.HP, Init_Brawler_Stats.attack, Init_Brawler_Stats.mattack, Init_Brawler_Stats.def, Init_Brawler_Stats.mdef}, 1, 15}; 
-
+t_personnage Elf_Archer_A_defaut ;
+t_personnage Human_Lancer_A_defaut ;
+t_personnage Pony_Warrior_A_defaut ;
 
 t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp){
 		
@@ -133,7 +135,7 @@ void afficher_perso(t_personnage perso){
 		case Cleric : printf("Job : Cleric"); break;
 	}
 	
-	printf(" - Lvl %i / %i xp", perso.level, perso.exp);
+	printf(" - Lvl %i / %i xp totale", perso.level, perso.exp);
 	
 	printf("\n");
 	
@@ -289,12 +291,79 @@ t_personnage generer() {
 		return(p);		
 }	
 
+t_personnage montee_level ( t_personnage p ){
+	
+	int chain = 1;
+	
+	while (chain) {
+		if( p.rank == B ) {
+		
+			if ( p.exp > (0.8 * p.level * p.level * p.level)){
+			
+				p.level = p.level + 1;			
+			
+			}
+			else { chain = 0; }
+		
+		}
+	
+		if( p.rank == A ) {
+			
+			if ( p.exp > (p.level * p.level * p.level)){
+			
+				p.level = p.level + 1;			
+			
+			}
+			else { chain = 0; }
+	
+		}
+	
+		if( p.rank == S ) {
+		
+			if ( p.exp > (1.2 * p.level * p.level * p.level - 15 * p.level * p.level + 100 * p.level -140 )){
+			
+				p.level = p.level + 1;			
+			
+			}
+			else { chain = 0; }
+	
+		}
+	
+		if( p.rank == SS ) {
+		
+			if ( p.exp > (1.25 * p.level * p.level * p.level)){
+			
+				p.level = p.level + 1;			
+			
+			}
+			else { chain = 0; }
+	
+		}
+	}
+	return(p);
+	
+	
+}	
+
+
+void xp(t_escouade escouade){
+	
+	
+	
+}	
+
+
 int main(){
 	
-	t_personnage random;
+	//t_personnage random;
 	srand(time(NULL));
-	//Neko_Brawler_S_defaut = creer_perso("Sijya", Neko_Girl, Brawler, Poing, Neutre, S, Brawler_Stats, 1, 15);
-	random = generer();
-	afficher_perso(random);
+	Neko_Brawler_S_defaut = creer_perso("Sijya", Neko_Girl, Brawler, Poing, Neutre, S, Brawler_Stats, 1,1080000 );
+	//random = generer();
+	//afficher_perso(random);
+	Elf_Archer_A_defaut = creer_perso("Elf", Elfe, Archer, Arc, Neutre, A, Archer_Stats, 1, 0);
+	Human_Lancer_A_defaut = creer_perso("Human", Humain, Lancer, Lance, Neutre, A, Lancer_Stats, 1, 0);
+	Pony_Warrior_A_defaut = creer_perso("AppleJack", Pony, Warrior, Epee, Neutre, A, Warrior_Stats, 1, 0);
+	Neko_Brawler_S_defaut = montee_level(Neko_Brawler_S_defaut);
+	afficher_perso(Neko_Brawler_S_defaut);
 	return(EXIT_SUCCESS);
 }	
