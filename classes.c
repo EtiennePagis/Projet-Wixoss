@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-//Stockage des perso à faire
+#include <time.h>
+/*Stockage des perso à faire*/
 #define Init_Warrior_Stats {320, 30, 10, 25, 25} 
 #define Init_Archer_Stats {230, 25, 25, 20, 20} 
 #define Init_Brawler_Stats {260, 50, 5, 20, 15}
 #define Init_Mage_Stats {200, 10, 35, 20, 25} 
 #define Init_Lancer_Stats {350, 20, 10, 30, 30}
-
  
 #define Init_Knight_Stats {410, 65, 20, 60, 55} 
 #define Init_Sniper_Stats {380, 55, 55, 45, 45} 
@@ -49,9 +48,11 @@ t_stat Cleric_Stats = Init_Cleric_Stats;
 
 t_personnage Neko_Brawler_S_defaut ; //= {"Sijya", Neko_Girl, Brawler, Poing, Neutre, S, Init_Brawler_Stats, 1, 15}; 
 //t_personnage Neko_Brawler_S_defaut = {"Sijya", Neko_Girl, Brawler, Poing, Neutre, S, {Init_Brawler_Stats.HP, Init_Brawler_Stats.attack, Init_Brawler_Stats.mattack, Init_Brawler_Stats.def, Init_Brawler_Stats.mdef}, 1, 15}; 
+t_personnage Elf_Archer_A_defaut ;
+t_personnage Human_Lancer_A_defaut ;
+t_personnage Pony_Warrior_A_defaut ;
 
-
-t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level, int exp){
+t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp){
 		
 		t_personnage p;
 		float coef;
@@ -134,7 +135,7 @@ void afficher_perso(t_personnage perso){
 		case Cleric : printf("Job : Cleric"); break;
 	}
 	
-	printf(" - Lvl %i / %i xp", perso.level, perso.exp);
+	printf(" - Lvl %i / %i xp totale", perso.level, perso.exp);
 	
 	printf("\n");
 	
@@ -177,11 +178,192 @@ void afficher_perso(t_personnage perso){
 
 }	
 
+t_personnage generer() {
+
+		t_personnage p;
+		
+		/*Determine le rang du personnage aléatoirement*/
+		int rang = rand()%(100) +1;
+		
+		if(rang <= 60) { p.rank = B; }
+		if((rang > 60) && (rang <= 85)) { p.rank = A; }
+		if((rang > 85) && (rang <= 95)) { p.rank = S; }
+		if((rang > 95) && (rang <= 100)) { p.rank = SS; }
+			
+		
+		/*Determine la race du personnage aléatoirement*/
+		int race = rand()%(4) + 1;
+		
+		switch(race) {
+				
+				case(1) : p.race = Humain; break;
+				case(2) : p.race = Elfe; break;
+				case(3) : p.race = Neko_Girl; break;
+				case(4) : p.race = Pony; break;				
+		}
+		
+		/*Determine l'arme ainsi que la classe du personnage aléatoirement*/
+		int arme = rand()%(5) + 1;
+				
+		switch(arme) {
+				
+				case(1) : p.arme = Epee; p.job = Warrior; break;
+				case(2) : p.arme = Arc; p.job = Archer; break;
+				case(3) : p.arme = Lance; p.job = Lancer; break;
+				case(4) : p.arme = Baton; p.job = Mage; break;
+				case(5) : p.arme = Poing; p.job = Brawler; break;				
+		}
+		
+		if(p.arme == Baton) {
+			
+			/*Determine l'attribut d'un personnage Mage aléatoirement ( un Mage ne peut pas etre Neutre )*/
+			int attribut = rand()%(6) + 1;
+			
+			switch(attribut) {
+				
+				case(1) : p.attribut = Feu; break;
+				case(2) : p.attribut = Glace; break;
+				case(3) : p.attribut = Lumiere; break;
+				case(4) : p.attribut = Tenebres; break;
+				case(5) : p.attribut = Soin; break;
+				case(6) : p.attribut = Cure; break;		
+								
+			}
+		}
+		else {
+			
+			/*Determine l'attribut d'un personnage autre que Mage aléatoirement ( un personnage autre que Mage ne peut pas etre de l'attribut Soin ou Cure )*/
+			int attribut = rand()%(5) + 1;
+			
+			switch(attribut) {
+				
+				case(1) : p.attribut = Neutre; break;
+				case(2) : p.attribut = Feu; break;
+				case(3) : p.attribut = Glace; break;
+				case(4) : p.attribut = Lumiere; break;
+				case(5) : p.attribut = Tenebres; break;				
+			}
+		
+		}
+		
+		/*Le niveau et l'xp du personnage crée sont constants*/
+		p.level = 10;
+		p.exp = 0; 
+		
+		/*Détermine le nom du personnage en fonction de ses caractéristiques précédentes*/
+		if ( p.job == Warrior ) { p.stat = Warrior_Stats; }
+		if ( p.job == Archer ) { p.stat = Archer_Stats;	}
+		if ( p.job == Lancer ) { p.stat = Lancer_Stats; }
+		if ( p.job == Mage ) { p.stat = Mage_Stats; }
+		if ( p.job == Brawler ) { p.stat = Brawler_Stats; }
+		
+		if( p.rank == SS && p.job == Mage && ( p.attribut == Soin || p.attribut == Cure )) { p.nom = "Amimari"; }
+		if( p.rank == SS && p.job == Mage && ( p.attribut == Feu || p.attribut == Glace || p.attribut == Lumiere || p.attribut == Tenebres )) { p.nom = "A'misandra"; }
+		if( p.rank == SS && p.job == Warrior ) { p.nom = "Gugba"; }
+		if( p.rank == SS && p.job == Archer ) { p.nom = "Gaiga"; }
+		if( p.rank == SS && p.job == Lancer ) { p.nom = "Samatha"; }
+		if( p.rank == SS && p.job == Brawler ) { p.nom = "Yukken"; }
+		
+		if( p.rank == S && p.job == Mage && ( p.attribut == Soin || p.attribut == Cure )) { p.nom = "Bonna"; }
+		if( p.rank == S && p.job == Mage && ( p.attribut == Feu || p.attribut == Glace || p.attribut == Lumiere || p.attribut == Tenebres )) { p.nom = "Puprope"; }
+		if( p.rank == S && p.job == Warrior ) { p.nom = "Gatz"; }
+		if( p.rank == S && p.job == Archer ) { p.nom = "Alika"; }
+		if( p.rank == S && p.job == Lancer ) { p.nom = "Djugan"; }
+		if( p.rank == S && p.job == Brawler ) { p.nom = "Zafitte"; }
+		
+		if( p.rank == A && p.job == Mage && ( p.attribut == Soin || p.attribut == Cure )) { p.nom = "Kana"; }
+		if( p.rank == A && p.job == Mage && ( p.attribut == Feu || p.attribut == Glace || p.attribut == Lumiere || p.attribut == Tenebres )) { p.nom = "Daiana"; }
+		if( p.rank == A && p.job == Warrior ) { p.nom = "Velraine"; }
+		if( p.rank == A && p.job == Archer ) { p.nom = "Pahrl"; }
+		if( p.rank == A && p.job == Lancer ) { p.nom = "Samupi"; }
+		if( p.rank == A && p.job == Brawler ) { p.nom = "Eileen"; }
+		
+		if( p.rank == B && p.job == Mage && ( p.attribut == Soin || p.attribut == Cure )) { p.nom = "Kuscah"; }
+		if( p.rank == B && p.job == Mage && ( p.attribut == Feu || p.attribut == Glace || p.attribut == Lumiere || p.attribut == Tenebres )) { p.nom = "Ba'gunar"; }
+		if( p.rank == B && p.job == Warrior ) { p.nom = "Bahl"; }
+		if( p.rank == B && p.job == Archer ) { p.nom = "Grace"; }
+		if( p.rank == B && p.job == Lancer ) { p.nom = "Zenzoze"; }
+		if( p.rank == B && p.job == Brawler ) { p.nom = "Amazora"; }
+		
+		/*Le personnage est créé à l'aide de la fonction creer_perso*/		
+		p = creer_perso(p.nom, p.race, p.job, p.arme, p.attribut, p.rank, p.stat, p.level ,p.exp);
+		
+		return(p);		
+}	
+
+t_personnage montee_level ( t_personnage p ){
+	
+	int chain = 1;
+	
+	while (chain) {
+		if( p.rank == B ) {
+		
+			if ( p.exp > (0.8 * p.level * p.level * p.level)){
+			
+				p.level = p.level + 1;			
+			
+			}
+			else { chain = 0; }
+		
+		}
+	
+		if( p.rank == A ) {
+			
+			if ( p.exp > (p.level * p.level * p.level)){
+			
+				p.level = p.level + 1;			
+			
+			}
+			else { chain = 0; }
+	
+		}
+	
+		if( p.rank == S ) {
+		
+			if ( p.exp > (1.2 * p.level * p.level * p.level - 15 * p.level * p.level + 100 * p.level -140 )){
+			
+				p.level = p.level + 1;			
+			
+			}
+			else { chain = 0; }
+	
+		}
+	
+		if( p.rank == SS ) {
+		
+			if ( p.exp > (1.25 * p.level * p.level * p.level)){
+			
+				p.level = p.level + 1;			
+			
+			}
+			else { chain = 0; }
+	
+		}
+	}
+	return(p);
+	
+	
+}	
+
+
+void xp(t_escouade escouade){
+	
+	
+	
+}	
+
 
 int main(){
 	
-	Neko_Brawler_S_defaut = creer_perso("Sijya", Neko_Girl, Brawler, Poing, Neutre, S, Brawler_Stats, 1, 15);
+	//t_personnage random;
+	srand(time(NULL));
+	Neko_Brawler_S_defaut = creer_perso("Sijya", Neko_Girl, Brawler, Poing, Neutre, S, Brawler_Stats, 1,1080000 );
+	//random = generer();
+	//afficher_perso(random);
+	Elf_Archer_A_defaut = creer_perso("Elf", Elfe, Archer, Arc, Neutre, A, Archer_Stats, 1, 0);
+	Human_Lancer_A_defaut = creer_perso("Human", Humain, Lancer, Lance, Neutre, A, Lancer_Stats, 1, 0);
+	Pony_Warrior_A_defaut = creer_perso("AppleJack", Pony, Warrior, Epee, Neutre, A, Warrior_Stats, 1, 0);
+	Neko_Brawler_S_defaut = montee_level(Neko_Brawler_S_defaut);
 	afficher_perso(Neko_Brawler_S_defaut);
 	return(EXIT_SUCCESS);
 }	
-
