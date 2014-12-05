@@ -45,7 +45,7 @@ void init(){
 
 void placement () 
 { // Place les entité des joueurs et des ennemis 
-	srand(time(NULL));
+	
 	int pos_x , pos_y;
 	int player , ennemy;
 	int boss = 1;
@@ -53,46 +53,56 @@ void placement ()
 	scanf("%i",&player);
 	while((player <= 0)||(player >= 7))
 	{
-		printf("Nombre d'entité du joueur invalide\n"); // ça marche ça 
+		printf("Nombre d'entité du joueur invalide\n"); 
 		printf("Veuillez rentrer à nouveaux le nombre d'entité du joueur a placer : \n");
 		scanf("%i",&player);
 	}
-	ennemy = rand()%(15 - 1)+1;
-	for(player; player > 0; player--) {
-		pos_x = rand()%(8-1)+1;
-		pos_y = rand()%(6-1)+1;
+	ennemy = rand()%(6)+1;
+	for(ennemy ; ennemy > 0; ennemy--) {
+		pos_x = rand()%(8)+1;
+		pos_y = rand()%(6)+1;
 		
 		while(mat[pos_x][pos_y] != 0) {
-			pos_x = rand()%(8-1)+1;
-			pos_y = rand()%(6-1)+1;
-		}
-		
-		mat[pos_x][pos_y] = 1;
-	}
-	for(ennemy; ennemy > 0; ennemy--) {
-		pos_x = rand()%(8-1)+1;
-		pos_y = rand()%(6-1)+1;
-		
-		while(mat[pos_x][pos_y] != 0) {
-			pos_x = rand()%(8-1)+1;
-			pos_y = rand()%(6-1)+1;
+			pos_x = rand()%(8)+1;
+			pos_y = rand()%(6)+1;
 		}
 		
 		mat[pos_x][pos_y] = 2;
 	}
-	for(boss; boss > 0; boss--) 
+	for(boss ; boss > 0; boss--) 
 	{
-		pos_x = rand()%(8-1)+1;
-		pos_y = rand()%(6-1)+1;
-		while((mat[pos_x][pos_y] != 0)&&(pos_x == 8)&&(pos_x == 1)&&(pos_y == 1)&&(pos_y == 6)) 
+		pos_x = rand()%(8)+1;
+		pos_y = rand()%(6)+1;
+		while((mat[pos_x][pos_y] != 0)&&(mat[pos_x+1][pos_y+1] != 0)&&(mat[pos_x+1][pos_y] != 0)&&(mat[pos_x][pos_y+1] != 0)&&(mat[pos_x-1][pos_y-1] != 0)&&(mat[pos_x-1][pos_y] != 0)&&(mat[pos_x][pos_y-1] != 0)&&(pos_x > 8)&&(pos_x < 2)&&(pos_y < 2)&&(pos_y > 6))  
 		{
-			pos_x = rand()%(8-1)+1;
-			pos_y = rand()%(6-1)+1;
+			pos_x = rand()%(8)+1;
+			pos_y = rand()%(6)+1;
 		}
-		mat[pos_x][pos_y] = 3;
-		mat[pos_x+1][pos_y+1] = 3;
-		mat[pos_x+1][pos_y] = 3;
-		mat[pos_x][pos_y+1] = 3;
+		if((pos_y <= 3))
+				{
+					mat[pos_x][pos_y] = 3;
+					mat[pos_x+1][pos_y+1] = 3;
+					mat[pos_x+1][pos_y] = 3;
+					mat[pos_x][pos_y+1] = 3;
+				}
+		if((pos_y > 3))
+			{
+					mat[pos_x][pos_y] = 3;
+					mat[pos_x-1][pos_y-1] = 3;
+					mat[pos_x-1][pos_y] = 3;
+					mat[pos_x][pos_y-1] = 3;
+			}
+	}
+	for(player ; player > 0; player--) {
+		pos_x = rand()%(8)+1;
+		pos_y = rand()%(6)+1;
+		
+		while(mat[pos_x][pos_y] != 0) {
+			pos_x = rand()%(8)+1;
+			pos_y = rand()%(6)+1;
+		}
+		
+		mat[pos_x][pos_y] = 1;
 	}
 }
 
