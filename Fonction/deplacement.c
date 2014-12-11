@@ -11,7 +11,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 		if(*i==1){                                   //deplacement vers le haut
 			affichage();
 			printf("Deplacement invalide \n");
-		}else if((mat[*i-1][*j]!=2)&&(mat[*i-1][*j]!=3)){
+		}else if(mat[*i-1][*j]!=2){
 			memoire = mat[*i-1][*j];
 			mat[*i-1][*j]=mat[*i][*j];
 			mat[*i][*j]=memoire;
@@ -26,7 +26,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 		if(*i==8){
 			affichage();
 			printf("Deplacement invalide \n");
-		}else if((mat[*i+1][*j]!=2)&&(mat[*i+1][*j]!=3)){
+		}else if(mat[*i+1][*j]!=2){
 			memoire = mat[*i+1][*j];
 			mat[*i+1][*j]=mat[*i][*j];
 			mat[*i][*j]=memoire;
@@ -41,7 +41,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 		if(*j==6){
 			affichage();
 			printf("Deplacement invalide \n");
-		}else if((mat[*i][*j+1]!=2)&&(mat[*i][*j+1]!=3)){
+		}else if(mat[*i][*j+1]!=2){
 			memoire = mat[*i][*j+1];
 			mat[*i][*j+1]=mat[*i][*j];
 			mat[*i][*j]=memoire;
@@ -56,7 +56,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 		if(*j==1){
 			affichage();
 			printf("Deplacement invalide \n");
-		}else if((mat[*i][*j-1]!=2)&&(mat[*i][*j-1]!=3)){
+		}else if(mat[*i][*j-1]!=2){
 			memoire = mat[*i][*j-1];
 			mat[*i][*j-1]=mat[*i][*j];
 			mat[*i][*j]=memoire;
@@ -71,7 +71,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 		if((*i==8)||(*j==1)){
 			affichage();
 			printf("Deplacement invalide \n");
-		}else if(((mat[*i+1][*j-1]!=2)&&(mat[*i+1][*j-1]!=3))&&!(((mat[*i+1][*j]==2)||(mat[*i+1][*j]==3))&&((mat[*i][*j-1]==2)||(mat[*i][*j-1]==3)))){
+		}else if((mat[*i+1][*j-1]!=2)&&!((mat[*i+1][*j]==2)&&(mat[*i][*j-1]==2))){
 			memoire = mat[*i+1][*j-1];
 			mat[*i+1][*j-1]=mat[*i][*j];
 			mat[*i][*j]=memoire;
@@ -87,7 +87,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 		if((*i==8)||(*j==6)){
 			affichage();
 			printf("Deplacement invalide \n");
-		}else if(((mat[*i+1][*j+1]!=2)&&(mat[*i+1][*j+1]!=3))&&!(((mat[*i+1][*j]==2)||(mat[*i+1][*j]==3))&&((mat[*i][*j+1]==2)||(mat[*i][*j+1]==3)))){
+		}else if((mat[*i+1][*j+1]!=2)&&!((mat[*i+1][*j]==2)&&(mat[*i][*j+1]==2))){
 			memoire = mat[*i+1][*j+1];
 			mat[*i+1][*j+1]=mat[*i][*j];
 			mat[*i][*j]=memoire;
@@ -103,7 +103,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 		if((*i==1)||(*j==1)){
 			affichage();
 			printf("Deplacement invalide \n");
-		}else if(((mat[*i-1][*j-1]!=2)&&(mat[*i-1][*j-1]!=3))&&!(((mat[*i-1][*j]==2)||(mat[*i-1][*j]==3))&&((mat[*i][*j-1]==2)||(mat[*i][*j-1]==3)))){
+		}else if((mat[*i-1][*j-1]!=2)&&!((mat[*i-1][*j]==2)&&(mat[*i][*j-1]==2))){
 			memoire = mat[*i-1][*j-1];
 			mat[*i-1][*j-1]=mat[*i][*j];
 			mat[*i][*j]=memoire;
@@ -119,7 +119,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 		if((*i==1)||(*j==6)){
 			affichage();
 			printf("Deplacement invalide \n");
-		}else if(((mat[*i-1][*j+1]!=2)&&(mat[*i-1][*j+1]!=3))&&!(((mat[*i-1][*j]==2)||(mat[*i-1][*j]==3))&&((mat[*i][*j+1]==2)||(mat[*i][*j+1]==3)))){
+		}else if((mat[*i-1][*j+1]!=2)&&!((mat[*i-1][*j]==2)&&(mat[*i][*j+1]==2))){
 			memoire = mat[*i-1][*j+1];
 			mat[*i-1][*j+1]=mat[*i][*j];
 			mat[*i][*j]=memoire;
@@ -139,36 +139,35 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 	}
 }
 
-
-
-
-
-
 void deplacement(){
-	int i,j,nb_dep,dep;
+	int i,j,nb_dep,dep,choix;
 	nb_dep = 0;
 	dep = 0;
-	printf("Donnez les coordonnées du personnage a deplacer : ");
-	scanf("%i%i",&i,&j);
-	while(mat[i][j]!=1){
-		printf("Selection invalide \n");
+	printf("Voulez vous bougez une unitée ? (1 pour oui 2 pour non) : ");
+	scanf("%i",&choix);
+		if (choix == 1){
 		printf("Donnez les coordonnées du personnage a deplacer : ");
 		scanf("%i%i",&i,&j);
-	}
+		while(mat[i][j]!=1){
+			printf("Selection invalide \n");
+			printf("Donnez les coordonnées du personnage a deplacer : ");
+			scanf("%i%i",&i,&j);
+		}
 
-	mat[i][j]=8;
-	affichage();
-	while ((nb_dep<15)&&(dep!=5)){
-		
-		printf("Selectionnez une direction \n");
-		printf("7 : up/left     |           8 : up           | 9 : up/right\n");
-		printf("4 : left        | 5 : Arreter le deplacement | 6 : right  \n");
-		printf("1 : bottom/left |          2 : down          | 3 : bottom/right \n");
-		scanf("%i",&dep);
-		deplacementpossible(&i,&j,dep,&nb_dep);
-		
+		mat[i][j]=8;
+		affichage();
+		while ((nb_dep<15)&&(dep!=5)){
+			
+			printf("Selectionnez une direction \n");
+			printf("7 : up/left     |           8 : up           | 9 : up/right\n");
+			printf("4 : left        | 5 : Arreter le deplacement | 6 : right  \n");
+			printf("1 : bottom/left |          2 : down          | 3 : bottom/right \n");
+			scanf("%i",&dep);
+			deplacementpossible(&i,&j,dep,&nb_dep);
+			
+		}
+		mat[i][j]=1;
 	}
-	mat[i][j]=1;
 	affichage();
 }
 
