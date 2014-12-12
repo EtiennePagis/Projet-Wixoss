@@ -14,7 +14,7 @@
 #define Init_Lord_Stats {500, 75, 45, 45, 35} 
 #define Init_General_Stats {700, 30, 10, 85, 75} 
 #define Init_White_Mage_Stats {350, 25, 50, 35, 90} 
-#define Init_Dark_Mage_Stats {350, 35, 90, 25, 50} 
+#define Init_Black_Mage_Stats {350, 35, 90, 25, 50} 
 #define Init_Cleric_Stats {400, 30, 70, 50, 50}
 
 typedef enum {Humain = 1, Elfe , Neko_Girl , Pony} t_race;
@@ -26,8 +26,18 @@ typedef enum {D = 1, C, B, A, S, SS} t_rank;
 
 typedef struct {float HP ; float attack ; float mattack ; float def ; float mdef;} t_stat; 
 typedef struct {char* nom; t_race race ; t_job job ; t_arme arme ; t_attribut attribut ; t_rank rank; t_stat stat; int level ;int exp;} t_personnage;
-typedef struct {t_race_ennemie race_ennemie ; t_job job ; t_arme arme; t_attribut attribut ; t_rank rank; t_stat stat; int level;} t_ennemi;
-typedef struct {t_personnage perso_1 ; t_personnage perso_2 ; t_personnage perso_3 ; t_personnage perso_4 ; t_personnage perso_5 ; t_personnage perso_6 ;} t_escouade;
+typedef struct {char* nom; t_race_ennemie race_ennemie ; t_job job ; t_arme arme; t_attribut attribut ; t_rank rank; t_stat stat; int level;} t_ennemi;
+typedef struct { ;} t_escouade;
+
+/*Faire une sauvegarde des personnages dans un fichier et pouvoir charger l'escouade*/
+/*Faire des skills pour chaque classe*/
+/*Faire l'algorithme de degat*/
+/*Gerer le "P" pour augmenter les degats*/
+/*Faire des tableaux dynamiques*/
+/*Faire la fonction Attaque*/
+/*typedef struct { (t_personnage* persos;) t_perso[MAX_PERSO_ESCOUADE] persos; int nb_persos;} t_escouade
+escouade1.persos = malloc(sizeof(t_perso*)MAX...
+free(escouade1.persos);*/
 
 t_stat Warrior_Stats = Init_Warrior_Stats;
 t_stat Archer_Stats = Init_Archer_Stats;
@@ -41,7 +51,7 @@ t_stat Assassin_Stats = Init_Assassin_Stats;
 t_stat Lord_Stats = Init_Lord_Stats;
 t_stat General_Stats = Init_General_Stats;
 t_stat White_Mage_Stats = Init_White_Mage_Stats;
-t_stat Dark_Mage_Stats = Init_Dark_Mage_Stats;
+t_stat Black_Mage_Stats = Init_Black_Mage_Stats;
 t_stat Cleric_Stats = Init_Cleric_Stats;
 
 
@@ -291,16 +301,562 @@ t_personnage generer() {
 		return(p);		
 }	
 
+t_personnage montee_statistiques ( t_personnage p ){
+	
+	int bonus_HP;
+	int bonus_attack;
+	int bonus_def;
+	int bonus_mattack;
+	int bonus_mdef;
+	
+	if(p.rank == B) {
+		
+		bonus_HP = rand()%(25) + 10;
+		bonus_attack = rand()%(3) + 1;
+		bonus_mattack = rand()%(3) + 1;
+		bonus_def = rand()%(3) + 1;
+		bonus_mdef = rand()%(3) + 1; 
+	}
+	
+	if(p.rank == A) {
+		
+		bonus_HP = rand()%(35) + 20;
+		bonus_attack = rand()%(4) + 2;
+		bonus_mattack = rand()%(4) + 2;
+		bonus_def = rand()%(4) + 2;
+		bonus_mdef = rand()%(4) + 2; 
+	}
+	
+	if(p.rank == S) {
+		
+		bonus_HP = rand()%(50) + 25;
+		bonus_attack = rand()%(5) + 3;
+		bonus_mattack = rand()%(5) + 3;
+		bonus_def = rand()%(5) + 3;
+		bonus_mdef = rand()%(5) + 3; 
+	}
+	
+	if(p.rank == SS) {
+		
+		bonus_HP = rand()%(75) + 35;
+		bonus_attack = rand()%(7) + 4;
+		bonus_mattack = rand()%(7) + 4;
+		bonus_def = rand()%(7) + 4;
+		bonus_mdef = rand()%(7) + 4; 
+	}
+	
+	
+	if(p.job == Warrior && p.rank == B) {
+		p.stat.HP = p.stat.HP + bonus_HP + 5; 
+		p.stat.attack = p.stat.attack + bonus_attack + 1;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 1;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef;		
+	}
+	
+	if(p.job == Warrior && p.rank == A) {
+		p.stat.HP = p.stat.HP + bonus_HP + 10; 
+		p.stat.attack = p.stat.attack + bonus_attack + 2;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 2;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef;		
+	}
+	
+	if(p.job == Warrior && p.rank == S) {
+		p.stat.HP = p.stat.HP + bonus_HP + 12; 
+		p.stat.attack = p.stat.attack + bonus_attack + 3;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 3;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef;		
+	}
+	
+	if(p.job == Warrior && p.rank == SS) {
+		p.stat.HP = p.stat.HP + bonus_HP + 20; 
+		p.stat.attack = p.stat.attack + bonus_attack + 4;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 4;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef;		
+	}
+	
+	if(p.job == Archer && p.rank == B) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 2; 
+		p.stat.attack = p.stat.attack + bonus_attack;
+		p.stat.mattack = p.stat.mattack + bonus_mattack;
+		p.stat.def = p.stat.def + bonus_def - 1;
+		p.stat.mdef = p.stat.mdef + bonus_mdef - 1;
+	}
+	
+	if(p.job == Archer && p.rank == A) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 5; 
+		p.stat.attack = p.stat.attack + bonus_attack + 1;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 1;
+		p.stat.def = p.stat.def + bonus_def - 1;
+		p.stat.mdef = p.stat.mdef + bonus_mdef - 1;
+	}
+	
+	if(p.job == Archer && p.rank == S) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 7; 
+		p.stat.attack = p.stat.attack + bonus_attack + 2;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 2;
+		p.stat.def = p.stat.def + bonus_def - 2;
+		p.stat.mdef = p.stat.mdef + bonus_mdef - 2;
+	}
+	
+	if(p.job == Archer && p.rank == SS) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 10; 
+		p.stat.attack = p.stat.attack + bonus_attack + 3;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 3;
+		p.stat.def = p.stat.def + bonus_def - 3;
+		p.stat.mdef = p.stat.mdef + bonus_mdef - 3;
+	}
+	
+	if(p.job == Lancer && p.rank == B) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 7; 
+		p.stat.attack = p.stat.attack + bonus_attack;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 1;
+		p.stat.def = p.stat.def + bonus_def + 1;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 1;
+	}
+	
+	if(p.job == Lancer && p.rank == A) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 14; 
+		p.stat.attack = p.stat.attack + bonus_attack;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 1;
+		p.stat.def = p.stat.def + bonus_def + 2;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 2;
+	}
+	
+	if(p.job == Lancer && p.rank == S) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 17; 
+		p.stat.attack = p.stat.attack + bonus_attack;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 2;
+		p.stat.def = p.stat.def + bonus_def + 3;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 3;
+	}
+	
+	if(p.job == Lancer && p.rank == SS) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 24; 
+		p.stat.attack = p.stat.attack + bonus_attack;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 3;
+		p.stat.def = p.stat.def + bonus_def + 4;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 4;
+	}
+	
+	if(p.job == Mage && p.rank == B) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP; 
+		p.stat.attack = p.stat.attack + bonus_attack - 1;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 1;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 1;
+	
+	}
+	
+	if(p.job == Mage && p.rank == A) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 2; 
+		p.stat.attack = p.stat.attack + bonus_attack - 2;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 2;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 1;
+	
+	}
+	
+	if(p.job == Mage && p.rank == S) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 4; 
+		p.stat.attack = p.stat.attack + bonus_attack - 3;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 3;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 2;
+	
+	}
+	
+	if(p.job == Mage && p.rank == SS) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 10; 
+		p.stat.attack = p.stat.attack + bonus_attack - 4;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 4;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 3;
+	
+	}
+	
+	if(p.job == Brawler && p.rank == B) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 3; 
+		p.stat.attack = p.stat.attack + bonus_attack + 2;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 1;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef - 1;
+	}
+	
+	if(p.job == Brawler && p.rank == A) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 6; 
+		p.stat.attack = p.stat.attack + bonus_attack + 3;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 2;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef - 2;
+	}
+	
+	if(p.job == Brawler && p.rank == S) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 9; 
+		p.stat.attack = p.stat.attack + bonus_attack + 4;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 3;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef - 3;
+	}
+	
+	if(p.job == Brawler && p.rank == SS) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 12; 
+		p.stat.attack = p.stat.attack + bonus_attack + 5;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 4;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef - 4;
+	}
+	
+	if(p.job == Knight && p.rank == B) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 12; 
+		p.stat.attack = p.stat.attack + bonus_attack + 2;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 1;
+		p.stat.def = p.stat.def + bonus_def + 2;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 2;
+	}
+	
+	if(p.job == Knight && p.rank == A) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 24; 
+		p.stat.attack = p.stat.attack + bonus_attack + 2;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 2;
+		p.stat.def = p.stat.def + bonus_def + 3;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 3;
+	}
+	
+	if(p.job == Knight && p.rank == S) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 30; 
+		p.stat.attack = p.stat.attack + bonus_attack + 3;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 3;
+		p.stat.def = p.stat.def + bonus_def + 4;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 4;
+	}
+	
+	if(p.job == Knight && p.rank == SS) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 35; 
+		p.stat.attack = p.stat.attack + bonus_attack + 4;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 4;
+		p.stat.def = p.stat.def + bonus_def + 5;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 5;
+	}
+	
+	if(p.job == Sniper && p.rank == B) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 10; 
+		p.stat.attack = p.stat.attack + bonus_attack + 2;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 2;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef;
+	
+	}
+	
+	if(p.job == Sniper && p.rank == A) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 20; 
+		p.stat.attack = p.stat.attack + bonus_attack + 2;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 2;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef;
+	
+	}
+	
+	if(p.job == Sniper && p.rank == S) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 25; 
+		p.stat.attack = p.stat.attack + bonus_attack + 3;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 3;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef;
+	
+	}
+	
+	if(p.job == Sniper && p.rank == SS) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 35; 
+		p.stat.attack = p.stat.attack + bonus_attack + 3;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 3;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef;
+	
+	}
+	
+	if(p.job == Assassin && p.rank == B ) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 6; 
+		p.stat.attack = p.stat.attack + bonus_attack + 4;
+		p.stat.mattack = p.stat.mattack + bonus_mattack;
+		p.stat.def = p.stat.def + bonus_def - 1;
+		p.stat.mdef = p.stat.mdef + bonus_mdef - 1;
+	
+	}
+	
+	if(p.job == Assassin && p.rank == A ) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 12; 
+		p.stat.attack = p.stat.attack + bonus_attack + 5;
+		p.stat.mattack = p.stat.mattack + bonus_mattack;
+		p.stat.def = p.stat.def + bonus_def - 2;
+		p.stat.mdef = p.stat.mdef + bonus_mdef - 2;
+	
+	}
+	
+	if(p.job == Assassin && p.rank == S ) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 14; 
+		p.stat.attack = p.stat.attack + bonus_attack + 6;
+		p.stat.mattack = p.stat.mattack + bonus_mattack;
+		p.stat.def = p.stat.def + bonus_def - 3;
+		p.stat.mdef = p.stat.mdef + bonus_mdef - 3;
+	
+	}
+	
+	if(p.job == Assassin && p.rank == SS ) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 17; 
+		p.stat.attack = p.stat.attack + bonus_attack + 7;
+		p.stat.mattack = p.stat.mattack + bonus_mattack;
+		p.stat.def = p.stat.def + bonus_def - 4;
+		p.stat.mdef = p.stat.mdef + bonus_mdef - 4;
+	
+	}
+	
+	if(p.job == Lord && p.rank == B) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 14; 
+		p.stat.attack = p.stat.attack + bonus_attack + 3;
+		p.stat.mattack = p.stat.mattack + bonus_mattack;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef - 1;
+	
+	}
+	
+	if(p.job == Lord && p.rank == A) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 28; 
+		p.stat.attack = p.stat.attack + bonus_attack + 4;
+		p.stat.mattack = p.stat.mattack + bonus_mattack;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef - 1;
+	
+	}
+	
+	if(p.job == Lord && p.rank == S) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 35; 
+		p.stat.attack = p.stat.attack + bonus_attack + 5;
+		p.stat.mattack = p.stat.mattack + bonus_mattack;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef - 2;
+	
+	}
+	
+	if(p.job == Lord && p.rank == SS) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 42; 
+		p.stat.attack = p.stat.attack + bonus_attack + 6;
+		p.stat.mattack = p.stat.mattack + bonus_mattack;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef - 2;
+	
+	}
+	
+	if(p.job == General && p.rank == B) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 20; 
+		p.stat.attack = p.stat.attack + bonus_attack - 1;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 1;
+		p.stat.def = p.stat.def + bonus_def + 3;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 3;
+	
+	}
+	
+	if(p.job == General && p.rank == A) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 40; 
+		p.stat.attack = p.stat.attack + bonus_attack - 2;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 2;
+		p.stat.def = p.stat.def + bonus_def + 4;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 4;
+	
+	}
+	
+	if(p.job == General && p.rank == S) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 60; 
+		p.stat.attack = p.stat.attack + bonus_attack - 3;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 3;
+		p.stat.def = p.stat.def + bonus_def + 5;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 5;
+	
+	}
+	
+	if(p.job == General && p.rank == SS) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 90; 
+		p.stat.attack = p.stat.attack + bonus_attack - 4;
+		p.stat.mattack = p.stat.mattack + bonus_mattack - 4;
+		p.stat.def = p.stat.def + bonus_def + 6;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 6;
+	
+	}
+	
+	if(p.job == White_Mage && p.rank == B) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 7; 
+		p.stat.attack = p.stat.attack + bonus_attack - 1;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 2;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 4;
+	
+	}
+	
+	if(p.job == White_Mage && p.rank == A) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 14; 
+		p.stat.attack = p.stat.attack + bonus_attack - 2;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 3;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 5;
+	
+	}
+	
+	if(p.job == White_Mage && p.rank == S) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 16; 
+		p.stat.attack = p.stat.attack + bonus_attack - 3;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 4;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 6;
+	
+	}
+	
+	if(p.job == White_Mage && p.rank == SS) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 18; 
+		p.stat.attack = p.stat.attack + bonus_attack - 4;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 5;
+		p.stat.def = p.stat.def + bonus_def;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 7;
+	
+	}
+	
+	if(p.job == Black_Mage && p.rank == B) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 7; 
+		p.stat.attack = p.stat.attack + bonus_attack;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 4;
+		p.stat.def = p.stat.def + bonus_def - 1;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 2;
+	
+	}
+	
+	if(p.job == Black_Mage && p.rank == A) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 14; 
+		p.stat.attack = p.stat.attack + bonus_attack;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 5;
+		p.stat.def = p.stat.def + bonus_def - 2;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 3;
+	
+	}
+	
+	if(p.job == Black_Mage && p.rank == S) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 16; 
+		p.stat.attack = p.stat.attack + bonus_attack;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 6;
+		p.stat.def = p.stat.def + bonus_def - 3;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 4;
+	
+	}
+	
+	if(p.job == Black_Mage && p.rank == SS) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 18; 
+		p.stat.attack = p.stat.attack + bonus_attack;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 7;
+		p.stat.def = p.stat.def + bonus_def - 4;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 5;
+	
+	}
+	
+	if(p.job == Cleric && p.rank == B) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 10; 
+		p.stat.attack = p.stat.attack + bonus_attack - 1;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 3;
+		p.stat.def = p.stat.def + bonus_def + 2;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 2;
+	
+	}
+	
+	if(p.job == Cleric && p.rank == A) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 20; 
+		p.stat.attack = p.stat.attack + bonus_attack - 2;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 3;
+		p.stat.def = p.stat.def + bonus_def + 2;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 2;
+	
+	}
+	
+	if(p.job == Cleric && p.rank == S) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 25; 
+		p.stat.attack = p.stat.attack + bonus_attack - 3;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 4;
+		p.stat.def = p.stat.def + bonus_def + 3;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 3;
+	
+	}
+	
+	if(p.job == Cleric && p.rank == SS) {
+		
+		p.stat.HP = p.stat.HP + bonus_HP + 35; 
+		p.stat.attack = p.stat.attack + bonus_attack - 4;
+		p.stat.mattack = p.stat.mattack + bonus_mattack + 5;
+		p.stat.def = p.stat.def + bonus_def + 3;
+		p.stat.mdef = p.stat.mdef + bonus_mdef + 3;
+	
+	}
+	
+	return(p);
+}	
+
 t_personnage montee_level ( t_personnage p ){
 	
 	int chain = 1;
+	int level_max = 70;
 	
-	while (chain) {
+	while (chain && p.level < level_max) {
 		if( p.rank == B ) {
 		
 			if ( p.exp > (0.8 * p.level * p.level * p.level)){
 			
-				p.level = p.level + 1;			
+				p.level = p.level + 1;
+				p = montee_statistiques(p);		
 			
 			}
 			else { chain = 0; }
@@ -311,7 +867,8 @@ t_personnage montee_level ( t_personnage p ){
 			
 			if ( p.exp > (p.level * p.level * p.level)){
 			
-				p.level = p.level + 1;			
+				p.level = p.level + 1;
+				p = montee_statistiques(p);			
 			
 			}
 			else { chain = 0; }
@@ -322,7 +879,8 @@ t_personnage montee_level ( t_personnage p ){
 		
 			if ( p.exp > (1.2 * p.level * p.level * p.level - 15 * p.level * p.level + 100 * p.level -140 )){
 			
-				p.level = p.level + 1;			
+				p.level = p.level + 1;
+				p = montee_statistiques(p);			
 			
 			}
 			else { chain = 0; }
@@ -333,13 +891,15 @@ t_personnage montee_level ( t_personnage p ){
 		
 			if ( p.exp > (1.25 * p.level * p.level * p.level)){
 			
-				p.level = p.level + 1;			
+				p.level = p.level + 1;
+				p = montee_statistiques(p);			
 			
 			}
 			else { chain = 0; }
 	
 		}
 	}
+	printf("%s est monté(e) level %i !", p.nom, p.level);
 	return(p);
 	
 	
@@ -365,5 +925,7 @@ int main(){
 	Pony_Warrior_A_defaut = creer_perso("AppleJack", Pony, Warrior, Epee, Neutre, A, Warrior_Stats, 1, 0);
 	Neko_Brawler_S_defaut = montee_level(Neko_Brawler_S_defaut);
 	afficher_perso(Neko_Brawler_S_defaut);
+	t_escouade
+	
 	return(EXIT_SUCCESS);
 }	

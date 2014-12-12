@@ -71,27 +71,17 @@ void placement ()
 	}
 	for(boss ; boss > 0; boss--) 
 	{
-		pos_x = rand()%(8)+1;
-		pos_y = rand()%(6)+1;
-		while((mat[pos_x][pos_y] != 0)&&(mat[pos_x+1][pos_y+1] != 0)&&(mat[pos_x+1][pos_y] != 0)&&(mat[pos_x][pos_y+1] != 0)&&(mat[pos_x-1][pos_y-1] != 0)&&(mat[pos_x-1][pos_y] != 0)&&(mat[pos_x][pos_y-1] != 0)&&(pos_x > 8)&&(pos_x < 2)&&(pos_y < 2)&&(pos_y > 6))  
+		pos_x = rand()%(7)+1;
+		pos_y = rand()%(5)+1;
+		while((mat[pos_x][pos_y] != 0)||(mat[pos_x+1][pos_y+1] != 0)||(mat[pos_x+1][pos_y] != 0)||(mat[pos_x][pos_y+1] != 0))  
 		{
-			pos_x = rand()%(8)+1;
-			pos_y = rand()%(6)+1;
+			pos_x = rand()%(7)+1;
+			pos_y = rand()%(5)+1;
 		}
-		if((pos_y <= 3))
-				{
-					mat[pos_x][pos_y] = 3;
-					mat[pos_x+1][pos_y+1] = 3;
-					mat[pos_x+1][pos_y] = 3;
-					mat[pos_x][pos_y+1] = 3;
-				}
-		if((pos_y > 3))
-			{
-					mat[pos_x][pos_y] = 3;
-					mat[pos_x-1][pos_y-1] = 3;
-					mat[pos_x-1][pos_y] = 3;
-					mat[pos_x][pos_y-1] = 3;
-			}
+		mat[pos_x][pos_y] = 3;
+		mat[pos_x+1][pos_y+1] = 3;
+		mat[pos_x+1][pos_y] = 3;
+		mat[pos_x][pos_y+1] = 3;
 	}
 	for(player ; player > 0; player--) {
 		pos_x = rand()%(8)+1;

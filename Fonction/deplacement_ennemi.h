@@ -3,10 +3,9 @@
 #endif
 #ifndef MATRICE_H
 #define MATRICE_H
-#endif
 #ifndef DEPLACEMENT_ENNEMI_H
-
+#endif
 #define DEPLACEMENT_ENNEMI_H
 #endif
-void deplacementpossible(int* i,int* j,int dep,int* nb_dep);
-void deplacement();
+
+void deplacement_ennemi();
