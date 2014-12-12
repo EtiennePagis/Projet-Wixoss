@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 /*Stockage des perso à faire*/
+#define Max_perso 6
+
 #define Init_Warrior_Stats {320, 30, 10, 25, 25} 
 #define Init_Archer_Stats {230, 25, 25, 20, 20} 
 #define Init_Brawler_Stats {260, 50, 5, 20, 15}
@@ -27,7 +29,7 @@ typedef enum {D = 1, C, B, A, S, SS} t_rank;
 typedef struct {float HP ; float attack ; float mattack ; float def ; float mdef;} t_stat; 
 typedef struct {char* nom; t_race race ; t_job job ; t_arme arme ; t_attribut attribut ; t_rank rank; t_stat stat; int level ;int exp;} t_personnage;
 typedef struct {char* nom; t_race_ennemie race_ennemie ; t_job job ; t_arme arme; t_attribut attribut ; t_rank rank; t_stat stat; int level;} t_ennemi;
-typedef struct { ;} t_escouade;
+typedef struct { t_personnage perso[Max_perso]; int nb_perso;} t_escouade;
 
 /*Faire une sauvegarde des personnages dans un fichier et pouvoir charger l'escouade*/
 /*Faire des skills pour chaque classe*/
@@ -35,7 +37,7 @@ typedef struct { ;} t_escouade;
 /*Gerer le "P" pour augmenter les degats*/
 /*Faire des tableaux dynamiques*/
 /*Faire la fonction Attaque*/
-/*typedef struct { (t_personnage* persos;) t_perso[MAX_PERSO_ESCOUADE] persos; int nb_persos;} t_escouade
+/*typedef struct { (t_personnage* persos;) t_perso[MAX_PERSO_ESCOUADE] persos; int nb_perso;} t_escouade
 escouade1.persos = malloc(sizeof(t_perso*)MAX...
 free(escouade1.persos);*/
 
@@ -849,6 +851,7 @@ t_personnage montee_level ( t_personnage p ){
 	
 	int chain = 1;
 	int level_max = 70;
+    int temp_level = p.level;
 	
 	while (chain && p.level < level_max) {
 		if( p.rank == B ) {
@@ -899,33 +902,119 @@ t_personnage montee_level ( t_personnage p ){
 	
 		}
 	}
-	printf("%s est monté(e) level %i !", p.nom, p.level);
+    
+	if(temp_level != p.level){ printf("\n%s est monté(e) level %i !", p.nom, p.level); }
 	return(p);
 	
 	
 }	
 
+t_escouade montee_level_escouade ( t_escouade escouade ){
+    
+    int i;
+    
+    for( i = 0 ; i < escouade.nb_perso ; i++ ){
+        
+       escouade.perso[i] = montee_level(escouade.perso[i]);
+        
+    }
+    
+    return(escouade);
+    
+}
 
-void xp(t_escouade escouade){
+t_escouade xp(t_escouade escouade, float xp){
 	
+    int i;
+    xp = xp / escouade.nb_perso;
+    
+    for( i = 0 ; i < escouade.nb_perso ; i++ ){
+        
+        escouade.perso[i].exp = escouade.perso[i].exp + xp;
+    }
 	
+    printf("\nVos personnages ont tous gagné %.0f xp durant ce combat.", xp);
+    
+    return(escouade);
 	
 }	
 
+void afficher_escouade (t_escouade escouade) {
+    
+    int i;
+    printf("\nVoici le résumé des personnages présents dans votre escouade :\n\n");
+    for( i = 0 ; i < escouade.nb_perso ; i++ ){
+        afficher_perso(escouade.perso[i]);
+
+    }
+    printf("Il y a %i personnages dans votre escouade.\n\n", escouade.nb_perso);
+}
+
+t_escouade recrutement ( t_escouade escouade ) {
+    
+    int recrutement = 0;
+    t_personnage new_perso;
+    
+    printf("\nSouhaitez vous recruter un personnage ? 0 / 1 : ");
+    scanf("%i", &recrutement);
+    
+    if (recrutement == 1 && (escouade.nb_perso < Max_perso)) {
+        
+        new_perso = generer();
+        escouade.perso[escouade.nb_perso] = new_perso;
+        escouade.nb_perso++;
+    }
+    
+    return(escouade);
+    
+}
+
+void sauvegarde_escouade( t_escouade escouade ) {
+    
+    FILE* save;
+    save = fopen("sauvegarde.txt","w");
+    
+    int i;
+    
+    for( i = 0 ; i < escouade.nb_perso ; i++ ){
+        
+        fprintf("");
+    }
+    
+    
+	fclose(save);
+    
+}
 
 int main(){
 	
-	//t_personnage random;
-	srand(time(NULL));
-	Neko_Brawler_S_defaut = creer_perso("Sijya", Neko_Girl, Brawler, Poing, Neutre, S, Brawler_Stats, 1,1080000 );
-	//random = generer();
+  
+    
+	t_escouade escouade1;
+    srand(time(NULL));
+	Neko_Brawler_S_defaut = creer_perso("Sijya", Neko_Girl, Brawler, Poing, Neutre, S, Brawler_Stats, 10,0 );
+    
+    escouade1.perso[escouade1.nb_perso] = Neko_Brawler_S_defaut;
+    escouade1.nb_perso++;
+    
+    escouade1 = recrutement(escouade1);
+    
+    //random = generer();
 	//afficher_perso(random);
 	Elf_Archer_A_defaut = creer_perso("Elf", Elfe, Archer, Arc, Neutre, A, Archer_Stats, 1, 0);
 	Human_Lancer_A_defaut = creer_perso("Human", Humain, Lancer, Lance, Neutre, A, Lancer_Stats, 1, 0);
 	Pony_Warrior_A_defaut = creer_perso("AppleJack", Pony, Warrior, Epee, Neutre, A, Warrior_Stats, 1, 0);
-	Neko_Brawler_S_defaut = montee_level(Neko_Brawler_S_defaut);
-	afficher_perso(Neko_Brawler_S_defaut);
-	t_escouade
+	
+    /*escouade1.perso[escouade1.nb_perso] = Elf_Archer_A_defaut;
+    escouade1.nb_perso++;
+    escouade1.perso[escouade1.nb_perso] = Human_Lancer_A_defaut;
+    escouade1.nb_perso++;
+    escouade1.perso[escouade1.nb_perso] = Pony_Warrior_A_defaut;
+    escouade1.nb_perso++;*/
+    
+    escouade1 = xp(escouade1, 21597);
+    escouade1 = montee_level_escouade(escouade1);
+	afficher_escouade(escouade1);
 	
 	return(EXIT_SUCCESS);
-}	
+}
