@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 /*Stockage des perso à faire*/
-#define Max_perso 6
+#define MAX_PERSO 6
 
 #define Init_Warrior_Stats {320, 30, 10, 25, 25} 
 #define Init_Archer_Stats {230, 25, 25, 20, 20} 
@@ -19,17 +20,66 @@
 #define Init_Black_Mage_Stats {350, 35, 90, 25, 50} 
 #define Init_Cleric_Stats {400, 30, 70, 50, 50}
 
+/**
+*\file classes.c
+*\brief Projet_Terra
+*\author Etienne Pagis Stevy Fouquet Victorien Grude
+*\version 0.1
+*\date 19 novembre 2014
+*/
+
+/**
+* \enum Race
+*/
 typedef enum {Humain = 1, Elfe , Neko_Girl , Pony} t_race;
+
+/**
+* \enum Race ennemie
+*/
 typedef enum {Orc = 1, Gobelin , Bete , Monstre , Insecte , Golem, Lezard} t_race_ennemie;
+
+/**
+* \enum Job
+*/
 typedef enum {Warrior = 1 , Archer, Brawler, Mage, Lancer, Knight, Sniper, Assassin, Lord, General, White_Mage, Black_Mage, Cleric} t_job;
+
+/**
+* \enum Arme
+*/
 typedef enum {Epee = 1, Arc, Lance, Baton, Poing} t_arme;
+
+/**
+* \enum Attribut
+*/
 typedef enum {Neutre = 0, Feu, Glace, Lumiere , Tenebres ,Soin, Cure} t_attribut;
+
+/**
+* \enum Rang
+*/
 typedef enum {D = 1, C, B, A, S, SS} t_rank;
 
-typedef struct {float HP ; float attack ; float mattack ; float def ; float mdef;} t_stat; 
+/**
+* \struct Statistiques
+*/
+typedef struct {float HP ; float attack ; float mattack ; float def ; float mdef;} t_stat;
+
+/**
+* \struct Personnage
+* \brief Cette structure détermine les informations relatives à un personnage
+*/
 typedef struct {char* nom; t_race race ; t_job job ; t_arme arme ; t_attribut attribut ; t_rank rank; t_stat stat; int level ;int exp;} t_personnage;
+
+/**
+* \struct Ennemi
+* \brief Cette structure détermine les informations relatives à un ennemi
+*/
 typedef struct {char* nom; t_race_ennemie race_ennemie ; t_job job ; t_arme arme; t_attribut attribut ; t_rank rank; t_stat stat; int level;} t_ennemi;
-typedef struct { t_personnage perso[Max_perso]; int nb_perso;} t_escouade;
+
+/**
+* \struct Escouade
+* \brief Une escouade est composée de plusieurs personnages et possède un nombre de maximal de personnage
+*/
+typedef struct { t_personnage perso[MAX_PERSO]; int nb_perso;} t_escouade;
 
 /*Faire une sauvegarde des personnages dans un fichier et pouvoir charger l'escouade*/
 /*Faire des skills pour chaque classe*/
@@ -63,6 +113,11 @@ t_personnage Neko_Brawler_S_defaut ; //= {"Sijya", Neko_Girl, Brawler, Poing, Ne
 t_personnage Elf_Archer_A_defaut ;
 t_personnage Human_Lancer_A_defaut ;
 t_personnage Pony_Warrior_A_defaut ;
+
+/**
+*\fn t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp)
+*\brief Permet de créer un personnage en entrant ses caractéristiques en paramètres
+*/
 
 t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp){
 		
@@ -98,6 +153,39 @@ t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attri
 		return(p);
 		
 }
+
+/**
+*\fn t_personnage charger_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp)
+*\brief Permet de charger un personnage
+*/
+
+
+t_personnage charger_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp){
+		
+		t_personnage p;
+	
+		strcpy(p.nom, nom);
+		p.race = race;
+		p.job = job;
+		p.arme = arme;
+		p.attribut = attribut;
+		p.rank = rank;
+		p.stat.HP = stat.HP;
+		p.stat.attack = stat.attack;
+		p.stat.mattack = stat.mattack;
+		p.stat.def = stat.def;
+		p.stat.mdef = stat.mdef;
+		p.level = level;
+		p.exp = exp;
+		
+		return(p);
+		
+}
+
+/**
+*\fn void afficher_perso(t_personnage perso)
+*\brief Permet d'afficher un personnage déjà créer
+*/
 
 void afficher_perso(t_personnage perso){
 	
@@ -189,6 +277,11 @@ void afficher_perso(t_personnage perso){
 	
 
 }	
+
+/**
+*\fn t_personnage generer()
+*\brief Permet de générer un personnage aléatoirement puis le crée
+*/
 
 t_personnage generer() {
 
@@ -302,6 +395,11 @@ t_personnage generer() {
 		
 		return(p);		
 }	
+
+/**
+*\fn t_personnage montee_statistiques ( t_personnage p )
+*\brief Permet d'augmenter les statistiques d'un personnage si il gagne un niveau
+*/
 
 t_personnage montee_statistiques ( t_personnage p ){
 	
@@ -847,6 +945,11 @@ t_personnage montee_statistiques ( t_personnage p ){
 	return(p);
 }	
 
+/**
+*\fn t_personnage montee_level ( t_personnage p )
+*\brief Permet d'augmenter le niveau d'un personnage si il possède l'xp nécessaire
+*/
+
 t_personnage montee_level ( t_personnage p ){
 	
 	int chain = 1;
@@ -907,7 +1010,12 @@ t_personnage montee_level ( t_personnage p ){
 	return(p);
 	
 	
-}	
+}
+
+/**
+*\fn t_escouade montee_level_escouade ( t_escouade escouade )
+*\brief Permet d'augmenter le niveau des personnages d'une escouade si ils possèdent l'xp nécessaire en faisant appel à une autre fonction
+*/	
 
 t_escouade montee_level_escouade ( t_escouade escouade ){
     
@@ -922,6 +1030,11 @@ t_escouade montee_level_escouade ( t_escouade escouade ){
     return(escouade);
     
 }
+
+/**
+*\fn t_escouade xp(t_escouade escouade, float xp)
+*\brief Permet de distribuer l'xp equitablement entre chaque personnages de l'escouade
+*/	
 
 t_escouade xp(t_escouade escouade, float xp){
 	
@@ -939,6 +1052,11 @@ t_escouade xp(t_escouade escouade, float xp){
 	
 }	
 
+/**
+*\fn void afficher_escouade (t_escouade escouade)
+*\brief Permet d'afficher tout les personnages d'une escouade
+*/
+
 void afficher_escouade (t_escouade escouade) {
     
     int i;
@@ -950,6 +1068,11 @@ void afficher_escouade (t_escouade escouade) {
     printf("Il y a %i personnages dans votre escouade.\n\n", escouade.nb_perso);
 }
 
+/**
+*\fn t_escouade recrutement ( t_escouade escouade )
+*\brief Permet de recruter un personnage en faisant appel à une autre fonction puis l'ajoute à l'escouade
+*/
+
 t_escouade recrutement ( t_escouade escouade ) {
     
     int recrutement = 0;
@@ -958,7 +1081,7 @@ t_escouade recrutement ( t_escouade escouade ) {
     printf("\nSouhaitez vous recruter un personnage ? 0 / 1 : ");
     scanf("%i", &recrutement);
     
-    if (recrutement == 1 && (escouade.nb_perso < Max_perso)) {
+    if (recrutement == 1 && (escouade.nb_perso < MAX_PERSO)) {
         
         new_perso = generer();
         escouade.perso[escouade.nb_perso] = new_perso;
@@ -969,6 +1092,11 @@ t_escouade recrutement ( t_escouade escouade ) {
     
 }
 
+/**
+*\fn void sauvegarde_escouade( t_escouade escouade )
+*\brief Permet de sauvegarder son escouade
+*/
+
 void sauvegarde_escouade( t_escouade escouade ) {
     
     FILE* save;
@@ -978,43 +1106,82 @@ void sauvegarde_escouade( t_escouade escouade ) {
     
     for( i = 0 ; i < escouade.nb_perso ; i++ ){
         
-        fprintf("");
+        fprintf(save,"%s %i %i %i %i %i %.0f %.0f %.0f %.0f %.0f %i %i\n", escouade.perso[i].nom, escouade.perso[i].race, escouade.perso[i].job, escouade.perso[i].arme, escouade.perso[i].attribut, escouade.perso[i].rank, escouade.perso[i].stat.HP, escouade.perso[i].stat.attack, escouade.perso[i].stat.mattack, escouade.perso[i].stat.def, escouade.perso[i].stat.mdef, escouade.perso[i].level, escouade.perso[i].exp );
+		
     }
-    
-    
+  
 	fclose(save);
     
 }
+
+
+
+/**
+*\fn t_escouade charger_escouade ( t_escouade escouade )
+*\brief Permet de charger son escouade a partir d'un fichier existant
+*/
+
+t_escouade charger_escouade ( t_escouade escouade ){
+
+	FILE* save;
+    save = fopen("sauvegarde.txt","r");
+    
+    char* nom = malloc(20 * sizeof(char));
+    int race, job, arme, attribut, rank, level, exp;
+    t_stat stat;
+    
+    int i = 0;
+	
+    fscanf(save,"%s %i %i %i %i %i %f %f %f %f %f %i %i", nom, &race, &job, &arme, &attribut, &rank, &(stat.HP), &(stat.attack), &(stat.mattack), &(stat.def), &(stat.mdef), &level, &exp);
+	escouade.perso[i] = charger_perso(nom, race, job, arme, attribut, rank, stat, level, exp );
+    while(!feof(save)){
+		
+		i++;
+		fscanf(save,"%s %i %i %i %i %i %f %f %f %f %f %i %i", nom, &race, &job, &arme, &attribut, &rank, &(stat.HP), &(stat.attack), &(stat.mattack), &(stat.def), &(stat.mdef), &level, &exp);
+		escouade.perso[i] = charger_perso(nom, race, job, arme, attribut, rank, stat, level, exp );
+	}
+	
+	escouade.nb_perso = i;
+	free(nom);
+	return(escouade);	
+}	
 
 int main(){
 	
   
     
 	t_escouade escouade1;
+	escouade1.nb_perso = 0;
+	
+	//fprintf(stderr, "Escouade nb_perso = %d\n", escouade1.nb_perso);
+	
     srand(time(NULL));
-	Neko_Brawler_S_defaut = creer_perso("Sijya", Neko_Girl, Brawler, Poing, Neutre, S, Brawler_Stats, 10,0 );
+	/*Neko_Brawler_S_defaut = creer_perso("Sijya", Neko_Girl, Brawler, Poing, Neutre, S, Brawler_Stats, 10,0 );
     
     escouade1.perso[escouade1.nb_perso] = Neko_Brawler_S_defaut;
     escouade1.nb_perso++;
     
-    escouade1 = recrutement(escouade1);
+    escouade1 = recrutement(escouade1);*/
     
     //random = generer();
 	//afficher_perso(random);
-	Elf_Archer_A_defaut = creer_perso("Elf", Elfe, Archer, Arc, Neutre, A, Archer_Stats, 1, 0);
-	Human_Lancer_A_defaut = creer_perso("Human", Humain, Lancer, Lance, Neutre, A, Lancer_Stats, 1, 0);
-	Pony_Warrior_A_defaut = creer_perso("AppleJack", Pony, Warrior, Epee, Neutre, A, Warrior_Stats, 1, 0);
 	
-    /*escouade1.perso[escouade1.nb_perso] = Elf_Archer_A_defaut;
+	/*Elf_Archer_A_defaut = creer_perso("Elf", Elfe, Archer, Arc, Neutre, A, Archer_Stats, 1, 0);
+	Human_Lancer_A_defaut = creer_perso("Human", Humain, Lancer, Lance, Neutre, A, Lancer_Stats, 1, 0);
+	Pony_Warrior_A_defaut = creer_perso("AppleJack", Pony, Warrior, Epee, Neutre, A, Warrior_Stats, 1, 0);*/
+	
+	/*escouade1.perso[escouade1.nb_perso] = Elf_Archer_A_defaut;
     escouade1.nb_perso++;
     escouade1.perso[escouade1.nb_perso] = Human_Lancer_A_defaut;
     escouade1.nb_perso++;
     escouade1.perso[escouade1.nb_perso] = Pony_Warrior_A_defaut;
     escouade1.nb_perso++;*/
     
-    escouade1 = xp(escouade1, 21597);
-    escouade1 = montee_level_escouade(escouade1);
+    //escouade1 = xp(escouade1, 21597);
+	//escouade1 = montee_level_escouade(escouade1);
+	escouade1 = charger_escouade(escouade1);
 	afficher_escouade(escouade1);
+	//sauvegarde_escouade(escouade1);
 	
 	return(EXIT_SUCCESS);
 }
