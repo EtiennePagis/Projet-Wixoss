@@ -4,6 +4,7 @@
 #include <time.h>
 /*Stockage des perso à faire*/
 #define MAX_PERSO 6
+#define MAX_ENNEMI 10
 
 #define Init_Warrior_Stats {320, 30, 10, 25, 25} 
 #define Init_Archer_Stats {230, 25, 25, 20, 20} 
@@ -36,7 +37,7 @@ typedef enum {Humain = 1, Elfe , Neko_Girl , Pony} t_race;
 /**
 * \enum Race ennemie
 */
-typedef enum {Orc = 1, Gobelin , Bete , Monstre , Insecte , Golem, Lezard} t_race_ennemie;
+typedef enum {Bete = 1, Monstre, Golem, Dragon} t_race_ennemie;
 
 /**
 * \enum Job
@@ -73,7 +74,7 @@ typedef struct {char* nom; t_race race ; t_job job ; t_arme arme ; t_attribut at
 * \struct Ennemi
 * \brief Cette structure détermine les informations relatives à un ennemi
 */
-typedef struct {char* nom; t_race_ennemie race_ennemie ; t_job job ; t_arme arme; t_attribut attribut ; t_rank rank; t_stat stat; int level;} t_ennemi;
+typedef struct {char* nom; t_race_ennemie race_ennemie ; t_job job ; t_arme arme; t_attribut attribut ; t_rank rank; t_stat stat; int level; int exp;} t_ennemi;
 
 /**
 * \struct Escouade
@@ -81,15 +82,18 @@ typedef struct {char* nom; t_race_ennemie race_ennemie ; t_job job ; t_arme arme
 */
 typedef struct { t_personnage perso[MAX_PERSO]; int nb_perso;} t_escouade;
 
-/*Faire une sauvegarde des personnages dans un fichier et pouvoir charger l'escouade*/
+/**
+* \struct Horde
+* \brief Une horde est composée de plusieurs ennemis et possède un nombre de maximal de personnage
+*/
+typedef struct { t_ennemi ennemi[MAX_ENNEMI]; int nb_ennemi;} t_horde;
+
+/*Faire une sauvegarde des personnages dans un fichier et pouvoir charger l'escouade FAIT*/
 /*Faire des skills pour chaque classe*/
 /*Faire l'algorithme de degat*/
 /*Gerer le "P" pour augmenter les degats*/
-/*Faire des tableaux dynamiques*/
+/*Faire des tableaux dynamiques FAIT*/
 /*Faire la fonction Attaque*/
-/*typedef struct { (t_personnage* persos;) t_perso[MAX_PERSO_ESCOUADE] persos; int nb_perso;} t_escouade
-escouade1.persos = malloc(sizeof(t_perso*)MAX...
-free(escouade1.persos);*/
 
 t_stat Warrior_Stats = Init_Warrior_Stats;
 t_stat Archer_Stats = Init_Archer_Stats;
@@ -155,6 +159,44 @@ t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attri
 }
 
 /**
+*\fn t_ennemi creer_ennemi(char* nom, t_race_ennemie race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp)
+*\brief Permet de créer un ennemi en entrant ses caractéristiques en paramètres
+*/
+
+t_ennemi creer_ennemi(char* nom, t_race_ennemie race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp){
+
+	t_ennemi e;
+	float coef;
+		
+	switch(rank){
+	
+		case D : coef = 0.8; break;
+		case C : coef = 1; break;
+		case B : coef = 1.2; break;
+		case A : coef = 1.5; break;
+		case S : coef = 1.8; break;
+		case SS : coef = 2; break;
+		
+	}
+	
+	e.nom = nom;
+	e.race_ennemie = race;
+	e.job = job;
+	e.arme = arme;
+	e.attribut = attribut;
+	e.rank = rank;
+	e.stat.HP = stat.HP*coef;
+	e.stat.attack = stat.attack*coef;
+	e.stat.mattack = stat.mattack*coef;
+	e.stat.def = stat.def*coef;
+	e.stat.mdef = stat.mdef*coef;
+	e.level = level;
+	e.exp = exp;
+		
+	return(e);
+}
+		
+/**
 *\fn t_personnage charger_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp)
 *\brief Permet de charger un personnage
 */
@@ -163,7 +205,12 @@ t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attri
 t_personnage charger_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp){
 		
 		t_personnage p;
-	
+		int taille;
+				
+		taille = strlen(nom);
+		printf("%i", taille);
+		p.nom = malloc(taille * sizeof(char));
+
 		strcpy(p.nom, nom);
 		p.race = race;
 		p.job = job;
@@ -177,7 +224,7 @@ t_personnage charger_perso(char* nom, t_race race, t_job job, t_arme arme, t_att
 		p.stat.mdef = stat.mdef;
 		p.level = level;
 		p.exp = exp;
-		
+	
 		return(p);
 		
 }
@@ -277,6 +324,102 @@ void afficher_perso(t_personnage perso){
 	
 
 }	
+
+/**
+*\fn afficher_ennemi(t_ennemi ennemi)
+*\brief Permet d'afficher un ennemi
+*/
+
+void afficher_ennemi(t_ennemi ennemi){
+	
+	printf("\n");
+	
+	printf("Nom : %s", ennemi.nom);
+	
+	printf("\n");
+	
+	switch(ennemi.race_ennemie){
+	
+		case Bete : printf("Race : Bete"); break;
+		case Monstre : printf("Race : Monstre"); break;
+		case Golem : printf("Race : Golem"); break;
+		case Dragon : printf("Race : Dragon"); break;
+		
+	}
+	
+	printf("\n\n");
+	
+	switch(ennemi.rank){
+	
+		case D : printf("D-Rank"); break;
+		case C : printf("C-Rank"); break;
+		case B : printf("B-Rank"); break;
+		case A : printf("A-Rang"); break;
+		case S : printf("S-Rang"); break;
+		case SS : printf("SS-Rang"); break;
+	}
+	
+	printf("\n");
+	
+	switch(ennemi.job){
+	
+		case Warrior : printf("Job : Warrior"); break;
+		case Archer : printf("Job : Archer"); break;
+		case Brawler : printf("Job : Brawler"); break;
+		case Mage : printf("Job : Mage"); break;
+		case Lancer : printf("Job : Lancer"); break;
+		case Knight : printf("Job : Knight"); break;
+		case Sniper : printf("Job : Sniper"); break;
+		case Assassin : printf("Job : Assassin"); break;
+		case Lord : printf("Job : Lord"); break;
+		case General : printf("Job : General"); break;
+		case White_Mage : printf("Job : White Mage"); break;
+		case Black_Mage : printf("Job : Black Mage"); break;
+		case Cleric : printf("Job : Cleric"); break;
+	}
+	
+	printf(" - Lvl %i ", ennemi.level);
+	
+	printf("\n");
+	
+	switch(ennemi.arme){
+	
+		case Epee : printf("Weapon : Sword"); break;
+		case Arc : printf("Weapon : Bow"); break;
+		case Lance : printf("Weapon : Spear"); break;
+		case Baton : printf("Weapon : Rod"); break;
+		case Poing : printf("Weapon : Unarmed"); break;
+
+	}
+	
+	printf("\n");
+	
+	switch(ennemi.attribut){
+
+		case Neutre : printf("Element : Neutral"); break;
+		case Feu : printf("Element : Fire"); break;
+		case Glace : printf("Element : Ice"); break;
+		case Lumiere : printf("Element : Lightning"); break;
+		case Tenebres : printf("Element : Darkness"); break;
+		case Soin : printf("Element : Healing"); break;
+		case Cure : printf("Element : Remedy"); break;
+
+	}
+	
+	printf("\n\n");
+	
+	printf("===============STATISTICS===============");
+	
+	printf("\n\n");
+	
+	printf("- HP max :    %.0f\n", ennemi.stat.HP);
+	printf("- Attack :    %.0f\n", ennemi.stat.attack);
+	printf("- Defense :   %.0f\n", ennemi.stat.def);
+	printf("- M-Attack :  %.0f\n", ennemi.stat.mattack);
+	printf("- M-Defense : %.0f\n\n", ennemi.stat.mdef);	
+	
+
+}
 
 /**
 *\fn t_personnage generer()
@@ -394,7 +537,194 @@ t_personnage generer() {
 		p = creer_perso(p.nom, p.race, p.job, p.arme, p.attribut, p.rank, p.stat, p.level ,p.exp);
 		
 		return(p);		
+}
+
+/**
+*\fn t_ennemi generer_ennemi(int niveau)
+*\brief Permet de générer un ennemi aleatoirement en fonction du niveau
+*/
+
+t_ennemi generer_ennemi(int niveau){
+
+		t_ennemi e;
+		
+		/*Determine le rang de l'ennemi aléatoirement en fonction du niveau*/
+		int rang = rand()%(100) +1;
+		
+		if(niveau == 1){			
+						
+			if(rang <= 60) { e.rank = D; }
+			if((rang > 61) && (rang <= 90)) { e.rank = C; }
+			if((rang > 91) && (rang <= 100)) { e.rank = B; }
+		}	
+		
+		if(niveau == 2){			
+						
+			if(rang <= 60) { e.rank = C; }
+			if((rang > 61) && (rang <= 90)) { e.rank = B; }
+			if((rang > 91) && (rang <= 100)) { e.rank = A; }
+		}
+		
+		if(niveau == 3){			
+						
+			if(rang <= 60) { e.rank = B; }
+			if((rang > 61) && (rang <= 100)) { e.rank = A; }
+
+		}
+		
+		if(niveau == 4){			
+						
+			if(rang <= 60) { e.rank = A; }
+			if((rang > 61) && (rang <= 100)) { e.rank = S; }
+		}
+		
+		if( niveau != 1 && niveau != 2 && niveau != 3 && niveau != 4 ){
+			
+			if(rang <= 15) { e.rank = A; }
+			if((rang > 16) && (rang <= 75)) { e.rank = S; }
+			if((rang > 76) && (rang <= 100)) { e.rank = SS; }
+		}	
+		
+		/*Determine la race de l'ennemi aléatoirement*/
+		int race = rand()%(4) + 1;
+		
+		switch(race) {
+				
+				case(1) : e.race_ennemie = Bete; break;
+				case(2) : e.race_ennemie = Monstre; break;
+				case(3) : e.race_ennemie = Golem; break;
+				case(4) : e.race_ennemie = Dragon; break;				
+		}
+		
+		/*Determine l'arme ainsi que la classe de l'ennemi aléatoirement en fonction du rang*/
+		int arme = rand()%(5) + 1;
+		
+		if(e.rank == D || e.rank == C || e.rank == B || e.rank == A){		
+			switch(arme) {
+				
+				case(1) : e.arme = Epee; e.job = Warrior; break;
+				case(2) : e.arme = Arc; e.job = Archer; break;
+				case(3) : e.arme = Lance; e.job = Lancer; break;
+				case(4) : e.arme = Baton; e.job = Mage; break;
+				case(5) : e.arme = Poing; e.job = Brawler; break;				
+			}
+		}
+		
+		if(e.rank == S || e.rank == SS ){
+			switch(arme) {
+							
+				case(1) : e.arme = Epee; e.job = Knight; break;
+				case(2) : e.arme = Arc; e.job = Sniper; break;
+				case(3) : e.arme = Lance; e.job = General; break;
+				case(4) : e.arme = Baton; e.job = Black_Mage; break;
+				case(5) : e.arme = Poing; e.job = Assassin; break;			
+			}
+		}	
+		
+		if(e.arme == Baton) {
+			
+			/*Determine l'attribut d'un personnage Mage aléatoirement ( un Mage ne peut pas etre Neutre )*/
+			int attribut = rand()%(6) + 1;
+			
+			switch(attribut) {
+				
+				case(1) : e.attribut = Feu; break;
+				case(2) : e.attribut = Glace; break;
+				case(3) : e.attribut = Lumiere; break;
+				case(4) : e.attribut = Tenebres; break;
+				case(5) : e.attribut = Soin; break;
+				case(6) : e.attribut = Cure; break;		
+								
+			}
+		}
+		else {
+			
+			/*Determine l'attribut d'un personnage autre que Mage aléatoirement ( un personnage autre que Mage ne peut pas etre de l'attribut Soin ou Cure )*/
+			int attribut = rand()%(5) + 1;
+			
+			switch(attribut) {
+				
+				case(1) : e.attribut = Neutre; break;
+				case(2) : e.attribut = Feu; break;
+				case(3) : e.attribut = Glace; break;
+				case(4) : e.attribut = Lumiere; break;
+				case(5) : e.attribut = Tenebres; break;				
+			}
+		
+		}
+		
+		/*Le niveau et l'xp du personnage crée sont constants*/
+		int level;
+		
+		if ( niveau == 1 ){
+			level = rand()%(5) + 5;
+			e.level = level;
+			e.exp = 50*level;
+		}	
+		
+		if ( niveau == 2 ){
+			level = rand()%(10) + 10;
+			e.level = level;
+			e.exp = 50*level;
+		}
+		
+		if ( niveau == 3 ){
+			level = rand()%(15) + 15;
+			e.level = level;
+			e.exp = 60*level;
+		}
+		
+		if ( niveau == 4 ){
+			level = rand()%(15) + 25;
+			e.level = level;
+			e.exp = 60*level;
+		}
+		
+		if ( niveau != 1 && niveau != 2 && niveau != 3 && niveau != 4 ){
+			level = rand()%(15) + 35;
+			e.level = level;
+			e.exp = 80*level;
+		}
+			
+		
+		/*Détermine les stats de l'ennemi grâce à sa classe*/
+		if ( e.job == Warrior ) { e.stat = Warrior_Stats; }
+		if ( e.job == Archer ) { e.stat = Archer_Stats;	}
+		if ( e.job == Lancer ) { e.stat = Lancer_Stats; }
+		if ( e.job == Mage ) { e.stat = Mage_Stats; }
+		if ( e.job == Brawler ) { e.stat = Brawler_Stats; }
+		
+		if ( e.job == Knight ) { e.stat = Knight_Stats; }
+		if ( e.job == Sniper ) { e.stat = Sniper_Stats;	}
+		if ( e.job == General ) { e.stat = General_Stats; }
+		if ( e.job == Black_Mage ) { e.stat = Black_Mage_Stats; }
+		if ( e.job == Assassin ) { e.stat = Assassin_Stats; }
+		
+		/*Ameliore les stats de l'ennemi en fonction de fonction de son niveau*/
+		
+		int amelioration = e.level/5 + 1;
+		
+		if (e.level > 35 ) { amelioration = e.level/5 - 3; }
+		
+		e.stat.HP = e.stat.HP*amelioration;
+		e.stat.attack = e.stat.attack*amelioration;
+		e.stat.mattack = e.stat.mattack*amelioration;
+		e.stat.def = e.stat.def*amelioration;
+		e.stat.mdef = e.stat.mdef*amelioration;	
+		
+		/*Détermine le nom de l'ennemi en fonction de sa race*/
+		if( e.race_ennemie == Bete ) { e.nom = "Bete"; }
+		if( e.race_ennemie == Monstre ) { e.nom = "Monstre"; }
+		if( e.race_ennemie == Golem ) { e.nom = "Golem"; }
+		if( e.race_ennemie == Dragon ) { e.nom = "Dragon"; }		
+			
+		/*Le personnage est créé à l'aide de la fonction creer_perso*/		
+		e = creer_ennemi(e.nom, e.race_ennemie, e.job, e.arme, e.attribut, e.rank, e.stat, e.level ,e.exp);
+		
+		return(e);		
 }	
+
+	
 
 /**
 *\fn t_personnage montee_statistiques ( t_personnage p )
@@ -1130,32 +1460,33 @@ t_escouade charger_escouade ( t_escouade escouade ){
     int race, job, arme, attribut, rank, level, exp;
     t_stat stat;
     
-    int i = 0;
-	
-    fscanf(save,"%s %i %i %i %i %i %f %f %f %f %f %i %i", nom, &race, &job, &arme, &attribut, &rank, &(stat.HP), &(stat.attack), &(stat.mattack), &(stat.def), &(stat.mdef), &level, &exp);
-	escouade.perso[i] = charger_perso(nom, race, job, arme, attribut, rank, stat, level, exp );
-    while(!feof(save)){
+    int i;
+
+    for( i = 0 ; (!feof(save)) && i <= MAX_PERSO; i++ ){
 		
-		i++;
 		fscanf(save,"%s %i %i %i %i %i %f %f %f %f %f %i %i", nom, &race, &job, &arme, &attribut, &rank, &(stat.HP), &(stat.attack), &(stat.mattack), &(stat.def), &(stat.mdef), &level, &exp);
 		escouade.perso[i] = charger_perso(nom, race, job, arme, attribut, rank, stat, level, exp );
 	}
-	
-	escouade.nb_perso = i;
+	escouade.nb_perso = i-1;
+	if (escouade.nb_perso < 0) escouade.nb_perso = 0;
 	free(nom);
 	return(escouade);	
 }	
 
 int main(){
 	
-  
-    
 	t_escouade escouade1;
+	t_horde horde;
+
 	escouade1.nb_perso = 0;
+	horde.nb_ennemi = 0;
+	srand(time(NULL));
 	
-	//fprintf(stderr, "Escouade nb_perso = %d\n", escouade1.nb_perso);
+	horde.ennemi[horde.nb_ennemi] = generer_ennemi(5);
+	horde.nb_ennemi++;
 	
-    srand(time(NULL));
+	afficher_ennemi(horde.ennemi[0]);
+	
 	/*Neko_Brawler_S_defaut = creer_perso("Sijya", Neko_Girl, Brawler, Poing, Neutre, S, Brawler_Stats, 10,0 );
     
     escouade1.perso[escouade1.nb_perso] = Neko_Brawler_S_defaut;
@@ -1177,10 +1508,10 @@ int main(){
     escouade1.perso[escouade1.nb_perso] = Pony_Warrior_A_defaut;
     escouade1.nb_perso++;*/
     
-    //escouade1 = xp(escouade1, 21597);
+    //escouade1 = xp(escouade1, 210597);
 	//escouade1 = montee_level_escouade(escouade1);
-	escouade1 = charger_escouade(escouade1);
-	afficher_escouade(escouade1);
+	//escouade1 = charger_escouade(escouade1);
+	//afficher_escouade(escouade1);
 	//sauvegarde_escouade(escouade1);
 	
 	return(EXIT_SUCCESS);
