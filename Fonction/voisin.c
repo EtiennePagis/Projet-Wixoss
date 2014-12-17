@@ -7,7 +7,7 @@
 #define M 7
 int mat[N][M];
 int allie1,allie2,ennemis,ennemis2;
-
+int boss_mort = 0;
 
 int init_voisin(int i,int j){
 	if(mat[i][j] == 1){
@@ -51,7 +51,7 @@ int est_tenaille(int i,int j){
 		}
 		if(mat[i+1][j] == ennemis || mat[i+1][j] == ennemis2){
 			while(mat[i-1][j] !=0 && i >= 2){
-				if (mat[i+1][j] == ennemis || mat[i+1][j] == ennemis2){
+				if (mat[i-1][j] == ennemis || mat[i-1][j] == ennemis2){
 					return(1);
 				}
 				i--;
@@ -134,7 +134,111 @@ int voisin(int i,int j)
 		return(voisin); // ici il ne faut pas return voisin -4 car nous ne comptons pas la case cibler ni les autres cases du boss
 	}
 }
-/*
+
+
+
+
+
+
+
+
+typedef struct element{int c;struct element* suivant;}t_element;
+t_element* pile;
+
+void initpile(){
+	pile = NULL;
+}
+
+int pilevide(){
+	return(pile==NULL);
+}
+
+void empiler(int caract){
+	t_element* nouv;
+	nouv=(t_element*)malloc(sizeof(t_element));
+	nouv->c = caract;
+	nouv->suivant=pile;
+	pile=nouv;
+}
+
+void depiler(int *caract){
+	t_element* sommet;
+	
+	if(pile!=NULL){
+		*caract = pile->c;
+		sommet = pile;
+		pile= sommet->suivant;
+		free(sommet);
+	}
+}
+
+int sommetpile(){
+	if(pile!=NULL){
+		return(pile->c);
+	}
+}
+
+void attaque_joueur(int i,int j){
+	int ei,ej;		//ici les variabes ei et ej servent a données les coordonnées de l'ennemis
+	int nb_ennemis;
+	nb_ennemis = 0;
+	initpile();
+	
+	if (i <= 7){
+		if (mat[i+1][j] == 2 || mat[i+1][j] == 3){
+			empiler(i+1);
+			empiler(j);
+			nb_ennemis++;
+		}
+	}
+	if (i >= 2){
+		if (mat[i-1][j] == 2 || mat[i-1][j] == 3){
+			empiler(i-1);
+			empiler(j);
+			nb_ennemis++;
+		}
+	}
+	if (j <= 5){
+		if (mat[i][j+1] == 2 || mat[i][j+1] == 3){
+			empiler(i);
+			empiler(j+1);
+			nb_ennemis++;
+		}
+	}
+	if (j >= 2){
+		if (mat[i][j-1] == 2 || mat[i][j-1] == 3){
+			empiler(i);
+			empiler(j-1);
+			nb_ennemis++;
+		}
+	}
+	while(nb_ennemis > 0){
+		depiler(&ej);
+		depiler(&ei);
+		if (est_tenaille(ei,ej)){
+			
+			if(mat[ei][ej] == 2){
+				mat[ei][ej] = 5;
+				printf("L'ennemis en %i %i est mort\n",ei,ej);
+			}else if ((!boss_mort)&&(mat[ei][ej] == 3)){
+				boss_mort = 1;
+				printf("Le boss est mort ce soir\n");
+			}
+		}
+		nb_ennemis--;
+	} 
+}
+
+
+
+
+
+
+
+
+
+
+
 int main(){
 	srand(time(NULL));
 	// initialisation de la matrice a 0
@@ -156,8 +260,10 @@ int main(){
 	mat[1][1] = 2;
 	mat[1][2] = 1;
 	mat[1][3] = 1;
-	mat[1][4] = 3;
-	
+	mat[1][4] = 2;
+	mat[6][2] = 1;
+	mat[7][2] = 2;
+	mat[8][2] = 2;
 
 	int pos_x , pos_y;
 	int player , ennemy;
@@ -165,7 +271,7 @@ int main(){
 	printf("Veuillez rentrer le nombre d'entité du joueur a placer : \n");
 	player = 8;
 	ennemy = 6;
-	for(ennemy ; ennemy > 0; ennemy--) {
+	for(ennemy =ennemy ; ennemy > 0; ennemy--) {
 		pos_x = rand()%(8)+1;
 		pos_y = rand()%(6)+1;
 		
@@ -176,7 +282,7 @@ int main(){
 		
 		mat[pos_x][pos_y] = 2;
 	}
-	for(boss ; boss > 0; boss--) 
+	for(boss=boss ; boss > 0; boss--) 
 	{
 		pos_x = rand()%(7)+1;
 		pos_y = rand()%(5)+1;
@@ -190,7 +296,7 @@ int main(){
 		mat[pos_x+1][pos_y] = 3;
 		mat[pos_x][pos_y+1] = 3;
 	}
-	for(player ; player > 0; player--) {
+	for(player=player ; player > 0; player--) {
 		pos_x = rand()%(8)+1;
 		pos_y = rand()%(6)+1;
 		
@@ -217,20 +323,47 @@ int main(){
 		printf("|\n");
 	}
 	
-	int voisins;
+	/*int voisins;
 	printf("Donnez les coordonnées de l'unite dont vous voulez le nombre de voisin : ");
 	scanf("%i%i",&i,&j);
 	voisins = voisin(i,j);
 	if (voisins != -1) {
 		printf("Cette unite a %i voisins \n",voisins);
 	}
-	if(est_tenaille(i,j)){
-		printf("Cette unite est en tenaille\n");
-	}else{
-		printf("Cette unite n'est pas en tenaille\n");
+	*/
+	for(i=1 ; i< N;i++){
+		for(j = 1; j < M; j++){
+			if(mat[i][j] == 1){
+				attaque_joueur(i,j);
+			}
+		}
+	}
+	for(i=1 ; i< N;i++){
+		for(j = 1; j < M; j++){
+			if(mat[i][j] == 5){
+				mat[i][j] = 0;
+			}
+			if (boss_mort&&mat[i][j] == 3){
+				mat[i][j] = 0;
+			}
+		}
+	}
+	printf("  ");
+	for(i=0 ; i< N;i++){
+		for(j = 0; j < M; j++){
+			if(i!=0||j!=0){
+				if (mat[i][j]!=0){
+					printf("|%i",mat[i][j]) ;
+				}else{
+					printf("| ");
+				}
+				
+			}
+		}
+		printf("|\n");
 	}
 }
-*/
+
 
 
 
