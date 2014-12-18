@@ -4,7 +4,7 @@
 #include <time.h>
 /*Stockage des perso à faire*/
 #define MAX_PERSO 6
-#define MAX_ENNEMI 10
+#define MAX_LISTE 100
 
 #define Init_Warrior_Stats {320, 30, 10, 25, 25} 
 #define Init_Archer_Stats {230, 25, 25, 20, 20} 
@@ -32,12 +32,7 @@
 /**
 * \enum Race
 */
-typedef enum {Humain = 1, Elfe , Neko_Girl , Pony} t_race;
-
-/**
-* \enum Race ennemie
-*/
-typedef enum {Bete = 1, Monstre, Golem, Dragon} t_race_ennemie;
+typedef enum {Humain = 1, Elfe, Neko_Girl, Pony, Bete, Monstre, Golem, Dragon} t_race;
 
 /**
 * \enum Job
@@ -71,22 +66,16 @@ typedef struct {float HP ; float attack ; float mattack ; float def ; float mdef
 typedef struct {char* nom; t_race race ; t_job job ; t_arme arme ; t_attribut attribut ; t_rank rank; t_stat stat; int level ;int exp;} t_personnage;
 
 /**
-* \struct Ennemi
-* \brief Cette structure détermine les informations relatives à un ennemi
-*/
-typedef struct {char* nom; t_race_ennemie race_ennemie ; t_job job ; t_arme arme; t_attribut attribut ; t_rank rank; t_stat stat; int level; int exp;} t_ennemi;
-
-/**
 * \struct Escouade
 * \brief Une escouade est composée de plusieurs personnages et possède un nombre de maximal de personnage
 */
 typedef struct { t_personnage perso[MAX_PERSO]; int nb_perso;} t_escouade;
 
 /**
-* \struct Horde
-* \brief Une horde est composée de plusieurs ennemis et possède un nombre de maximal de personnage
+* \struct Liste
+* \brief La liste contient tout les personnages du joueur 
 */
-typedef struct { t_ennemi ennemi[MAX_ENNEMI]; int nb_ennemi;} t_horde;
+typedef struct {int numero_perso ; t_personnage liste_perso[MAX_LISTE];} t_liste;
 
 /*Faire une sauvegarde des personnages dans un fichier et pouvoir charger l'escouade FAIT*/
 /*Faire des skills pour chaque classe*/
@@ -130,12 +119,12 @@ t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attri
 		
 		switch(rank){
 	
-			case D : coef = 0.5; break;
+			case D : coef = 0.6; break;
 			case C : coef = 0.8; break;
 			case B : coef = 1; break;
-			case A : coef = 1.1; break;
-			case S : coef = 1.3; break;
-			case SS : coef = 1.6; break;
+			case A : coef = 1.2; break;
+			case S : coef = 1.4; break;
+			case SS : coef = 1.7; break;
 		
 		}
 	
@@ -156,44 +145,6 @@ t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attri
 		
 		return(p);
 		
-}
-
-/**
-*\fn t_ennemi creer_ennemi(char* nom, t_race_ennemie race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp)
-*\brief Permet de créer un ennemi en entrant ses caractéristiques en paramètres
-*/
-
-t_ennemi creer_ennemi(char* nom, t_race_ennemie race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp){
-
-	t_ennemi e;
-	float coef;
-		
-	switch(rank){
-	
-		case D : coef = 0.8; break;
-		case C : coef = 1; break;
-		case B : coef = 1.2; break;
-		case A : coef = 1.5; break;
-		case S : coef = 1.8; break;
-		case SS : coef = 2; break;
-		
-	}
-	
-	e.nom = nom;
-	e.race_ennemie = race;
-	e.job = job;
-	e.arme = arme;
-	e.attribut = attribut;
-	e.rank = rank;
-	e.stat.HP = stat.HP*coef;
-	e.stat.attack = stat.attack*coef;
-	e.stat.mattack = stat.mattack*coef;
-	e.stat.def = stat.def*coef;
-	e.stat.mdef = stat.mdef*coef;
-	e.level = level;
-	e.exp = exp;
-		
-	return(e);
 }
 		
 /**
@@ -248,6 +199,10 @@ void afficher_perso(t_personnage perso){
 		case Elfe : printf("Race : Elf"); break;
 		case Neko_Girl : printf("Race : Neko Girl"); break;
 		case Pony : printf("Race : Pony"); break;
+		case Bete : printf("Race : Bete"); break;
+		case Monstre : printf("Race : Monstre"); break;
+		case Golem : printf("Race : Golem"); break;
+		case Dragon : printf("Race : Dragon"); break;
 		
 	}
 	
@@ -282,7 +237,7 @@ void afficher_perso(t_personnage perso){
 		case Cleric : printf("Job : Cleric"); break;
 	}
 	
-	printf(" - Lvl %i / %i xp totale", perso.level, perso.exp);
+	printf(" - Lvl %i / %i xp ", perso.level, perso.exp);
 	
 	printf("\n");
 	
@@ -324,102 +279,6 @@ void afficher_perso(t_personnage perso){
 	
 
 }	
-
-/**
-*\fn afficher_ennemi(t_ennemi ennemi)
-*\brief Permet d'afficher un ennemi
-*/
-
-void afficher_ennemi(t_ennemi ennemi){
-	
-	printf("\n");
-	
-	printf("Nom : %s", ennemi.nom);
-	
-	printf("\n");
-	
-	switch(ennemi.race_ennemie){
-	
-		case Bete : printf("Race : Bete"); break;
-		case Monstre : printf("Race : Monstre"); break;
-		case Golem : printf("Race : Golem"); break;
-		case Dragon : printf("Race : Dragon"); break;
-		
-	}
-	
-	printf("\n\n");
-	
-	switch(ennemi.rank){
-	
-		case D : printf("D-Rank"); break;
-		case C : printf("C-Rank"); break;
-		case B : printf("B-Rank"); break;
-		case A : printf("A-Rang"); break;
-		case S : printf("S-Rang"); break;
-		case SS : printf("SS-Rang"); break;
-	}
-	
-	printf("\n");
-	
-	switch(ennemi.job){
-	
-		case Warrior : printf("Job : Warrior"); break;
-		case Archer : printf("Job : Archer"); break;
-		case Brawler : printf("Job : Brawler"); break;
-		case Mage : printf("Job : Mage"); break;
-		case Lancer : printf("Job : Lancer"); break;
-		case Knight : printf("Job : Knight"); break;
-		case Sniper : printf("Job : Sniper"); break;
-		case Assassin : printf("Job : Assassin"); break;
-		case Lord : printf("Job : Lord"); break;
-		case General : printf("Job : General"); break;
-		case White_Mage : printf("Job : White Mage"); break;
-		case Black_Mage : printf("Job : Black Mage"); break;
-		case Cleric : printf("Job : Cleric"); break;
-	}
-	
-	printf(" - Lvl %i ", ennemi.level);
-	
-	printf("\n");
-	
-	switch(ennemi.arme){
-	
-		case Epee : printf("Weapon : Sword"); break;
-		case Arc : printf("Weapon : Bow"); break;
-		case Lance : printf("Weapon : Spear"); break;
-		case Baton : printf("Weapon : Rod"); break;
-		case Poing : printf("Weapon : Unarmed"); break;
-
-	}
-	
-	printf("\n");
-	
-	switch(ennemi.attribut){
-
-		case Neutre : printf("Element : Neutral"); break;
-		case Feu : printf("Element : Fire"); break;
-		case Glace : printf("Element : Ice"); break;
-		case Lumiere : printf("Element : Lightning"); break;
-		case Tenebres : printf("Element : Darkness"); break;
-		case Soin : printf("Element : Healing"); break;
-		case Cure : printf("Element : Remedy"); break;
-
-	}
-	
-	printf("\n\n");
-	
-	printf("===============STATISTICS===============");
-	
-	printf("\n\n");
-	
-	printf("- HP max :    %.0f\n", ennemi.stat.HP);
-	printf("- Attack :    %.0f\n", ennemi.stat.attack);
-	printf("- Defense :   %.0f\n", ennemi.stat.def);
-	printf("- M-Attack :  %.0f\n", ennemi.stat.mattack);
-	printf("- M-Defense : %.0f\n\n", ennemi.stat.mdef);	
-	
-
-}
 
 /**
 *\fn t_personnage generer()
@@ -495,8 +354,8 @@ t_personnage generer() {
 		}
 		
 		/*Le niveau et l'xp du personnage crée sont constants*/
-		p.level = 10;
-		p.exp = 0; 
+		p.level = 1;
+		p.exp = 0;
 		
 		/*Détermine le nom du personnage en fonction de ses caractéristiques précédentes*/
 		if ( p.job == Warrior ) { p.stat = Warrior_Stats; }
@@ -505,33 +364,133 @@ t_personnage generer() {
 		if ( p.job == Mage ) { p.stat = Mage_Stats; }
 		if ( p.job == Brawler ) { p.stat = Brawler_Stats; }
 		
-		if( p.rank == SS && p.job == Mage && ( p.attribut == Soin || p.attribut == Cure )) { p.nom = "Amimari"; }
-		if( p.rank == SS && p.job == Mage && ( p.attribut == Feu || p.attribut == Glace || p.attribut == Lumiere || p.attribut == Tenebres )) { p.nom = "A'misandra"; }
-		if( p.rank == SS && p.job == Warrior ) { p.nom = "Gugba"; }
-		if( p.rank == SS && p.job == Archer ) { p.nom = "Gaiga"; }
-		if( p.rank == SS && p.job == Lancer ) { p.nom = "Samatha"; }
-		if( p.rank == SS && p.job == Brawler ) { p.nom = "Yukken"; }
+		if( p.rank == SS && p.job == Mage && p.attribut == Soin ) { p.nom = "Amimari_Heal"; }
+		if( p.rank == SS && p.job == Mage && p.attribut == Cure ) { p.nom = "Amimari_Cure"; }
 		
-		if( p.rank == S && p.job == Mage && ( p.attribut == Soin || p.attribut == Cure )) { p.nom = "Bonna"; }
-		if( p.rank == S && p.job == Mage && ( p.attribut == Feu || p.attribut == Glace || p.attribut == Lumiere || p.attribut == Tenebres )) { p.nom = "Puprope"; }
-		if( p.rank == S && p.job == Warrior ) { p.nom = "Gatz"; }
-		if( p.rank == S && p.job == Archer ) { p.nom = "Alika"; }
-		if( p.rank == S && p.job == Lancer ) { p.nom = "Djugan"; }
-		if( p.rank == S && p.job == Brawler ) { p.nom = "Zafitte"; }
+		if( p.rank == SS && p.job == Mage && p.attribut == Feu ) { p.nom = "A'misandra_Fire"; }
+		if( p.rank == SS && p.job == Mage && p.attribut == Glace ) { p.nom = "A'misandra_Ice"; }
+		if( p.rank == SS && p.job == Mage && p.attribut == Lumiere ) { p.nom = "A'misandra_Light"; }
+		if( p.rank == SS && p.job == Mage && p.attribut == Tenebres ) { p.nom = "A'misandra_Darkness"; }
 		
-		if( p.rank == A && p.job == Mage && ( p.attribut == Soin || p.attribut == Cure )) { p.nom = "Kana"; }
-		if( p.rank == A && p.job == Mage && ( p.attribut == Feu || p.attribut == Glace || p.attribut == Lumiere || p.attribut == Tenebres )) { p.nom = "Daiana"; }
-		if( p.rank == A && p.job == Warrior ) { p.nom = "Velraine"; }
-		if( p.rank == A && p.job == Archer ) { p.nom = "Pahrl"; }
-		if( p.rank == A && p.job == Lancer ) { p.nom = "Samupi"; }
-		if( p.rank == A && p.job == Brawler ) { p.nom = "Eileen"; }
+		if( p.rank == SS && p.job == Warrior && p.attribut == Neutre ) { p.nom = "Gugba"; }
+		if( p.rank == SS && p.job == Warrior && p.attribut == Feu ) { p.nom = "Gugba_Fire"; }
+		if( p.rank == SS && p.job == Warrior && p.attribut == Glace ) { p.nom = "Gugba_Ice"; }
+		if( p.rank == SS && p.job == Warrior && p.attribut == Lumiere ) { p.nom = "Gugba_Light"; }
+		if( p.rank == SS && p.job == Warrior && p.attribut == Tenebres ) { p.nom = "Gugba_Darkness"; }
 		
-		if( p.rank == B && p.job == Mage && ( p.attribut == Soin || p.attribut == Cure )) { p.nom = "Kuscah"; }
-		if( p.rank == B && p.job == Mage && ( p.attribut == Feu || p.attribut == Glace || p.attribut == Lumiere || p.attribut == Tenebres )) { p.nom = "Ba'gunar"; }
-		if( p.rank == B && p.job == Warrior ) { p.nom = "Bahl"; }
-		if( p.rank == B && p.job == Archer ) { p.nom = "Grace"; }
-		if( p.rank == B && p.job == Lancer ) { p.nom = "Zenzoze"; }
-		if( p.rank == B && p.job == Brawler ) { p.nom = "Amazora"; }
+		if( p.rank == SS && p.job == Archer && p.attribut == Neutre ) { p.nom = "Gaiga"; }
+		if( p.rank == SS && p.job == Archer && p.attribut == Feu ) { p.nom = "Gaiga_Fire"; }
+		if( p.rank == SS && p.job == Archer && p.attribut == Glace ) { p.nom = "Gaiga_Ice"; }
+		if( p.rank == SS && p.job == Archer && p.attribut == Lumiere ) { p.nom = "Gaiga_Light"; }
+		if( p.rank == SS && p.job == Archer && p.attribut == Tenebres ) { p.nom = "Gaiga_Darkness"; }
+		
+		if( p.rank == SS && p.job == Lancer && p.attribut == Neutre ) { p.nom = "Samatha"; }
+		if( p.rank == SS && p.job == Lancer && p.attribut == Feu ) { p.nom = "Samatha_Fire"; }
+		if( p.rank == SS && p.job == Lancer && p.attribut == Glace ) { p.nom = "Samatha_Ice"; }
+		if( p.rank == SS && p.job == Lancer && p.attribut == Lumiere ) { p.nom = "Samatha_Light"; }
+		if( p.rank == SS && p.job == Lancer && p.attribut == Tenebres ) { p.nom = "Samatha_Darkness"; }
+		
+		if( p.rank == SS && p.job == Brawler && p.attribut == Neutre ) { p.nom = "Yukken"; }
+		if( p.rank == SS && p.job == Brawler && p.attribut == Feu ) { p.nom = "Yukken_Fire"; }
+		if( p.rank == SS && p.job == Brawler && p.attribut == Glace ) { p.nom = "Yukken_Ice"; }
+		if( p.rank == SS && p.job == Brawler && p.attribut == Lumiere ) { p.nom = "Yukken_Light"; }
+		if( p.rank == SS && p.job == Brawler && p.attribut == Tenebres ) { p.nom = "Yukken_Darkness"; }
+		
+		if( p.rank == S && p.job == Mage && p.attribut == Soin ) { p.nom = "Bonna_Heal"; }
+		if( p.rank == S && p.job == Mage && p.attribut == Cure ) { p.nom = "Bonna_Cure"; }
+		
+		if( p.rank == S && p.job == Mage && p.attribut == Feu ) { p.nom = "Puprope_Fire"; }
+		if( p.rank == S && p.job == Mage && p.attribut == Glace ) { p.nom = "Puprope_Ice"; }
+		if( p.rank == S && p.job == Mage && p.attribut == Lumiere ) { p.nom = "Puprope_Light"; }
+		if( p.rank == S && p.job == Mage && p.attribut == Tenebres ) { p.nom = "Puprope_Darkness"; }
+		
+		if( p.rank == S && p.job == Warrior && p.attribut == Neutre ) { p.nom = "Gatz"; }
+		if( p.rank == S && p.job == Warrior && p.attribut == Feu ) { p.nom = "Gatz_Fire"; }
+		if( p.rank == S && p.job == Warrior && p.attribut == Glace ) { p.nom = "Gatz_Ice"; }
+		if( p.rank == S && p.job == Warrior && p.attribut == Lumiere ) { p.nom = "Gatz_Light"; }
+		if( p.rank == S && p.job == Warrior && p.attribut == Tenebres ) { p.nom = "Gatz_Darkness"; }
+		
+		if( p.rank == S && p.job == Archer && p.attribut == Neutre ) { p.nom = "Alika"; }
+		if( p.rank == S && p.job == Archer && p.attribut == Feu ) { p.nom = "Alika_Fire"; }
+		if( p.rank == S && p.job == Archer && p.attribut == Glace ) { p.nom = "Alika_Ice"; }
+		if( p.rank == S && p.job == Archer && p.attribut == Lumiere ) { p.nom = "Alika_Light"; }
+		if( p.rank == S && p.job == Archer && p.attribut == Tenebres ) { p.nom = "Alika_Darkness"; }
+	
+		if( p.rank == S && p.job == Lancer && p.attribut == Neutre ) { p.nom = "Djugan"; }
+		if( p.rank == S && p.job == Lancer && p.attribut == Feu ) { p.nom = "Djugan_Fire"; }
+		if( p.rank == S && p.job == Lancer && p.attribut == Glace ) { p.nom = "Djugan_Ice"; }
+		if( p.rank == S && p.job == Lancer && p.attribut == Lumiere ) { p.nom = "Djugan_Light"; }
+		if( p.rank == S && p.job == Lancer && p.attribut == Tenebres ) { p.nom = "Djugan_Darkness"; }
+		
+		if( p.rank == S && p.job == Brawler && p.attribut == Neutre ) { p.nom = "Zafitte"; }
+		if( p.rank == S && p.job == Brawler && p.attribut == Feu ) { p.nom = "Zafitte_Fire"; }
+		if( p.rank == S && p.job == Brawler && p.attribut == Glace ) { p.nom = "Zafitte_Ice"; }
+		if( p.rank == S && p.job == Brawler && p.attribut == Lumiere ) { p.nom = "Zafitte_Light"; }
+		if( p.rank == S && p.job == Brawler && p.attribut == Tenebres ) { p.nom = "Zafitte_Darkness"; }
+		
+		if( p.rank == A && p.job == Mage && p.attribut == Soin ) { p.nom = "Kana_Heal"; }
+		if( p.rank == A && p.job == Mage && p.attribut == Cure ) { p.nom = "Kana_Cure"; }
+		
+		if( p.rank == A && p.job == Mage && p.attribut == Feu ) { p.nom = "Daiana_Fire"; }
+		if( p.rank == A && p.job == Mage && p.attribut == Glace ) { p.nom = "Daiana_Ice"; }
+		if( p.rank == A && p.job == Mage && p.attribut == Lumiere ) { p.nom = "Daiana_Light"; }
+		if( p.rank == A && p.job == Mage && p.attribut == Tenebres ) { p.nom = "Daiana_Darkness"; }
+		
+		if( p.rank == A && p.job == Warrior && p.attribut == Neutre ) { p.nom = "Velraine"; }
+		if( p.rank == A && p.job == Warrior && p.attribut == Feu ) { p.nom = "Velraine_Fire"; }
+		if( p.rank == A && p.job == Warrior && p.attribut == Glace ) { p.nom = "Velraine_Ice"; }
+		if( p.rank == A && p.job == Warrior && p.attribut == Lumiere ) { p.nom = "Velraine_Light"; }
+		if( p.rank == A && p.job == Warrior && p.attribut == Tenebres ) { p.nom = "Velraine_Darkness"; }
+		
+		if( p.rank == A && p.job == Archer && p.attribut == Neutre ) { p.nom = "Pahrl"; }
+		if( p.rank == A && p.job == Archer && p.attribut == Feu ) { p.nom = "Pahrl_Fire"; }
+		if( p.rank == A && p.job == Archer && p.attribut == Glace ) { p.nom = "Pahrl_Ice"; }
+		if( p.rank == A && p.job == Archer && p.attribut == Lumiere ) { p.nom = "Pahrl_Light"; }
+		if( p.rank == A && p.job == Archer && p.attribut == Tenebres ) { p.nom = "Pahrl_Darkness"; }
+		
+		if( p.rank == A && p.job == Lancer && p.attribut == Neutre ) { p.nom = "Samupi"; }
+		if( p.rank == A && p.job == Lancer && p.attribut == Feu ) { p.nom = "Samupi_Fire"; }
+		if( p.rank == A && p.job == Lancer && p.attribut == Glace ) { p.nom = "Samupi_Ice"; }
+		if( p.rank == A && p.job == Lancer && p.attribut == Lumiere ) { p.nom = "Samupi_Light"; }
+		if( p.rank == A && p.job == Lancer && p.attribut == Tenebres ) { p.nom = "Samupi_Darkness"; } 
+		
+		if( p.rank == A && p.job == Brawler && p.attribut == Neutre ) { p.nom = "Eileen"; }
+		if( p.rank == A && p.job == Brawler && p.attribut == Feu ) { p.nom = "Eileen_Fire"; }
+		if( p.rank == A && p.job == Brawler && p.attribut == Glace ) { p.nom = "Eileen_Ice"; }
+		if( p.rank == A && p.job == Brawler && p.attribut == Lumiere ) { p.nom = "Eileen_Light"; }
+		if( p.rank == A && p.job == Brawler && p.attribut == Tenebres ) { p.nom = "Eileen_Darkness"; }
+		
+		if( p.rank == B && p.job == Mage && p.attribut == Soin ) { p.nom = "Kuscah_Heal"; }
+		if( p.rank == B && p.job == Mage && p.attribut == Cure ) { p.nom = "Kuscah_Cure"; }
+		
+		if( p.rank == B && p.job == Mage && p.attribut == Feu ) { p.nom = "Ba'gunar_Fire"; }
+		if( p.rank == B && p.job == Mage && p.attribut == Glace ) { p.nom = "Ba'gunar_Ice"; }
+		if( p.rank == B && p.job == Mage && p.attribut == Lumiere ) { p.nom = "Ba'gunar_Light"; }
+		if( p.rank == B && p.job == Mage && p.attribut == Tenebres ) { p.nom = "Ba'gunar_Darkness"; }
+		
+		if( p.rank == B && p.job == Warrior && p.attribut == Neutre ) { p.nom = "Bahl"; }
+		if( p.rank == B && p.job == Warrior && p.attribut == Feu ) { p.nom = "Bahl_Fire"; }
+		if( p.rank == B && p.job == Warrior && p.attribut == Glace ) { p.nom = "Bahl_Ice"; }
+		if( p.rank == B && p.job == Warrior && p.attribut == Lumiere ) { p.nom = "Bahl_Light"; }
+		if( p.rank == B && p.job == Warrior && p.attribut == Tenebres ) { p.nom = "Bahl_Darkness"; }
+		
+		if( p.rank == B && p.job == Archer && p.attribut == Neutre ) { p.nom = "Grace"; }
+		if( p.rank == B && p.job == Archer && p.attribut == Feu ) { p.nom = "Grace_Fire"; }
+		if( p.rank == B && p.job == Archer && p.attribut == Glace ) { p.nom = "Grace_Ice"; }
+		if( p.rank == B && p.job == Archer && p.attribut == Lumiere ) { p.nom = "Grace_Light"; }
+		if( p.rank == B && p.job == Archer && p.attribut == Tenebres ) { p.nom = "Grace_Darkness"; }
+		
+		if( p.rank == B && p.job == Lancer && p.attribut == Neutre ) { p.nom = "Zenzoze"; }
+		if( p.rank == B && p.job == Lancer && p.attribut == Feu ) { p.nom = "Zenzoze_Fire"; }
+		if( p.rank == B && p.job == Lancer && p.attribut == Glace ) { p.nom = "Zenzoze_Ice"; }
+		if( p.rank == B && p.job == Lancer && p.attribut == Lumiere ) { p.nom = "Zenzoze_Light"; }
+		if( p.rank == B && p.job == Lancer && p.attribut == Tenebres ) { p.nom = "Zenzoze_Darkness"; }
+		
+		if( p.rank == B && p.job == Brawler && p.attribut == Neutre ) { p.nom = "Amazora"; }
+		if( p.rank == B && p.job == Brawler && p.attribut == Feu ) { p.nom = "Amazora_Fire"; }
+		if( p.rank == B && p.job == Brawler && p.attribut == Glace ) { p.nom = "Amazora_Ice"; }
+		if( p.rank == B && p.job == Brawler && p.attribut == Lumiere ) { p.nom = "Amazora_Light"; }
+		if( p.rank == B && p.job == Brawler && p.attribut == Tenebres ) { p.nom = "Amazora_Darkness"; }
 		
 		/*Le personnage est créé à l'aide de la fonction creer_perso*/		
 		p = creer_perso(p.nom, p.race, p.job, p.arme, p.attribut, p.rank, p.stat, p.level ,p.exp);
@@ -544,9 +503,9 @@ t_personnage generer() {
 *\brief Permet de générer un ennemi aleatoirement en fonction du niveau
 */
 
-t_ennemi generer_ennemi(int niveau){
+t_personnage generer_ennemi(int niveau){
 
-		t_ennemi e;
+		t_personnage e;
 		
 		/*Determine le rang de l'ennemi aléatoirement en fonction du niveau*/
 		int rang = rand()%(100) +1;
@@ -590,10 +549,10 @@ t_ennemi generer_ennemi(int niveau){
 		
 		switch(race) {
 				
-				case(1) : e.race_ennemie = Bete; break;
-				case(2) : e.race_ennemie = Monstre; break;
-				case(3) : e.race_ennemie = Golem; break;
-				case(4) : e.race_ennemie = Dragon; break;				
+				case(1) : e.race = Bete; break;
+				case(2) : e.race = Monstre; break;
+				case(3) : e.race = Golem; break;
+				case(4) : e.race = Dragon; break;				
 		}
 		
 		/*Determine l'arme ainsi que la classe de l'ennemi aléatoirement en fonction du rang*/
@@ -713,13 +672,13 @@ t_ennemi generer_ennemi(int niveau){
 		e.stat.mdef = e.stat.mdef*amelioration;	
 		
 		/*Détermine le nom de l'ennemi en fonction de sa race*/
-		if( e.race_ennemie == Bete ) { e.nom = "Bete"; }
-		if( e.race_ennemie == Monstre ) { e.nom = "Monstre"; }
-		if( e.race_ennemie == Golem ) { e.nom = "Golem"; }
-		if( e.race_ennemie == Dragon ) { e.nom = "Dragon"; }		
+		if( e.race == Bete ) { e.nom = "Bete"; }
+		if( e.race == Monstre ) { e.nom = "Monstre"; }
+		if( e.race == Golem ) { e.nom = "Golem"; }
+		if( e.race == Dragon ) { e.nom = "Dragon"; }		
 			
 		/*Le personnage est créé à l'aide de la fonction creer_perso*/		
-		e = creer_ennemi(e.nom, e.race_ennemie, e.job, e.arme, e.attribut, e.rank, e.stat, e.level ,e.exp);
+		e = creer_perso(e.nom, e.race, e.job, e.arme, e.attribut, e.rank, e.stat, e.level ,e.exp);
 		
 		return(e);		
 }	
@@ -1399,30 +1358,6 @@ void afficher_escouade (t_escouade escouade) {
 }
 
 /**
-*\fn t_escouade recrutement ( t_escouade escouade )
-*\brief Permet de recruter un personnage en faisant appel à une autre fonction puis l'ajoute à l'escouade
-*/
-
-t_escouade recrutement ( t_escouade escouade ) {
-    
-    int recrutement = 0;
-    t_personnage new_perso;
-    
-    printf("\nSouhaitez vous recruter un personnage ? 0 / 1 : ");
-    scanf("%i", &recrutement);
-    
-    if (recrutement == 1 && (escouade.nb_perso < MAX_PERSO)) {
-        
-        new_perso = generer();
-        escouade.perso[escouade.nb_perso] = new_perso;
-        escouade.nb_perso++;
-    }
-    
-    return(escouade);
-    
-}
-
-/**
 *\fn void sauvegarde_escouade( t_escouade escouade )
 *\brief Permet de sauvegarder son escouade
 */
@@ -1430,7 +1365,7 @@ t_escouade recrutement ( t_escouade escouade ) {
 void sauvegarde_escouade( t_escouade escouade ) {
     
     FILE* save;
-    save = fopen("sauvegarde.txt","w");
+    save = fopen("sauvegarde_escouade.txt","w");
     
     int i;
     
@@ -1444,6 +1379,27 @@ void sauvegarde_escouade( t_escouade escouade ) {
     
 }
 
+/**
+*\fn void sauvegarde_liste( t_liste liste )
+*\brief Permet de sauvegarder sa liste de personnage
+*/
+
+void sauvegarde_liste( t_liste liste ) {
+    
+    FILE* save;
+    save = fopen("sauvegarde_liste.txt","w");
+    
+    int i;
+    
+    for( i = 0 ; i < liste.numero_perso ; i++ ){
+        
+        fprintf(save,"%i %s %i %i %i %i %i %.0f %.0f %.0f %.0f %.0f %i %i\n", i+1, liste.liste_perso[i].nom, liste.liste_perso[i].race, liste.liste_perso[i].job, liste.liste_perso[i].arme, liste.liste_perso[i].attribut, liste.liste_perso[i].rank, liste.liste_perso[i].stat.HP, liste.liste_perso[i].stat.attack, liste.liste_perso[i].stat.mattack, liste.liste_perso[i].stat.def, liste.liste_perso[i].stat.mdef, liste.liste_perso[i].level, liste.liste_perso[i].exp );
+		
+    }
+  
+	fclose(save);
+    
+}
 
 
 /**
@@ -1454,7 +1410,7 @@ void sauvegarde_escouade( t_escouade escouade ) {
 t_escouade charger_escouade ( t_escouade escouade ){
 
 	FILE* save;
-    save = fopen("sauvegarde.txt","r");
+    save = fopen("sauvegarde_escouade.txt","r");
     
     char* nom = malloc(20 * sizeof(char));
     int race, job, arme, attribut, rank, level, exp;
@@ -1471,22 +1427,203 @@ t_escouade charger_escouade ( t_escouade escouade ){
 	if (escouade.nb_perso < 0) escouade.nb_perso = 0;
 	free(nom);
 	return(escouade);	
+}
+
+/**
+*\fn t_escouade charger_liste ( t_liste liste )
+*\brief Permet de charger sa liste de personnage a partir d'un fichier existant
+*/
+
+t_liste charger_liste ( t_liste liste ){
+
+	FILE* save;
+    save = fopen("sauvegarde_liste.txt","r");
+    
+    char* nom = malloc(20 * sizeof(char));
+    int race, job, arme, attribut, rank, level, exp;
+    t_stat stat;
+    
+    int i;
+
+    for( i = 0 ; (!feof(save)) && i <= MAX_LISTE; i++ ){
+		
+		fscanf(save,"%i %s %i %i %i %i %i %f %f %f %f %f %i %i", &liste.numero_perso, nom, &race, &job, &arme, &attribut, &rank, &(stat.HP), &(stat.attack), &(stat.mattack), &(stat.def), &(stat.mdef), &level, &exp);
+		liste.liste_perso[i] = charger_perso(nom, race, job, arme, attribut, rank, stat, level, exp );
+	}
+	free(nom);
+	return(liste);	
+}
+
+/**
+*\fn t_liste verification ( t_liste liste, char* nom, t_race race )
+*\brief Permet de vérifier le personnage recruté, s'il est deja dans la liste, il gagne un niveau
+*/
+
+t_liste verification ( t_liste liste, int numero_personnage, char* nom, t_race race ){
+	 
+	if ( race != liste.liste_perso[numero_personnage].race ) { liste.liste_perso[numero_personnage].race = race; }
+    if ( nom == liste.liste_perso[numero_personnage].nom && liste.liste_perso[numero_personnage].level < 70) {
+        
+    if (liste.liste_perso[numero_personnage].rank == B) { liste.liste_perso[numero_personnage].exp = liste.liste_perso[numero_personnage].exp + ( 0.8 * (liste.liste_perso[numero_personnage].level + 1) * (liste.liste_perso[numero_personnage].level + 1) * (liste.liste_perso[numero_personnage].level + 1) - 0.8 * liste.liste_perso[numero_personnage].level * liste.liste_perso[numero_personnage].level * liste.liste_perso[numero_personnage].level); }
+    if (liste.liste_perso[numero_personnage].rank == A) { liste.liste_perso[numero_personnage].exp = liste.liste_perso[numero_personnage].exp + ((liste.liste_perso[numero_personnage].level + 1) * (liste.liste_perso[numero_personnage].level + 1) * (liste.liste_perso[numero_personnage].level + 1) - liste.liste_perso[numero_personnage].level * liste.liste_perso[numero_personnage].level * liste.liste_perso[numero_personnage].level); }
+    if (liste.liste_perso[numero_personnage].rank == S) { liste.liste_perso[numero_personnage].exp = liste.liste_perso[numero_personnage].exp + ( 1.2 * (liste.liste_perso[numero_personnage].level + 1) * (liste.liste_perso[numero_personnage].level + 1) * (liste.liste_perso[numero_personnage].level + 1) - 15 * (liste.liste_perso[numero_personnage].level + 1) * (liste.liste_perso[numero_personnage].level + 1) + 100 * (liste.liste_perso[numero_personnage].level + 1) - 140 - 1.2 * liste.liste_perso[numero_personnage].level * liste.liste_perso[numero_personnage].level * liste.liste_perso[numero_personnage].level - 15 * liste.liste_perso[numero_personnage].level * liste.liste_perso[numero_personnage].level + 100 * liste.liste_perso[numero_personnage].level - 140); }
+    if (liste.liste_perso[numero_personnage].rank == SS) { liste.liste_perso[numero_personnage].exp = liste.liste_perso[numero_personnage].exp +( 1.25 * (liste.liste_perso[numero_personnage].level + 1) * (liste.liste_perso[numero_personnage].level + 1) * (liste.liste_perso[numero_personnage].level + 1) - 1.25 * liste.liste_perso[numero_personnage].level * liste.liste_perso[numero_personnage].level * liste.liste_perso[numero_personnage].level); }
+           
+    liste.liste_perso[numero_personnage] = montee_level(liste.liste_perso[numero_personnage]);
+            
+    
+    
+        
+    }
+	
+	return(liste);
 }	
+
+/**
+*\fn t_liste suppression_doublons ( t_liste liste, t_personnage p )
+*\brief Permet de ne pas ajouter un personnage qui aurait les meme caractéristiques qu'un personnage deja présent dans la liste 
+*/
+
+t_liste suppression_doublons ( t_liste liste, t_personnage p ){
+	
+	int i;
+	
+	for( i = 0 ; i < liste.numero_perso ; i++ ){
+        
+        
+        if ( liste.liste_perso[i].nom == p.nom && liste.liste_perso[i].attribut == p.attribut && liste.liste_perso[i].job == p.job ) {
+			
+			liste = verification(liste, i, p.nom, p.race);
+			return(liste);
+		}		
+    }
+	
+	return(liste);
+
+}	
+
+/**
+*\fn est_present ( t_liste liste, t_personnage p)
+*\brief Permet de verifier si un personnage est deja present dans la liste
+*/
+
+int est_present ( t_liste liste, t_personnage p){
+	
+	int i;
+	
+	for( i = 0 ; i < liste.numero_perso ; i++ ){
+            
+        if ( liste.liste_perso[i].nom == p.nom && liste.liste_perso[i].attribut == p.attribut && liste.liste_perso[i].job == p.job ) {
+					
+			return(1);
+		}		
+    }	
+	return(0);
+}	
+
+/**
+*\fn t_escouade recrutement ( t_escouade escouade )
+*\brief Permet de recruter un personnage en faisant appel à une autre fonction puis l'ajoute à l'escouade
+*/
+
+t_liste recrutement ( t_liste liste ) {
+    
+	t_personnage new_perso;
+	int present = 0;
+    
+    if (liste.numero_perso < MAX_LISTE) {
+		
+		new_perso = generer();
+		
+		present = est_present(liste, new_perso);
+		
+		if(present == 1) { liste = suppression_doublons(liste, new_perso); }
+		else{
+			liste.liste_perso[liste.numero_perso] = new_perso;			
+			afficher_perso(liste.liste_perso[liste.numero_perso]);
+			liste.numero_perso++;
+		}
+	}
+	
+	else { printf("Vous n'avez plus de slot disponible dans votre liste."); }
+	
+	sauvegarde_liste(liste);
+	return(liste);
+}	
+
+void afficher_liste ( t_liste liste ) {
+	
+	int i;
+	
+	for ( i = 0 ; i < liste.numero_perso ; i++ ){
+		
+		printf("\n%i - %s /// Level %i ", i+1, liste.liste_perso[i].nom, liste.liste_perso[i].level);
+		switch(liste.liste_perso[i].job){
+	
+			case Warrior : printf("/ Warrior "); break;
+			case Archer : printf("/ Archer "); break;
+			case Brawler : printf("/ Brawler "); break;
+			case Mage : printf("/ Mage "); break;
+			case Lancer : printf("/ Lancer "); break;
+			case Knight : printf("/ Knight "); break;
+			case Sniper : printf("/ Sniper "); break;
+			case Assassin : printf("/ Assassin "); break;
+			case Lord : printf("/ Lord "); break;
+			case General : printf("/ General "); break;
+			case White_Mage : printf("/ White Mage "); break;
+			case Black_Mage : printf("/ Black Mage "); break;
+			case Cleric : printf("/ Cleric "); break;
+		}	
+		switch(liste.liste_perso[i].arme){
+	
+				case Epee : printf("=> Sword "); break;
+				case Arc : printf("=> Bow "); break;
+				case Lance : printf("=> Spear "); break;
+				case Baton : printf("=> Rod "); break;
+				case Poing : printf("=> Unarmed "); break;
+
+		}
+		switch(liste.liste_perso[i].attribut){
+
+			case Neutre : printf("/ Neutral"); break;
+			case Feu : printf("/ Fire"); break;
+			case Glace : printf("/ Ice"); break;
+			case Lumiere : printf("/ Lightning"); break;
+			case Tenebres : printf("/ Darkness"); break;
+			case Soin : printf("/ Healing"); break;
+			case Cure : printf("/ Remedy"); break;
+
+		}
+		
+	}
+}	
+
+	
 
 int main(){
 	
 	t_escouade escouade1;
-	t_horde horde;
-
+	t_escouade horde1;	
+	t_liste liste_personnage;
+	int choix_recrutement = 0;
+	
 	escouade1.nb_perso = 0;
-	horde.nb_ennemi = 0;
+	horde1.nb_perso = 0;	
+		
 	srand(time(NULL));
 	
-	horde.ennemi[horde.nb_ennemi] = generer_ennemi(5);
-	horde.nb_ennemi++;
 	
-	afficher_ennemi(horde.ennemi[0]);
+	printf("\n Souhaitez vous recruter des personnages ? 0 / 1 : ");
+	scanf("%i", &choix_recrutement);
 	
+	while (choix_recrutement) {
+		
+		liste_personnage = recrutement(liste_personnage);
+		
+		printf("\n Souhaitez vous continuer de recruter des personnages ? 0 gr/ 1 : ");
+		scanf("%i", &choix_recrutement);	
+	}
+		    
 	/*Neko_Brawler_S_defaut = creer_perso("Sijya", Neko_Girl, Brawler, Poing, Neutre, S, Brawler_Stats, 10,0 );
     
     escouade1.perso[escouade1.nb_perso] = Neko_Brawler_S_defaut;
@@ -1513,6 +1650,9 @@ int main(){
 	//escouade1 = charger_escouade(escouade1);
 	//afficher_escouade(escouade1);
 	//sauvegarde_escouade(escouade1);
+	//liste_personnage = charger_liste(liste_personnage);
+	//afficher_liste(liste_personnage);
 	
 	return(EXIT_SUCCESS);
 }
+
