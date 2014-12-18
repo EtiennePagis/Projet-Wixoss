@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <assert.h>
-#include <time.h>
 #include "partie.h"
 #define N 9
 #define M 7
@@ -11,7 +10,7 @@ int mat[N][M];
 //#include "personnage.h"
 
 
-int main (void) 
+int main () //lance le jeu
 {
 	srand(time(NULL));
 	int choix; 

@@ -1,0 +1,254 @@
+
+if (pos_y < M-1)
+                    {
+						pos_y++;
+						pos_x = i;
+					}else if (pos_x < N-1)
+                    {
+						pos_x++;
+						pos_y = j;
+					}else if(pos_x > 1)
+                    {
+						pos_x--;
+						pos_y = j;
+					}else if(pos_y > 1)
+                    {
+						pos_y--;
+						pos_x = i;
+					}else
+                    {
+						pos_x = 1;
+						pos_y = 1;
+					}
+
+
+
+
+
+
+
+
+if((mat[ioris][joris+1] == 0)&&(joris < M-1)) // Place les ennemis autour de l'entité alliée 
+        {
+           pos_y++;
+           pos_x = ioris;
+							
+        }
+        if((mat[ioris][joris-1] == 0)&&(joris > 1))
+         {
+           pos_y--;
+           pos_x = ioris;
+                           
+         }
+         if((mat[ioris+1][joris] == 0 )&&(ioris < N-1))
+          {
+           pos_y = joris;
+           pos_x++;
+                            
+							
+          }
+          if((mat[ioris-1][joris] == 0)&&(ioris > 1))
+           {
+             pos_y = joris;
+             pos_x--;
+							
+           }
+						
+					if(((mat[ioris][joris+1] == 0)||(mat[ioris][joris-1] == 0))||((mat[ioris+1][joris] == 0)||(mat[ioris-1][joris] == 0)))
+		{	
+						
+					
+						
+						
+						
+						
+						
+						
+						
+						 while((mat[pos_x][pos_y] != 0)||((ioris < 1)&&(ioris > N))||((joris < 1)&&(joris > M)))
+                    {
+                    	if(mat[ioris][joris+1] == 0)
+                    	{
+                    		pos_y++;
+                          	pos_x = ioris;
+                    	}else if(mat[ioris][joris-1] == 0)
+                    	{
+                    		pos_y--;
+                            pos_x = ioris;
+                    	}else if(mat[ioris+1][joris] == 0)
+                    	{
+                    		pos_y = joris;
+                            pos_x++;
+                    	}else if(mat[ioris-1][joris] == 0)
+                    	{
+                    		pos_y = joris;
+                            pos_x--;
+                    	}else
+                    	{
+                      	 if (pos_y < M-1)
+                      	  {
+                        	 pos_y++;
+                         	 pos_x = ioris;
+                    	}else if (pos_x < N-1)
+                       	 {
+                           pos_x++;
+                           pos_y = joris;
+                       	}else if(pos_x > 1)
+                        	{
+                           	pos_x--;
+                           	pos_y = joris;
+                       	}else if(pos_y > 1){
+                       	    pos_y--;
+                       	    pos_x = ioris;
+                       	}else if ((pos_x > N)&&(pos_y > M)){
+                       	    pos_x = 1;
+                       	    pos_y = 1;
+                      	 }
+                    	}
+                    }
+                   mat[pos_x][pos_y] = 4;
+                   mat[i][j] = 0 ;
+                }
+                
+                
+                
+                
+                
+                
+                if(((mat[ioris][joris+1] == 0)&&(mat[ioris][joris-1] == 0))&&((joris < M-1)&&(joris > 2)))
+							{
+								pos_x = ioris;
+								pos_y = joris+1;
+								ennemi--;
+							}	
+							else if(((mat[ioris][joris+1] == 4)&&(mat[ioris][joris-1] == 0))&&(joris < M-1))
+							{
+								pos_x = ioris;
+								pos_y = joris-1;
+								ennemi--;
+							}
+							else if(((mat[ioris+1][joris] == 0)&&(mat[ioris-1][joris] == 0))&&((ioris < N-1)&&(ioris > 2)))
+							{
+								pos_x = ioris+1;
+								pos_y = joris;
+								ennemi--;
+							}
+							else if(((mat[ioris+1][joris] == 4)&&(mat[ioris-1][joris] == 0))&&(ioris < N-1))
+							{
+								pos_x = ioris-1;
+								pos_y = joris;
+								ennemi--;
+							}
+							else if(joris == M-1)
+							{
+								if((ioris == N)&&(mat[ioris][joris-1] == 0))
+								{
+									pos_x = ioris;
+									pos_y--;
+								}
+								if((ioris == N)&&(mat[ioris-1][joris] == 0))
+								{
+									pos_x--;
+									pos_y = joris;
+								}
+							}else if(joris == 1)
+							{
+								if((ioris == 1)&&(mat[ioris][joris+1] == 0))
+								{
+									pos_x = ioris;
+									pos_y++;
+								}
+								if((ioris == 1)&&(mat[ioris+1][joris] == 0))
+								{
+									pos_x++;
+									pos_y = joris;
+								}
+							}else if(ioris == N-1)
+							{
+								if((joris == M)&&(mat[ioris][joris-1] == 0))
+								{
+									pos_x = ioris;
+									pos_y--;
+								}
+								if((joris == M)&&(mat[ioris-1][joris] == 0))
+								{
+									pos_x--;
+									pos_y = joris;
+								}
+							}else if(ioris == 1)
+							{
+								if((joris == 1)&&(mat[ioris][joris+1] == 0))
+								{
+									pos_x = ioris;
+									pos_y++;
+								}
+								else if((joris < M)&&(joris > 1))
+								{
+									if(mat[ioris][joris+1] == 0)
+									{
+										pos_y++;
+										pos_x = ioris;
+									}
+									if(mat[ioris][joris-1] == 0)
+									{
+										pos_y--;
+										pos_x = ioris;
+									}
+									if(mat[ioris+1][joris] == 0)
+									{
+										pos_y = joris;
+										pos_x++;
+									}
+									if(mat[ioris-1][joris] == 0)
+									{
+										pos_y = joris;
+										pos_x--;
+									}
+								}
+								else if((ioris < N)&&(ioris > 1))
+								{
+									if(mat[ioris][joris+1] == 0)
+									{
+										pos_y++;
+										pos_x = ioris;
+									}
+									if(mat[ioris][joris-1] == 0)
+									{
+										pos_y--;
+										pos_x = ioris;
+									}
+									if(mat[ioris+1][joris] == 0)
+									{
+										pos_y = joris;
+										pos_x++;
+									}
+									if(mat[ioris-1][joris] == 0)
+									{
+										pos_y = joris;
+										pos_x--;
+									}
+								}
+									
+								if((joris == 1)&&(mat[ioris+1][joris] == 0))
+								{
+									pos_x++;
+									pos_y = joris;
+								}
+							}
+							
+						}				
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                

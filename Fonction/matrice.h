@@ -4,6 +4,6 @@
 #ifndef MATRICE_H
 #define MATRICE_H
 #endif
-void init();
+void affichage();
 void placement();
 void init();

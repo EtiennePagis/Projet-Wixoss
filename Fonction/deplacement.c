@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "matrice.h"
 #define N 9
 #define M 7
 int mat[N][M];
 
-void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
+void deplacementpossible(int* i,int* j,int dep,int* nb_dep){ // verifie les deplacement possible
 	int memoire;
 	if (dep==8){
 		if(*i==1){                                   //deplacement vers le haut
@@ -139,7 +140,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 	}
 }
 
-void deplacement(){
+void deplacement_joueur(){ //Affiche les choix du joueur et les execute
 	int i,j,nb_dep,dep,choix;
 	nb_dep = 0;
 	dep = 0;

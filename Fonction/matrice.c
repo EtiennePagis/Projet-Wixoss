@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <assert.h>
 #define N 9
 #define M 7
@@ -21,7 +20,7 @@ void affichage (){
 				}
 			}
 		}
-		printf("|\n");
+		printf("|\n"); //permet un meilleur esthetisme
 	}
 }
 void init(){
@@ -48,7 +47,7 @@ void placement ()
 	
 	int pos_x , pos_y;
 	int player , ennemy;
-	int boss = 1;
+	int boss = 0;
 	printf("Veuillez rentrer le nombre d'entité du joueur a placer : \n");
 	scanf("%i",&player);
 	while((player <= 0)||(player >= 7))
@@ -58,7 +57,7 @@ void placement ()
 		scanf("%i",&player);
 	}
 	ennemy = rand()%(6)+1;
-	for(ennemy ; ennemy > 0; ennemy--) {
+	for(ennemy ; ennemy > 0; ennemy--) { // Place les entité ennemi dans la matrice
 		pos_x = rand()%(8)+1;
 		pos_y = rand()%(6)+1;
 		
