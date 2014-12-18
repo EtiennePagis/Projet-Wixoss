@@ -1,90 +1,154 @@
 #include <stdio.h>
+#include <time.h>
 #include <stdlib.h>
 #include <assert.h>
 #include "matrice.h"
 //#include "personnage.h"
 #define N 9
 #define M 7
+#define TMAX 100
 int mat[N][M];
-int allie1,allie2,ennemis,ennemis2;
 int boss_mort = 0;
+int pile_ennemi[TMAX];
+int sommet_ennemi =-1;
 
-int init_voisin(int i,int j){
-	if(mat[i][j] == 1){
-        allie1 = 1;
-        allie2 = 1;
-        ennemis = 2;
-        ennemis2 = 3;
-    }else if(mat[i][j] == 2){
-        allie1 = 2;
-        allie2 = 3;
-        ennemis = 1;
-        ennemis2 = 1;
-	}else if(mat[i][j] == 3){
-		allie1 = 2;
-        allie2 = 2;
-        ennemis = 1;
-        ennemis2 = 1;
-	}else{
-        return(-1);
-    }
+void initpile(int pile[],int* sommet){
+	*sommet = -1;
+}
+
+void empiler(int e,int pile[],int* sommet){
+	if (*sommet < TMAX - 1){
+		*sommet = *sommet + 1;
+		pile[*sommet] = e;
+	}
+}
+
+void depiler(int* e, int pile[], int* sommet){
+	if(*sommet > -1){
+		*e = pile[*sommet];
+		*sommet = *sommet -1;
+	}	
+} 
+
+int pilevide(int pile[],int sommet){
+	return(sommet == -1);
 }
 
 
-int est_tenaille(int i,int j){
-	
-	init_voisin(i,j);
-	
-	if((i == 1 || i == 8 )&&( j == 1 || j == 6)){
-		
-		return(0);
+
+int est_ennemi(int i,int j,int joueur){
+	if(joueur == 1){
+        if (mat[i][j] == 2 || mat[i][j] == 3){return(1);}
+    }else if(joueur == 2){
+        if (mat[i][j] == 1){return(1);}
+	}else if(joueur == 3){
+		if(mat[i][j] == 1){return(1);}
+	}else{
+        return(-1);
+    }
+    return(0);
+}
+
+int est_allie(int i, int j,int joueur){
+	if (joueur != 0){
+		if(est_ennemi(i,j,joueur)){
+			return(0);
+		}else{
+			return(1);
+		}
+	}else{
+		return(-1);
 	}
-	
-	if(i != 1 && i != 8 ){
-		if(mat[i-1][j] == ennemis || mat[i-1][j] == ennemis2){
-			while(mat[i+1][j] !=0 && i <= 7){
-				if (mat[i+1][j] == ennemis || mat[i+1][j] == ennemis2){
+}
+
+int est_tenaille_vertical(int i,int j){
+	if(i != 1 && i != 8 ){ //on n'est pas sur un bord horizontale
+		while((i >= 2 )&& (!est_ennemi(i-1,j,mat[i][j])) && (mat[i-1][j] !=0)){
+			i--;
+		}
+		if ((i == 1)||(mat[i-1][j] == 0)){
+			printf("l'unite %i %i (%i) n'est pas en tenaille vertical\n",i,j,mat[i][j]);
+			return(0);
+		}else if(est_ennemi(i-1,j,mat[i][j])){
+			while(i <= 7 && mat[i+1][j] !=0){
+				if (est_ennemi(i+1,j,mat[i][j])){
+					
+					while(!est_ennemi(i-1,j,mat[i][j])){
+						printf("L'unite %i %i (%i) est en tenaille vertical\n",i,j,mat[i][j]);
+						empiler(i,pile_ennemi,&sommet_ennemi);
+						empiler(j,pile_ennemi,&sommet_ennemi);
+						i--;
+					}
+					printf("L'unite %i %i (%i) est en tenaille vertical\n",i,j,mat[i][j]);
+					empiler(i,pile_ennemi,&sommet_ennemi);
+					empiler(j,pile_ennemi,&sommet_ennemi);
 					return(1);
 				}
 				i++;
 			}
 		}
-		if(mat[i+1][j] == ennemis || mat[i+1][j] == ennemis2){
-			while(mat[i-1][j] !=0 && i >= 2){
-				if (mat[i-1][j] == ennemis || mat[i-1][j] == ennemis2){
-					return(1);
-				}
-				i--;
-			}
-		}
 	}
-	if(j != 1 && j != 6 ){
-		if(mat[i][j-1] == ennemis || mat[i][j-1] == ennemis2){
-			while(mat[i][j+1] !=0 && j <= 5){
-				if (mat[i][j+1] == ennemis || mat[i][j+1] == ennemis2){
+	printf("l'unite %i %i (%i) n'est pas en tenaille vertical\n",i,j,mat[i][j]);
+	return(0);
+}
+
+int est_tenaille_horizontal(int i,int j){
+	
+	if(j != 1 && j != 6 ){ //on n'est pas sur un bord vertical
+		while((j >= 2 )&& (!est_ennemi(i,j-1,mat[i][j])) && (mat[i][j-1] !=0)){
+			j--;
+		}
+		if ((j == 1)||(mat[i][j-1] ==0)){
+			printf("l'unite %i %i (%i) n'est pas en tenaille horizontal\n",i,j,mat[i][j]);
+			return(0);
+		}else if(est_ennemi(i,j-1,mat[i][j])){
+			while(j <= 5 && mat[i][j+1] !=0){
+				if (est_ennemi(i,j+1,mat[i][j])){
+					
+					while(!est_ennemi(i,j-1,mat[i][j])){
+						printf("L'unite %i %i (%i) est en tenaille horizontal\n",i,j,mat[i][j]);
+						empiler(i,pile_ennemi,&sommet_ennemi);
+						empiler(j,pile_ennemi,&sommet_ennemi);
+						j--;
+					}
+					printf("L'unite %i %i (%i) est en tenaille horizontal\n",i,j,mat[i][j]);
+					empiler(i,pile_ennemi,&sommet_ennemi);
+					empiler(j,pile_ennemi,&sommet_ennemi);
 					return(1);
 				}
 				j++;
 			}
 		}
-		if(mat[i][j+1] == ennemis || mat[i][j+1] == ennemis2){
-			while(mat[i][j-1] !=0 && j >= 2){
-				if (mat[i][j-1] == ennemis || mat[i][j-1] == ennemis2){
-					return(1);
-				}
-				j--;
-			}
-		}
+	}
+	printf("l'unite %i %i (%i) n'est pas en tenaille horizontal\n",i,j,mat[i][j]);
+	return(0);
+	
+}
+
+int est_tenaille_coin(int i,int j){
+	//pour le moment, dans les coins, on ne eput pas etre pris en tenaille
+		
+	return(0);
+	
+}
+
+
+
+int est_tenaille(int i,int j){
+	if(est_tenaille_vertical(i,j)||est_tenaille_horizontal(i,j)||est_tenaille_coin(i,j)){
+		return(1);
 	}
 	return(0);
 }
+
+
 
 int voisin(int i,int j)
 {
 	int k,l;
 	int voisin = 0;
 	int test;
-	test = init_voisin(i,j);
+	test = est_allie(i,j,mat[i][j]);
     
     if (test == -1){
 		printf("cette unité n'est pas valide\n");
@@ -93,39 +157,27 @@ int voisin(int i,int j)
     
     k = i;
     
-    for(l = j;(l < M)&&(mat[k][l] != ennemis && mat[k][l] != ennemis2);l++){
-        if(mat[k][l] == allie1){
+    for(l = j;(l < M)&&(!est_ennemi(k,l,mat[i][j]));l++){
+        if(est_allie(k,l,mat[i][j])){
             voisin++;
-        }else if(mat[k][l] == allie2){
-            voisin++;
-            allie2 = allie1;
         }
     }
-    for(l = j;(l > 0)&&(mat[k][l] != ennemis && mat[k][l] != ennemis2);l--){
-        if(mat[k][l] == allie1){
+    for(l = j;(l > 0)&&(!est_ennemi(k,l,mat[i][j]));l--){
+        if(est_allie(k,l,mat[i][j])){
             voisin++;
-        }else if(mat[k][l] == allie2){
-            voisin++;
-            allie2 = allie1;
         }
     }
     
     l = j;
     
-    for(k = i;(k < N)&&(mat[k][l] != ennemis && mat[k][l] != ennemis2);k++){
-        if(mat[k][l] == allie1){
+    for(k = i;(k < N)&&(!est_ennemi(k,l,mat[i][j]));k++){
+        if(est_allie(k,l,mat[i][j])){
             voisin++;
-        }else if(mat[k][l] == allie2){
-            voisin++;
-            allie2 = allie1;
         }
     }
-    for(k = i;(k > 0)&&(mat[k][l] != ennemis && mat[k][l] != ennemis2);k--){
-        if(mat[k][l] == allie1){
+    for(k = i;(k > 0)&&(!est_ennemi(k,l,mat[i][j]));k--){
+        if(est_allie(k,l,mat[i][j])){
             voisin++;
-        }else if(mat[k][l] == allie2){
-            voisin++;
-            allie2 = allie1;
         }
     }
     if (mat[i][j] != 3){
@@ -135,91 +187,55 @@ int voisin(int i,int j)
 	}
 }
 
-
-
-
-
-
-
-
-typedef struct element{int c;struct element* suivant;}t_element;
-t_element* pile;
-
-void initpile(){
-	pile = NULL;
-}
-
-int pilevide(){
-	return(pile==NULL);
-}
-
-void empiler(int caract){
-	t_element* nouv;
-	nouv=(t_element*)malloc(sizeof(t_element));
-	nouv->c = caract;
-	nouv->suivant=pile;
-	pile=nouv;
-}
-
-void depiler(int *caract){
-	t_element* sommet;
-	
-	if(pile!=NULL){
-		*caract = pile->c;
-		sommet = pile;
-		pile= sommet->suivant;
-		free(sommet);
-	}
-}
-
-int sommetpile(){
-	if(pile!=NULL){
-		return(pile->c);
-	}
-}
-
 void attaque_joueur(int i,int j){
-	int ei,ej;		//ici les variabes ei et ej servent a données les coordonnées de l'ennemis
+	int ei,ej;		//ici les variables ei et ej servent à donner les coordonnées de l'ennemi
 	int nb_ennemis;
+    int pile_att[TMAX];
+    int sommet_att;
 	nb_ennemis = 0;
-	initpile();
+	initpile(pile_att,&sommet_att);
 	
 	if (i <= 7){
 		if (mat[i+1][j] == 2 || mat[i+1][j] == 3){
-			empiler(i+1);
-			empiler(j);
+			empiler(i+1,pile_att,&sommet_att);
+			empiler(j,pile_att,&sommet_att);
 			nb_ennemis++;
 		}
 	}
 	if (i >= 2){
 		if (mat[i-1][j] == 2 || mat[i-1][j] == 3){
-			empiler(i-1);
-			empiler(j);
+			empiler(i-1,pile_att,&sommet_att);
+			empiler(j,pile_att,&sommet_att);
 			nb_ennemis++;
 		}
 	}
 	if (j <= 5){
 		if (mat[i][j+1] == 2 || mat[i][j+1] == 3){
-			empiler(i);
-			empiler(j+1);
+			empiler(i,pile_att,&sommet_att);
+			empiler(j+1, pile_att,&sommet_att);
 			nb_ennemis++;
 		}
 	}
 	if (j >= 2){
 		if (mat[i][j-1] == 2 || mat[i][j-1] == 3){
-			empiler(i);
-			empiler(j-1);
+			empiler(i,pile_att,&sommet_att);
+			empiler(j-1,pile_att,&sommet_att);
 			nb_ennemis++;
 		}
 	}
 	while(nb_ennemis > 0){
-		depiler(&ej);
-		depiler(&ei);
+		depiler(&ej,pile_att,&sommet_att);
+		depiler(&ei,pile_att,&sommet_att);
 		if (est_tenaille(ei,ej)){
-			
 			if(mat[ei][ej] == 2){
-				mat[ei][ej] = 5;
-				printf("L'ennemis en %i %i est mort\n",ei,ej);
+				// les degats ne sont actuelement pas calculer ici l'uniter toucher est obligatoirement morte
+				while(!pilevide(pile_ennemi,sommet_ennemi)){
+					depiler(&ej,pile_ennemi,&sommet_ennemi);
+					depiler(&ei,pile_ennemi,&sommet_ennemi);
+					mat[ei][ej] = 5;		
+					printf("L'ennemis en %i %i est mort\n",ei,ej);
+				}
+				// Ici le boss meurt aussi du premier coup
 			}else if ((!boss_mort)&&(mat[ei][ej] == 3)){
 				boss_mort = 1;
 				printf("Le boss est mort ce soir\n");
@@ -228,15 +244,6 @@ void attaque_joueur(int i,int j){
 		nb_ennemis--;
 	} 
 }
-
-
-
-
-
-
-
-
-
 
 
 int main(){
@@ -257,18 +264,22 @@ int main(){
 		}
 	}
 	
-	mat[1][1] = 2;
-	mat[1][2] = 1;
-	mat[1][3] = 1;
-	mat[1][4] = 2;
-	mat[6][2] = 1;
+	mat[8][1] = 1;
+	mat[8][3] = 2;
+	mat[8][4] = 2;
+	mat[8][5] = 1;
+	mat[6][2] = 0;
 	mat[7][2] = 2;
 	mat[8][2] = 2;
+    mat[7][1] = 2;
+    mat[6][1] = 2;
+    mat[5][1] = 2;
+    mat[4][1] = 1;
 
 	int pos_x , pos_y;
 	int player , ennemy;
 	int boss = 1;
-	printf("Veuillez rentrer le nombre d'entité du joueur a placer : \n");
+	
 	player = 8;
 	ennemy = 6;
 	for(ennemy =ennemy ; ennemy > 0; ennemy--) {
@@ -334,6 +345,7 @@ int main(){
 	for(i=1 ; i< N;i++){
 		for(j = 1; j < M; j++){
 			if(mat[i][j] == 1){
+				printf(" ===================== attaque du perso en %i %i (%i) pour l'équipe 1 ===================== \n", i, j ,mat[i][j]);
 				attaque_joueur(i,j);
 			}
 		}
@@ -362,6 +374,7 @@ int main(){
 		}
 		printf("|\n");
 	}
+	return(EXIT_SUCCESS);
 }
 
 
