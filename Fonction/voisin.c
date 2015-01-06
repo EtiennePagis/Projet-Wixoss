@@ -64,11 +64,11 @@ int pilevide(int pile[],int sommet){
  */
 int est_ennemi(int i,int j,int joueur){
 	if(joueur == 1){
-        if (mat[i][j] == 2 || mat[i][j] == 3){return(1);}
+        if (mat[i][j] == 2 || mat[i][j] == 3 || mat[i][j] == 4 || mat[i][j] == 5){return(1);}
     }else if(joueur == 2){
-        if (mat[i][j] == 1){return(1);}
+        if (mat[i][j] == 1|| mat[i][j] == 6){return(1);}
 	}else if(joueur == 3){
-		if(mat[i][j] == 1){return(1);}
+		if(mat[i][j] == 1 || mat[i][j] == 6){return(1);}
 	}else{
         return(-1);
     }
@@ -83,7 +83,7 @@ int est_allie(int i, int j,int joueur){
 	if (joueur != 0){
 		if(est_ennemi(i,j,joueur)){
 			return(0);
-		}else if (mat[i][j] != 0 && mat[i][j] != 5){
+		}else if (mat[i][j] != 0 && mat[i][j] != 5 && mat[i][j] != 4){
 			return(1);
 		}else{
 			return(0);
@@ -384,6 +384,7 @@ void attaque_ennemis(int i,int j){
 *\brief Fais l'attaque de toute les unites joueur
 */
 void attaque_allie(){
+	int i,j;
 	for(i=1 ; i< N;i++){
 		for(j = 1; j < M; j++){
 			if(mat[i][j] == 1){
@@ -399,6 +400,7 @@ void attaque_allie(){
 *\brief Fais l'attaque de toute les unites ennemis
 */
 void attaque_nemesis(){
+	int i,j;
 	for(i=1 ; i< N;i++){
 		for(j = 1; j < M; j++){
 			if(mat[i][j] == 2||mat[i][j] == 3){
@@ -415,6 +417,7 @@ void attaque_nemesis(){
 *\brief Supprime les unites tuees
 */
 void resolve_attaque(){
+	int i,j;
 	for(i=1 ; i< N;i++){
 		for(j = 1; j < M; j++){
 			if(mat[i][j] == 5){
