@@ -9,8 +9,19 @@ int mat[N][M];
 
 //#include "personnage.h"
 
+/**
+*\file menu.c
+*\brief Projet 
+*\author Etienne Pagis Stevy Fouquet Victorien Grude
+*\version 0.1
+*\date 6 Janvier 2015
+*/
 
-int main () //lance le jeu
+/**
+*\fn main ()
+*\brief lance le jeu
+*/
+int main () 
 {
 	srand(time(NULL));
 	int choix; 
