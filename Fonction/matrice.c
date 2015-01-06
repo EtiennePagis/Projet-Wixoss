@@ -6,7 +6,7 @@
 int mat[N][M];
 
 /**
-*\file voisin.c
+*\file matrice.c
 *\brief Projet 
 *\author Etienne Pagis Stevy Fouquet Victorien Grude
 *\version 0.1
