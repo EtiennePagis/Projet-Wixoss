@@ -5,8 +5,19 @@
 #define M 7
 int mat[N][M];
 
+/**
+*\file voisin.c
+*\brief Projet 
+*\author Etienne Pagis Stevy Fouquet Victorien Grude
+*\version 0.1
+*\date 6 Janvier 2015
+*/
+
+/**
+*\fn affichage ()
+*\brief Affiche la matrice
+*/
 void affichage (){
-	//Affiche la matrice de fin
 	int i,j;
 	system("clear");
 	printf("  ");
@@ -23,8 +34,13 @@ void affichage (){
 		printf("|\n"); //permet un meilleur esthetisme
 	}
 }
+
+/**
+*\fn init()
+*\brief Intialise la matrice a 0
+*/
 void init(){
-	// initialisation de la matrice a 0
+	
 	int i,j;
 	for(i=0 ; i< N;i++){
 		for(j=0; j < M; j++){
@@ -42,8 +58,12 @@ void init(){
 
 }
 
+/**
+*\fn placement () 
+*\brief Place les entité des joueurs et des ennemis
+*/
 void placement () 
-{ // Place les entité des joueurs et des ennemis 
+{ 
 	
 	int pos_x , pos_y;
 	int player , ennemy;
