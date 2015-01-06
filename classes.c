@@ -1744,12 +1744,9 @@ t_liste mise_a_jour_liste (t_escouade escouade, t_liste liste){
 	return(liste);
 }	
 
-int main(){
+void menu_personnage(){
 	
-	int choix;
-	init_liste();
-	init_escouade();
-	
+	int choix;	
 	srand(time(NULL));
 
 	do
@@ -1762,7 +1759,7 @@ int main(){
 		printf(" 5 - Ajouter un personnage à l'escouade\n");
 		printf(" 6 - Retirer un personnage de l'escouade\n");
 		printf(" 7 - Recruter un personnage\n");
-		printf(" 8 - Quitter\n");
+		printf(" 8 - Retour\n");
 		printf("Votre choix : ");
 		scanf("%d",&choix);
 
@@ -1775,13 +1772,11 @@ int main(){
 			case 5: escouade1 = ajouter_membre(escouade1); break;
 			case 6: escouade1 = retirer_membre(escouade1); break;
 			case 7: choix_recruter(); break;
-			case 8: break;
+			case 8: menu(); break;
 			default: printf("Erreur: votre choix doit être compris entre 1 et 8\n");
 		}
 	}
-	while(choix!=8);
-
-	printf("Au revoir !\n");
+	while(choix!=8);;
 
 	return(EXIT_SUCCESS);
 }
