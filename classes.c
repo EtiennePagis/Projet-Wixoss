@@ -1744,6 +1744,11 @@ t_liste mise_a_jour_liste (t_escouade escouade, t_liste liste){
 	return(liste);
 }	
 
+/**
+*\fn void menu_personnage()
+*\brief Menu permettant au joueur de gérer ses personnages
+*/
+
 void menu_personnage(){
 	
 	int choix;	
