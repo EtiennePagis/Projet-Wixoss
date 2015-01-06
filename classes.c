@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-/*Stockage des perso à faire*/
+
 #define MAX_PERSO 6
 #define MAX_LISTE 100
 
@@ -1348,28 +1348,6 @@ void afficher_escouade (t_escouade escouade) {
 }
 
 /**
-*\fn void sauvegarde_escouade( t_escouade escouade )
-*\brief Permet de sauvegarder son escouade
-*/
-
-void sauvegarde_escouade( t_escouade escouade ) {
-    
-    FILE* save;
-    save = fopen("sauvegarde_escouade.txt","w");
-    
-    int i;
-    
-    for( i = 0 ; i < escouade.nb_perso ; i++ ){
-        
-        fprintf(save,"%s %i %i %i %i %i %.0f %.0f %.0f %.0f %.0f %i %i\n", escouade.perso[i].nom, escouade.perso[i].race, escouade.perso[i].job, escouade.perso[i].arme, escouade.perso[i].attribut, escouade.perso[i].rank, escouade.perso[i].stat.HP, escouade.perso[i].stat.attack, escouade.perso[i].stat.mattack, escouade.perso[i].stat.def, escouade.perso[i].stat.mdef, escouade.perso[i].level, escouade.perso[i].exp );
-		
-    }
-  
-	fclose(save);
-    
-}
-
-/**
 *\fn void sauvegarde_liste( t_liste liste )
 *\brief Permet de sauvegarder sa liste de personnage
 */
@@ -1389,34 +1367,6 @@ void sauvegarde_liste( t_liste liste ) {
   
 	fclose(save);
     
-}
-
-
-/**
-*\fn t_escouade charger_escouade ( t_escouade escouade )
-*\brief Permet de charger son escouade a partir d'un fichier existant
-*/
-
-t_escouade charger_escouade ( t_escouade escouade ){
-
-	FILE* save;
-    save = fopen("sauvegarde_escouade.txt","r");
-    
-    char* nom = malloc(20 * sizeof(char));
-    int race, job, arme, attribut, rank, level, exp;
-    t_stat stat;
-    
-    int i;
-
-    for( i = 0 ; (!feof(save)) && i <= MAX_PERSO; i++ ){
-		
-		fscanf(save,"%s %i %i %i %i %i %f %f %f %f %f %i %i", nom, &race, &job, &arme, &attribut, &rank, &(stat.HP), &(stat.attack), &(stat.mattack), &(stat.def), &(stat.mdef), &level, &exp);
-		escouade.perso[i] = charger_perso(nom, race, job, arme, attribut, rank, stat, level, exp );
-	}
-	escouade.nb_perso = i-1;
-	if (escouade.nb_perso < 0) escouade.nb_perso = 0;
-	free(nom);
-	return(escouade);	
 }
 
 /**
