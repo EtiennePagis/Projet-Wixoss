@@ -5,8 +5,19 @@
 #define N 9
 #define M 7
 int mat[N][M];
+/**
+*\file deplacement.c
+*\brief Projet 
+*\author Etienne Pagis Stevy Fouquet Victorien Grude
+*\version 0.1
+*\date 6 Janvier 2015
+*/
 
-void deplacementpossible(int* i,int* j,int dep,int* nb_dep){ // verifie les deplacement possible
+/**
+*\fn deplacementpossible(int* i,int* j,int dep,int* nb_dep)
+*\brief verifie les deplacement possible
+*/
+void deplacementpossible(int* i,int* j,int dep,int* nb_dep){ 
 	int memoire;
 	if (dep==8){
 		if(*i==1){                                   //deplacement vers le haut
@@ -140,7 +151,12 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){ // verifie les depl
 	}
 }
 
-void deplacement_joueur(){ //Affiche les choix du joueur et les execute
+
+/**
+*\fn deplacement_joueur()
+*\brief Affiche les choix du joueur et les execute
+*/
+void deplacement_joueur(){ 
 	int i,j,nb_dep,dep,choix;
 	nb_dep = 0;
 	dep = 0;
