@@ -4,6 +4,7 @@
 #include "deplacement.h"
 #include "matrice.h"
 #include "deplacement_ennemi.h"
+#include "voisin.h"
 
 
 /**
@@ -25,6 +26,9 @@ int partie (void)
 	placement();
 	affichage();
 	deplacement_joueur();
+	attaque_allie();
+	resolve_attaque();
 	deplacement_ennemi();
-	
+	attaque_nemesis();
+	resolve_attaque();
 }

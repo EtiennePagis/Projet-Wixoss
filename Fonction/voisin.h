@@ -22,3 +22,8 @@ int voisin(int i,int j);
 
 void attaque_joueur(int i,int j);
 void attaque_ennemis(int i,int j);
+
+void attaque_allie();
+void attaque_nemesis();
+
+void resolve_attaque();

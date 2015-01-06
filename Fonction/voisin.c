@@ -379,96 +379,11 @@ void attaque_ennemis(int i,int j){
 	} 
 }
 
-/*
-int main(){
-	srand(time(NULL));
-	// initialisation de la matrice a 0
-	int i,j;
-	for(i=0 ; i< N;i++){
-		for(j=0; j < M; j++){
-			if (i==0){
-				mat[i][j] = j;
-			}else{
-				if(j==0){
-					mat[i][j] = i;
-				}else{
-					mat[i][j] = 0;
-				}
-			}
-		}
-	}
-	
-	mat[8][1] = 0;
-	mat[8][3] = 2;
-	mat[8][4] = 2;
-	mat[8][5] = 1;
-	mat[8][6] = 0;
-	mat[7][2] = 2;
-	mat[8][2] = 2;
-    mat[7][1] = 2;
-    mat[6][1] = 2;
-    mat[5][1] = 2;
-    mat[4][1] = 1;
-	
-	int pos_x , pos_y;
-	int player , ennemy;
-	int boss = 1;
-	
-	player = 8;
-	ennemy = 6;
-	for(ennemy =ennemy ; ennemy > 0; ennemy--) {
-		pos_x = rand()%(8)+1;
-		pos_y = rand()%(6)+1;
-		
-		while(mat[pos_x][pos_y] != 0) {
-			pos_x = rand()%(8)+1;
-			pos_y = rand()%(6)+1;
-		}
-		
-		mat[pos_x][pos_y] = 2;
-	}
-	for(boss=boss ; boss > 0; boss--) 
-	{
-		pos_x = rand()%(7)+1;
-		pos_y = rand()%(5)+1;
-		while((mat[pos_x][pos_y] != 0)||(mat[pos_x+1][pos_y+1] != 0)||(mat[pos_x+1][pos_y] != 0)||(mat[pos_x][pos_y+1] != 0))  
-		{
-			pos_x = rand()%(7)+1;
-			pos_y = rand()%(5)+1;
-		}
-		mat[pos_x][pos_y] = 3;
-		mat[pos_x+1][pos_y+1] = 3;
-		mat[pos_x+1][pos_y] = 3;
-		mat[pos_x][pos_y+1] = 3;
-	}
-	for(player=player ; player > 0; player--) {
-		pos_x = rand()%(8)+1;
-		pos_y = rand()%(6)+1;
-		
-		while(mat[pos_x][pos_y] != 0) {
-			pos_x = rand()%(8)+1;
-			pos_y = rand()%(6)+1;
-		}
-		
-		mat[pos_x][pos_y] = 1;
-	}
-
-	system("clear");
-	printf("  ");
-	for(i=0 ; i< N;i++){
-		for(j = 0; j < M; j++){
-			if(i!=0||j!=0){
-				if (mat[i][j]!=0){
-					printf("|%i",mat[i][j]) ;
-				}else{
-					printf("| ");
-				}
-			}
-		}
-		printf("|\n");
-	}
-	
-	
+/**
+*\fn attaque_allie()
+*\brief Fais l'attaque de toute les unites joueur
+*/
+void attaque_allie(){
 	for(i=1 ; i< N;i++){
 		for(j = 1; j < M; j++){
 			if(mat[i][j] == 1){
@@ -477,16 +392,13 @@ int main(){
 			}
 		}
 	}
-	for(i=1 ; i< N;i++){
-		for(j = 1; j < M; j++){
-			if(mat[i][j] == 5){
-				mat[i][j] = 0;
-			}
-			if (boss_mort&&mat[i][j] == 3){
-				mat[i][j] = 0;
-			}
-		}
-	}
+}
+
+/**
+*\fn attaque_nemesis()
+*\brief Fais l'attaque de toute les unites ennemis
+*/
+void attaque_nemesis(){
 	for(i=1 ; i< N;i++){
 		for(j = 1; j < M; j++){
 			if(mat[i][j] == 2||mat[i][j] == 3){
@@ -495,6 +407,14 @@ int main(){
 			}
 		}
 	}
+	
+}
+
+/**
+*\fn resolve_attaque()
+*\brief Supprime les unites tuees
+*/
+void resolve_attaque(){
 	for(i=1 ; i< N;i++){
 		for(j = 1; j < M; j++){
 			if(mat[i][j] == 5){
@@ -505,23 +425,7 @@ int main(){
 			}
 		}
 	}
-	
-	printf("\n\n  ");
-	for(i=0 ; i< N;i++){
-		for(j = 0; j < M; j++){
-			if(i!=0||j!=0){
-				if (mat[i][j]!=0){
-					printf("|%i",mat[i][j]) ;
-				}else{
-					printf("| ");
-				}
-				
-			}
-		}
-		printf("|\n");
-	}
-	return(EXIT_SUCCESS);
 }
-*/
+
 
 
