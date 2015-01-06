@@ -63,7 +63,7 @@ typedef struct {float HP ; float attack ; float mattack ; float def ; float mdef
 * \struct Personnage
 * \brief Cette structure détermine les informations relatives à un personnage
 */
-typedef struct {char* nom; t_race race ; t_job job ; t_arme arme ; t_attribut attribut ; t_rank rank; t_stat stat; int level ;int exp;} t_personnage;
+typedef struct {char* nom; t_race race ; t_job job ; t_arme arme ; t_attribut attribut ; t_rank rank; t_stat stat; int level; int exp;} t_personnage;
 
 /**
 * \struct Escouade
@@ -76,13 +76,6 @@ typedef struct { t_personnage perso[MAX_PERSO]; int nb_perso;} t_escouade;
 * \brief La liste contient tout les personnages du joueur 
 */
 typedef struct {int numero_perso ; t_personnage liste_perso[MAX_LISTE];} t_liste;
-
-/*Faire une sauvegarde des personnages dans un fichier et pouvoir charger l'escouade FAIT*/
-/*Faire des skills pour chaque classe*/
-/*Faire l'algorithme de degat*/
-/*Gerer le "P" pour augmenter les degats*/
-/*Faire des tableaux dynamiques FAIT*/
-/*Faire la fonction Attaque*/
 
 t_stat Warrior_Stats = Init_Warrior_Stats;
 t_stat Archer_Stats = Init_Archer_Stats;
@@ -99,13 +92,12 @@ t_stat White_Mage_Stats = Init_White_Mage_Stats;
 t_stat Black_Mage_Stats = Init_Black_Mage_Stats;
 t_stat Cleric_Stats = Init_Cleric_Stats;
 
+t_escouade escouade1;
+t_escouade horde1;	
+t_liste liste_personnage;
 
-
-t_personnage Neko_Brawler_S_defaut ; //= {"Sijya", Neko_Girl, Brawler, Poing, Neutre, S, Init_Brawler_Stats, 1, 15}; 
-//t_personnage Neko_Brawler_S_defaut = {"Sijya", Neko_Girl, Brawler, Poing, Neutre, S, {Init_Brawler_Stats.HP, Init_Brawler_Stats.attack, Init_Brawler_Stats.mattack, Init_Brawler_Stats.def, Init_Brawler_Stats.mdef}, 1, 15}; 
-t_personnage Elf_Archer_A_defaut ;
-t_personnage Human_Lancer_A_defaut ;
-t_personnage Pony_Warrior_A_defaut ;
+t_personnage Grace = {"Grace", Pony, Archer, Arc, Neutre, B, Init_Archer_Stats, 1, 0};
+t_personnage Bahl = {"Bahl", Neko_Girl, Warrior, Epee, Neutre, B, Init_Warrior_Stats, 1, 0};
 
 /**
 *\fn t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp)
@@ -128,8 +120,7 @@ t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attri
 		
 		}
 	
-		p.nom = nom; // ATTENTION !!
-		//strcpy();
+		p.nom = nom;
 		p.race = race;
 		p.job = job;
 		p.arme = arme;
@@ -159,7 +150,6 @@ t_personnage charger_perso(char* nom, t_race race, t_job job, t_arme arme, t_att
 		int taille;
 				
 		taille = strlen(nom);
-		printf("%i", taille);
 		p.nom = malloc(taille * sizeof(char));
 
 		strcpy(p.nom, nom);
@@ -1450,6 +1440,7 @@ t_liste charger_liste ( t_liste liste ){
 		fscanf(save,"%i %s %i %i %i %i %i %f %f %f %f %f %i %i", &liste.numero_perso, nom, &race, &job, &arme, &attribut, &rank, &(stat.HP), &(stat.attack), &(stat.mattack), &(stat.def), &(stat.mdef), &level, &exp);
 		liste.liste_perso[i] = charger_perso(nom, race, job, arme, attribut, rank, stat, level, exp );
 	}
+	liste.numero_perso = i;
 	free(nom);
 	return(liste);	
 }
@@ -1459,6 +1450,7 @@ t_liste charger_liste ( t_liste liste ){
 *\brief Permet de vérifier le personnage recruté, s'il est deja dans la liste, il gagne un niveau
 */
 
+/*La fonction verification à pour but d'augmenter le niveau d'un personnage si l'on le recrute alors que nous le possédons déjà*/
 t_liste verification ( t_liste liste, int numero_personnage, char* nom, t_race race ){
 	 
 	if ( race != liste.liste_perso[numero_personnage].race ) { liste.liste_perso[numero_personnage].race = race; }
@@ -1470,9 +1462,6 @@ t_liste verification ( t_liste liste, int numero_personnage, char* nom, t_race r
     if (liste.liste_perso[numero_personnage].rank == SS) { liste.liste_perso[numero_personnage].exp = liste.liste_perso[numero_personnage].exp +( 1.25 * (liste.liste_perso[numero_personnage].level + 1) * (liste.liste_perso[numero_personnage].level + 1) * (liste.liste_perso[numero_personnage].level + 1) - 1.25 * liste.liste_perso[numero_personnage].level * liste.liste_perso[numero_personnage].level * liste.liste_perso[numero_personnage].level); }
            
     liste.liste_perso[numero_personnage] = montee_level(liste.liste_perso[numero_personnage]);
-            
-    
-    
         
     }
 	
@@ -1538,7 +1527,7 @@ t_liste recrutement ( t_liste liste ) {
 		present = est_present(liste, new_perso);
 		
 		if(present == 1) { liste = suppression_doublons(liste, new_perso); }
-		else{
+		else {
 			liste.liste_perso[liste.numero_perso] = new_perso;			
 			afficher_perso(liste.liste_perso[liste.numero_perso]);
 			liste.numero_perso++;
@@ -1549,7 +1538,32 @@ t_liste recrutement ( t_liste liste ) {
 	
 	sauvegarde_liste(liste);
 	return(liste);
-}	
+}
+
+/**
+*\fn void choix_recruter()
+*\brief Permet de demander au joueur si il veut recruter un personnage
+*/
+
+void choix_recruter(){
+	
+	int choix_recrutement = 0;
+	printf("\n Souhaitez vous recruter des personnages ? 0 / 1 : ");
+	scanf("%i", &choix_recrutement);
+	
+	while (choix_recrutement) {
+		
+		liste_personnage = recrutement(liste_personnage);
+		
+		printf("\n Souhaitez vous continuer de recruter des personnages ? 0 / 1 : ");
+		scanf("%i", &choix_recrutement);	
+	}
+}
+
+/**
+*\fn void afficher_liste ( t_liste liste )
+*\brief Permet d'afficher la liste des personnages
+*/
 
 void afficher_liste ( t_liste liste ) {
 	
@@ -1594,65 +1608,234 @@ void afficher_liste ( t_liste liste ) {
 			case Cure : printf("/ Remedy"); break;
 
 		}
-		
+				
 	}
+	printf("\n\n");
+}
+
+/**
+*\fn t_personnage recherche_membre_liste ( char* nom )
+*\brief Permet de rechercher des personnages dans la liste par rapport à un nom
+*/
+
+t_personnage recherche_membre_liste ( char* nom ){
+
+	t_personnage p;
+	int i;
+	int j = liste_personnage.numero_perso - 1;
+	
+	for(i = 0; i < j; i++){
+	
+		if(!strcmp(nom, liste_personnage.liste_perso[i].nom)){
+		
+			return(liste_personnage.liste_perso[i]);
+		}	
+	
+	}
+	/*Si le personnage n'existe pas, on lui donne un nom spécifique*/	
+	p.nom = malloc(5 * sizeof(char));
+	strcpy(p.nom, "void");
+
+	return(p);
+}
+
+/**
+*\fn int recherche_membre_escouade ( char* nom )
+*\brief Permet de rechercher un personnage dans l'escouade
+*/
+
+int recherche_membre_escouade ( char* nom ){
+
+	int i;
+	int j = escouade1.nb_perso;
+	
+	for(i = 0; i < j; i++){
+	
+		if(!strcmp(nom, escouade1.perso[i].nom)){
+		
+			return(i);
+		}	
+	}
+	/*si le personnage n'existe pas on lui donne un numero spécifique*/
+	i = 9;	
+	return(i);
+}
+	
+/**
+*\fn t_escouade ajouter_membre (t_escouade escouade)
+*\brief Permet d'ajouter des membres à l'escouade
+*/
+
+t_escouade ajouter_membre (t_escouade escouade) {
+	
+	t_personnage p;
+	char* recherche_perso = malloc(20 * sizeof(char));
+	int i = escouade.nb_perso;
+	int j;
+	 
+	if(escouade.nb_perso > 5) {
+		printf("Vous ne pouvez pas ajouter de membre à votre escouade car possédez déjà 6 personnages.\n");
+		return(escouade);
+	}
+	else {
+		printf("Veuillez taper le nom du personnage à ajouter : ");
+		scanf("%s", recherche_perso);
+		p = recherche_membre_liste(recherche_perso);
+		/*On vérifie si le personnage existe*/
+		if(!strcmp(p.nom, "void")) {
+			printf("Ce personnage n'existe pas.\n");
+			return(escouade);
+		}
+		else {
+			/*si il existe, on vérifie si il est deja dans l'escouade du joueur*/
+			j = recherche_membre_escouade(recherche_perso);
+			if( j == 9 ) {
+				
+				escouade.perso[i] = p;
+				escouade.nb_perso++;
+			
+				return(escouade);
+			}
+			else {
+				printf("Le personnage est déjà présent dans votre escouade.\n");
+				return(escouade);
+			}
+		}
+			
+	}
+		
+}
+
+/**
+*\fn t_escouade retirer_membre (t_escouade escouade)
+*\brief Permet de retirer un membre de l'escouade
+*/
+
+t_escouade retirer_membre (t_escouade escouade){
+
+	char* recherche_perso = malloc(20 * sizeof(char));
+	int i;
+	
+	if( escouade.nb_perso < 3 ){
+	
+		printf("Vous ne pouvez pas retirer de personnage car il faut au moins 2 personnages dans une escouade.\n");
+		return(escouade);
+	}	
+	
+	else {
+		
+		printf("Veuillez taper le nom du personnage à retirer : ");
+		scanf("%s", recherche_perso);
+		i = recherche_membre_escouade(recherche_perso);
+		if(i == 9){
+		
+			printf("Ce personnage n'existe pas.\n");
+			return(escouade);
+		}	
+		else{
+			
+			while( i < escouade.nb_perso ){
+			
+				escouade.perso[i] = escouade.perso[i+1];
+				i++;
+			}		
+			escouade.nb_perso--;
+			return(escouade);
+		}
+	}
+}
+
+/**
+*\fn void init_liste()
+*\brief Permet d'initialiser la liste pour les debuts du joueur
+*/
+
+void init_liste(){
+	
+	liste_personnage.liste_perso[liste_personnage.numero_perso] = Grace;
+	liste_personnage.numero_perso++;
+	liste_personnage.liste_perso[liste_personnage.numero_perso] = Bahl;
+	liste_personnage.numero_perso++;	
 }	
 
+/**
+*\fn void init_escouade()
+*\brief Permet d'initialiser l'escouade pour les debuts du joueur
+*/
+
+void init_escouade(){
 	
+	escouade1.perso[escouade1.nb_perso] = Grace;
+	escouade1.nb_perso++;
+	escouade1.perso[escouade1.nb_perso] = Bahl;
+	escouade1.nb_perso++;
+}
+
+/**
+*\fn t_liste mise_a_jour_liste (t_escouade escouade, t_liste liste)
+*\brief Permet de mettre à jour la liste en fonction des personnages de l'escouade ( si ils ont gagné en force par exemple )
+*/
+
+t_liste mise_a_jour_liste (t_escouade escouade, t_liste liste){
+	
+	int i, j;
+	
+	for ( i = 0; i < escouade.nb_perso ; i++){
+	
+		for ( j = 0 ; j < liste.numero_perso ; j++){
+			
+			if(!strcmp(escouade.perso[i].nom, liste.liste_perso[j].nom)){
+				
+				liste.liste_perso[j] = escouade.perso[i];
+	
+			}
+		}	
+	}
+	return(liste);
+}	
 
 int main(){
 	
-	t_escouade escouade1;
-	t_escouade horde1;	
-	t_liste liste_personnage;
-	int choix_recrutement = 0;
-	
-	escouade1.nb_perso = 0;
-	horde1.nb_perso = 0;	
+	int choix;
+	init_liste();
+	init_escouade();
+	escouade1 = xp(escouade1, 100000);
+	escouade1 = montee_level_escouade(escouade1);
+	liste_personnage = mise_a_jour_liste(escouade1, liste_personnage);
 		
 	srand(time(NULL));
-	
-	
-	printf("\n Souhaitez vous recruter des personnages ? 0 / 1 : ");
-	scanf("%i", &choix_recrutement);
-	
-	while (choix_recrutement) {
-		
-		liste_personnage = recrutement(liste_personnage);
-		
-		printf("\n Souhaitez vous continuer de recruter des personnages ? 0 gr/ 1 : ");
-		scanf("%i", &choix_recrutement);	
+
+	do
+/* Affichage du menu et saisie du choix */
+	{	printf("\nGestion Personnages :\n");
+		printf(" 1 - Liste de tout les personnages\n");
+		printf(" 2 - Sauvegarder la liste\n");
+		printf(" 3 - Charger une liste\n");
+		printf(" 4 - Liste des personnages escouade\n");
+		printf(" 5 - Ajouter un personnage à l'escouade\n");
+		printf(" 6 - Retirer un personnage de l'escouade\n");
+		printf(" 7 - Recruter un personnage\n");
+		printf(" 8 - Quitter\n");
+		printf("Votre choix : ");
+		scanf("%d",&choix);
+
+/* Traitement du choix*/
+		switch(choix)
+		{	case 1: afficher_liste(liste_personnage); break;
+			case 2: sauvegarde_liste(liste_personnage); break;
+			case 3: liste_personnage = charger_liste(liste_personnage); break;
+			case 4: afficher_escouade(escouade1); break;
+			case 5: escouade1 = ajouter_membre(escouade1); break;
+			case 6: escouade1 = retirer_membre(escouade1); break;
+			case 7: choix_recruter(); break;
+			case 8: break;
+			default: printf("Erreur: votre choix doit être compris entre 1 et 8\n");
+		}
 	}
-		    
-	/*Neko_Brawler_S_defaut = creer_perso("Sijya", Neko_Girl, Brawler, Poing, Neutre, S, Brawler_Stats, 10,0 );
-    
-    escouade1.perso[escouade1.nb_perso] = Neko_Brawler_S_defaut;
-    escouade1.nb_perso++;
-    
-    escouade1 = recrutement(escouade1);*/
-    
-    //random = generer();
-	//afficher_perso(random);
-	
-	/*Elf_Archer_A_defaut = creer_perso("Elf", Elfe, Archer, Arc, Neutre, A, Archer_Stats, 1, 0);
-	Human_Lancer_A_defaut = creer_perso("Human", Humain, Lancer, Lance, Neutre, A, Lancer_Stats, 1, 0);
-	Pony_Warrior_A_defaut = creer_perso("AppleJack", Pony, Warrior, Epee, Neutre, A, Warrior_Stats, 1, 0);*/
-	
-	/*escouade1.perso[escouade1.nb_perso] = Elf_Archer_A_defaut;
-    escouade1.nb_perso++;
-    escouade1.perso[escouade1.nb_perso] = Human_Lancer_A_defaut;
-    escouade1.nb_perso++;
-    escouade1.perso[escouade1.nb_perso] = Pony_Warrior_A_defaut;
-    escouade1.nb_perso++;*/
-    
-    //escouade1 = xp(escouade1, 210597);
-	//escouade1 = montee_level_escouade(escouade1);
-	//escouade1 = charger_escouade(escouade1);
-	//afficher_escouade(escouade1);
-	//sauvegarde_escouade(escouade1);
-	//liste_personnage = charger_liste(liste_personnage);
-	//afficher_liste(liste_personnage);
-	
+	while(choix!=8);
+
+	printf("Au revoir !\n");
+
 	return(EXIT_SUCCESS);
 }
 
