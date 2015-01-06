@@ -1799,10 +1799,7 @@ int main(){
 	int choix;
 	init_liste();
 	init_escouade();
-	escouade1 = xp(escouade1, 100000);
-	escouade1 = montee_level_escouade(escouade1);
-	liste_personnage = mise_a_jour_liste(escouade1, liste_personnage);
-		
+	
 	srand(time(NULL));
 
 	do
