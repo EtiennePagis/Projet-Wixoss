@@ -72,3 +72,6 @@ void init_liste();
 void init_escouade();
 t_liste mise_a_jour_liste (t_escouade escouade, t_liste liste);
 void menu_personnage();
+t_personnage changement_classe ( t_personnage personnage, t_stat stat, t_job job );
+t_escouade generer_horde ( t_escouade horde, int niveau );
+t_liste aide_chargement ( t_liste liste );
