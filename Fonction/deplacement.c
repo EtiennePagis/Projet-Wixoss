@@ -21,6 +21,7 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 	int memoire;
 	if (dep==8){
 		if(*i==1){                                   //deplacement vers le haut
+			system("clear");
 			affichage();
 			printf("Deplacement invalide \n");
 		}else if(mat[*i-1][*j]!=2){
@@ -29,13 +30,16 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 			mat[*i][*j]=memoire;
 			(*i)--;
 			(*nb_dep)++;
+			system("clear");
 			affichage();
-		}else{									
+		}else{		
+			system("clear");							
 			affichage();
 			printf("Deplacement invalide \n");		
 		}
 	}else if (dep==2){								//deplacement vers le bas
 		if(*i==8){
+			system("clear");
 			affichage();
 			printf("Deplacement invalide \n");
 		}else if(mat[*i+1][*j]!=2){
@@ -44,13 +48,16 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 			mat[*i][*j]=memoire;
 			(*i)++;
 			(*nb_dep)++;
+			system("clear");
 			affichage();
 		}else{
+			system("clear");
 			affichage();
 			printf("Deplacement invalide \n");
 		}
 	}else if (dep==6){								//deplacement vers la droite
 		if(*j==6){
+			system("clear");
 			affichage();
 			printf("Deplacement invalide \n");
 		}else if(mat[*i][*j+1]!=2){
@@ -59,13 +66,16 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 			mat[*i][*j]=memoire;
 			(*j)++;
 			(*nb_dep)++;
+			system("clear");
 			affichage();
 		}else{
+			system("clear");
 			affichage();
 			printf("Deplacement invalide \n");
 		}
 	}else if (dep==4){								//deplacement vers la gauche
 		if(*j==1){
+			system("clear");
 			affichage();
 			printf("Deplacement invalide \n");
 		}else if(mat[*i][*j-1]!=2){
@@ -74,13 +84,16 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 			mat[*i][*j]=memoire;
 			(*j)--;
 			(*nb_dep)++;
+			system("clear");
 			affichage();
 		}else{
+			system("clear");
 			affichage();
 			printf("Deplacement invalide \n");
 		}
 	}else if (dep==1){								//deplacement vers le bas à gauche
 		if((*i==8)||(*j==1)){
+			system("clear");
 			affichage();
 			printf("Deplacement invalide \n");
 		}else if((mat[*i+1][*j-1]!=2)&&!((mat[*i+1][*j]==2)&&(mat[*i][*j-1]==2))){
@@ -90,13 +103,16 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 			(*i)++;
 			(*j)--;
 			(*nb_dep)++;
+			system("clear");
 			affichage();
 		}else{
+			system("clear");
 			affichage();
 			printf("Deplacement invalide \n");
 		}
 	}else if (dep==3){								//deplacement vers le bas à droite 
 		if((*i==8)||(*j==6)){
+			system("clear");
 			affichage();
 			printf("Deplacement invalide \n");
 		}else if((mat[*i+1][*j+1]!=2)&&!((mat[*i+1][*j]==2)&&(mat[*i][*j+1]==2))){
@@ -106,13 +122,16 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 			(*i)++;
 			(*j)++;
 			(*nb_dep)++;
+			system("clear");
 			affichage();
 		}else{
+			system("clear");
 			affichage();
 			printf("Deplacement invalide \n");
 		}
 	}else if (dep==7){								//deplacement vers le haut à gauche
 		if((*i==1)||(*j==1)){
+			system("clear");
 			affichage();
 			printf("Deplacement invalide \n");
 		}else if((mat[*i-1][*j-1]!=2)&&!((mat[*i-1][*j]==2)&&(mat[*i][*j-1]==2))){
@@ -122,13 +141,16 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 			(*i)--;
 			(*j)--;
 			(*nb_dep)++;
+			system("clear");
 			affichage();
 		}else{
+			system("clear");
 			affichage();
 			printf("Deplacement invalide \n");
 		}
 	}else if (dep==9){								//deplacement vers le haut à droite
 		if((*i==1)||(*j==6)){
+			system("clear");
 			affichage();
 			printf("Deplacement invalide \n");
 		}else if((mat[*i-1][*j+1]!=2)&&!((mat[*i-1][*j]==2)&&(mat[*i][*j+1]==2))){
@@ -138,14 +160,18 @@ void deplacementpossible(int* i,int* j,int dep,int* nb_dep){
 			(*i)--;
 			(*j)++;
 			(*nb_dep)++;
+			system("clear");
 			affichage();
 		}else{
+			system("clear");
 			affichage();
 			printf("Deplacement invalide \n");
 		}
 	}else if (dep == 5){
+		system("clear");
 		affichage();
 	}else{
+		system("clear");
 		affichage();
 		printf("Deplacement invalide \n");
 	}
@@ -172,6 +198,7 @@ void deplacement_joueur(){
 		}
 
 		mat[i][j]=8;
+		system("clear");
 		affichage();
 		while ((nb_dep<15)&&(dep!=5)){
 			

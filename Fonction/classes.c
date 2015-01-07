@@ -96,8 +96,8 @@ t_escouade escouade1;
 t_escouade horde1;	
 t_liste liste_personnage;
 
-t_personnage Grace = {"Grace", Pony, Archer, Arc, Neutre, B, Init_Archer_Stats, 1, 0};
-t_personnage Bahl = {"Bahl", Neko_Girl, Warrior, Epee, Neutre, B, Init_Warrior_Stats, 1, 0};
+t_personnage Grace = {"Grace", Pony, Mage, Arc, Neutre, B, Init_Archer_Stats, 1, 100000};
+t_personnage Bahl = {"Bahl", Neko_Girl, Warrior, Epee, Neutre, B, Init_Warrior_Stats, 1, 100000};
 
 /**
 *\fn t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp)
@@ -1222,11 +1222,37 @@ t_personnage montee_statistiques ( t_personnage p ){
 	}
 	
 	return(p);
-}	
+}
+
+/**
+*\fn t_personnage changement_classe ( t_personnage personnage, t_stat stat, t_job job )
+*\brief Fonction permettant de faire évoluer un personnage
+*/
+
+t_personnage changement_classe ( t_personnage personnage, t_stat stat, t_job job ){
+	
+	t_personnage perso;
+	
+	perso.nom = personnage.nom;
+	perso.race = personnage.race;
+	perso.arme = personnage.arme;
+	perso.job = job;
+	perso.stat.HP = stat.HP;
+	perso.stat.attack = stat.attack;
+	perso.stat.mattack = stat.mattack;
+	perso.stat.def = stat.def;
+	perso.stat.mdef = stat.mdef;
+	perso.attribut = personnage.attribut;
+	perso.rank = personnage.rank;
+	perso.level = 1;
+	perso.exp = personnage.exp;
+
+	return(perso);
+}
 
 /**
 *\fn t_personnage montee_level ( t_personnage p )
-*\brief Permet d'augmenter le niveau d'un personnage si il possède l'xp nécessaire
+*\brief Permet d'augmenter le niveau d'un personnage si il possède l'xp nécessaire, et le change de classe si le joueur le souhaite
 */
 
 t_personnage montee_level ( t_personnage p ){
@@ -1234,6 +1260,8 @@ t_personnage montee_level ( t_personnage p ){
 	int chain = 1;
 	int level_max = 70;
     int temp_level = p.level;
+    char choix;
+    int choix_evolution = 0;
 	
 	while (chain && p.level < level_max) {
 		if( p.rank == B ) {
@@ -1286,10 +1314,79 @@ t_personnage montee_level ( t_personnage p ){
 	}
     
 	if(temp_level != p.level){ printf("\n%s est monté(e) level %i !", p.nom, p.level); }
+	
+	if((p.job == Archer || p.job == Warrior || p.job == Brawler || p.job == Lancer || p.job == Mage) && p.level > 39) {
+		
+		printf("\n%s peut accéder à une classe avancée, souhaitez-vous faire évoluer %s ? : y / n\n", p.nom, p.nom);
+		scanf("%c%*c", &choix);
+		
+		if( choix == 'y' ) {
+		
+			if(p.job == Archer){ 
+				p = changement_classe(p, Sniper_Stats, Sniper);
+				p = montee_level(p);
+				printf("\n%s est devenu(e) Sniper !\n", p.nom);
+			}
+			if(p.job == Warrior){
+				printf("La classe Warrior peut évoluer en 2 classes : Knight (1) ou Lord (2) : \n");
+				scanf("%i%*c", &choix_evolution);
+				while ( choix_evolution != 1 && choix_evolution != 2) {
+					printf("Erreur de saisie : Knight (1) or Lord (2) : \n");
+					scanf("%i%*c", &choix_evolution);
+				}
+				if( choix_evolution == 1 ) { 
+					p = changement_classe(p, Knight_Stats, Knight);
+					p = montee_level(p);
+					printf("\n%s est devenu(e) Knight !\n", p.nom);
+				}
+				if( choix_evolution == 2 ) { 
+					p = changement_classe( p, Lord_Stats, Lord); 
+					p = montee_level(p);
+					printf("\n%s est devenu(e) Lord !\n", p.nom);
+				}
+			}
+			if(p.job == Mage){
+				printf("La classe Mage peut évoluer en 3 classes : Cleric (1), Black Mage (2) ou White Mage (3) : \n");
+				scanf("%i%*c", &choix_evolution);
+				while ( choix_evolution != 1 && choix_evolution != 2 && choix_evolution != 3) {
+					printf("Erreur de saisie : Cleric (1), Black Mage (2) ou White Mage (3) : \n");
+					scanf("%i%*c", &choix_evolution);
+				}
+				if( choix_evolution == 1 ) { 
+					p = changement_classe( p, Cleric_Stats, Cleric);
+					p = montee_level(p);
+					printf("\n%s est devenu(e) Cleric !\n", p.nom);
+				}
+				if( choix_evolution == 2 ) { 
+					p = changement_classe( p, Black_Mage_Stats, Black_Mage);
+					p = montee_level(p);
+					printf("\n%s est devenu(e) Black Mage !\n", p.nom);
+				}
+				if( choix_evolution == 3 ) { 
+					p = changement_classe( p, White_Mage_Stats, White_Mage);
+					p = montee_level(p);
+					printf("\n%s est devenu(e) White Mage !\n", p.nom);
+				}
+			}
+			if(p.job == Brawler){ 
+				p = changement_classe(p, Assassin_Stats, Assassin);
+				p = montee_level(p);
+				printf("\n%s est devenu(e) Assassin !\n", p.nom);
+			}
+			if(p.job == Lancer){ 
+				p = changement_classe(p, General_Stats, General);
+				p = montee_level(p);
+				printf("\n%s est devenu(e) General !\n", p.nom);
+			}	
+				
+		}	
+	} 
+	
 	return(p);
 	
 	
 }
+
 
 /**
 *\fn t_escouade montee_level_escouade ( t_escouade escouade )
@@ -1543,11 +1640,11 @@ void afficher_liste ( t_liste liste ) {
 		}	
 		switch(liste.liste_perso[i].arme){
 	
-				case Epee : printf("=> Sword "); break;
-				case Arc : printf("=> Bow "); break;
-				case Lance : printf("=> Spear "); break;
-				case Baton : printf("=> Rod "); break;
-				case Poing : printf("=> Unarmed "); break;
+			case Epee : printf("=> Sword "); break;
+			case Arc : printf("=> Bow "); break;
+			case Lance : printf("=> Spear "); break;
+			case Baton : printf("=> Rod "); break;
+			case Poing : printf("=> Unarmed "); break;
 
 		}
 		switch(liste.liste_perso[i].attribut){
@@ -1565,6 +1662,54 @@ void afficher_liste ( t_liste liste ) {
 	}
 	printf("\n\n");
 }
+
+/**
+*\fn afficher_perso_uni ( t_personnage perso )
+*\brief Permet d'afficher un personnage de facon consise
+*/
+void afficher_perso_uni ( t_personnage perso ) {
+	
+	
+	
+	printf("\n - %s /// Level %i ", perso.nom, perso.level);
+	switch(perso.job){
+	
+		case Warrior : printf("/ Warrior "); break;
+		case Archer : printf("/ Archer "); break;
+		case Brawler : printf("/ Brawler "); break;
+		case Mage : printf("/ Mage "); break;
+		case Lancer : printf("/ Lancer "); break;
+		case Knight : printf("/ Knight "); break;
+		case Sniper : printf("/ Sniper "); break;
+		case Assassin : printf("/ Assassin "); break;
+		case Lord : printf("/ Lord "); break;
+		case General : printf("/ General "); break;
+		case White_Mage : printf("/ White Mage "); break;
+		case Black_Mage : printf("/ Black Mage "); break;
+		case Cleric : printf("/ Cleric "); break;
+	}	
+	switch(perso.arme){
+	
+		case Epee : printf("=> Sword "); break;
+		case Arc : printf("=> Bow "); break;
+		case Lance : printf("=> Spear "); break;
+		case Baton : printf("=> Rod "); break;
+		case Poing : printf("=> Unarmed "); break;
+
+	}
+	switch(perso.attribut){
+
+		case Neutre : printf("/ Neutral"); break;
+		case Feu : printf("/ Fire"); break;
+		case Glace : printf("/ Ice"); break;
+		case Lumiere : printf("/ Lightning"); break;
+		case Tenebres : printf("/ Darkness"); break;
+		case Soin : printf("/ Healing"); break;
+		case Cure : printf("/ Remedy"); break;
+
+	}
+}
+
 
 /**
 *\fn t_personnage recherche_membre_liste ( char* nom )
@@ -1748,6 +1893,45 @@ t_liste mise_a_jour_liste (t_escouade escouade, t_liste liste){
 }	
 
 /**
+*\fn t_liste aide_chargement ( t_liste liste )
+*\brief Fonction permettant de créer les hordes d'ennemi en fonction du niveau
+*/
+
+t_liste aide_chargement ( t_liste liste ){
+	
+	int i,j ;
+	
+	for( i = 0 ; i < liste.numero_perso ; i++){
+	
+		for ( j = 0 ; j < liste.numero_perso ; j++){
+		
+			if(!strcmp(liste.liste_perso[i].nom, liste.liste_perso[j].nom)&& j != i ){
+				liste.numero_perso = liste.numero_perso - 1;
+			}	
+		}
+	}
+	return(liste);	
+
+}
+
+/**
+*\fn t_escouade generer_horde ( t_escouade horde, int niveau )
+*\brief Fonction permettant de créer les hordes d'ennemi en fonction du niveau
+*/
+
+t_escouade generer_horde ( t_escouade horde, int niveau ){
+	
+	int i;
+	int j = rand()%(5) + 2;
+	
+	for ( i = 0 ; i < j ; i++ ){
+		horde.perso[i] = generer_ennemi(niveau);
+		horde.nb_perso++;
+	}
+	return(horde);
+}	
+
+/**
 *\fn void menu_personnage()
 *\brief Menu permettant au joueur de gérer ses personnages
 */
@@ -1756,7 +1940,8 @@ void menu_personnage(){
 	
 	int choix;	
 	srand(time(NULL));
-
+	init_liste();
+	
 	do
 /* Affichage du menu et saisie du choix */
 	{	printf("\nGestion Personnages :\n");
@@ -1775,12 +1960,12 @@ void menu_personnage(){
 		switch(choix)
 		{	case 1: system("clear"); afficher_liste(liste_personnage); break;
 			case 2: system("clear"); sauvegarde_liste(liste_personnage); break;
-			case 3: system("clear"); liste_personnage = charger_liste(liste_personnage); break;
+			case 3: system("clear"); liste_personnage = charger_liste(liste_personnage); liste_personnage = aide_chargement(liste_personnage); break;
 			case 4: system("clear"); afficher_escouade(escouade1); break;
-			case 5: system("clear"); escouade1 = ajouter_membre(escouade1); break;
+			case 5: system("clear"); afficher_liste(liste_personnage); escouade1 = ajouter_membre(escouade1); break;
 			case 6: system("clear"); escouade1 = retirer_membre(escouade1); break;
-			case 7: system("clear"); choix_recruter(); break;
-			case 8: main(); break;
+			case 7: system("clear"); main(); break;
+			case 8: break;
 			default: printf("Erreur: votre choix doit être compris entre 1 et 8\n");
 		}
 	}

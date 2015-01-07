@@ -43,15 +43,15 @@ int main ()
 	
 		switch(choix) 
 		{
-			case 1 : system("clear");if(escouade1.nb_perso >= 2){ partie();}else{printf("Vous devez avoir au moins 2 personnage dans votre escouade\n");}; break;
+			case 1 : system("clear");if(escouade1.nb_perso >= 2){ partie(niveau);}else{printf("Vous devez avoir au moins 2 personnage dans votre escouade\n");}; break;
 			case 2 : system("clear"); menu_personnage(); break;
-			case 3 : system("clear");printf("Veuillez choisir la difficulté :\n1 : Tres facil \n2 : Facil \n3 : Moyen \n4 : Difficil \n5 : Tres Difficil");scanf("%i",&niveau);break;
+			case 3 : system("clear");printf("Veuillez choisir la difficulté :\n1 : Tres facil \n2 : Facil \n3 : Moyen \n4 : Difficil \n5 : Tres Difficil\n");scanf("%i",&niveau);break;
 			case 4 : break;
 			default : printf("Your choice is undefined , your must put a number between 1 to 4 \n");
 		
 		}
 	}
-	while(choix != 3);
+	while(choix != 4);
 	printf("Good bye you fool\n");
 	return (EXIT_SUCCESS);
 }

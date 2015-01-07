@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "classes.h"
 #define N 9
 #define M 7
 int mat[N][M];
@@ -19,7 +20,6 @@ int mat[N][M];
 */
 void affichage (){
 	int i,j;
-	system("clear");
 	printf("  ");
 	for(i=0 ; i< N;i++){
 		for(j = 0; j < M; j++){
@@ -62,21 +62,16 @@ void init(){
 *\fn placement () 
 *\brief Place les entité des joueurs et des ennemis
 */
-void placement () 
+void placement (t_escouade escouade,t_escouade horde) 
 { 
 	
 	int pos_x , pos_y;
 	int player , ennemy;
-	int boss = 0;
-	printf("Veuillez rentrer le nombre d'entité du joueur a placer : \n");
-	scanf("%i",&player);
-	while((player <= 0)||(player >= 7))
-	{
-		printf("Nombre d'entité du joueur invalide\n"); 
-		printf("Veuillez rentrer à nouveaux le nombre d'entité du joueur a placer : \n");
-		scanf("%i",&player);
-	}
-	ennemy = rand()%(6)+1;
+	int i = 0;
+	
+	player = escouade.nb_perso;
+	ennemy = horde.nb_perso;
+	printf("Le nombre d'entité ennemis a placer est de %i : \n",horde.nb_perso);
 	for(ennemy ; ennemy > 0; ennemy--) { // Place les entité ennemi dans la matrice
 		pos_x = rand()%(8)+1;
 		pos_y = rand()%(6)+1;
@@ -87,21 +82,13 @@ void placement ()
 		}
 		
 		mat[pos_x][pos_y] = 2;
+		
+		afficher_perso_uni(horde.perso[i]);
+		printf(" / est en %i %i \n",pos_x,pos_y);
+		i++;
 	}
-	for(boss ; boss > 0; boss--) 
-	{
-		pos_x = rand()%(7)+1;
-		pos_y = rand()%(5)+1;
-		while((mat[pos_x][pos_y] != 0)||(mat[pos_x+1][pos_y+1] != 0)||(mat[pos_x+1][pos_y] != 0)||(mat[pos_x][pos_y+1] != 0))  
-		{
-			pos_x = rand()%(7)+1;
-			pos_y = rand()%(5)+1;
-		}
-		mat[pos_x][pos_y] = 3;
-		mat[pos_x+1][pos_y+1] = 3;
-		mat[pos_x+1][pos_y] = 3;
-		mat[pos_x][pos_y+1] = 3;
-	}
+	i = 0;
+	printf("\n\nLe nombre d'entité du joueur a placer est de %i : \n",escouade.nb_perso);
 	for(player ; player > 0; player--) {
 		pos_x = rand()%(8)+1;
 		pos_y = rand()%(6)+1;
@@ -112,7 +99,14 @@ void placement ()
 		}
 		
 		mat[pos_x][pos_y] = 1;
+		
+		afficher_perso_uni(escouade1.perso[i]);
+		printf(" / est en %i %i \n",pos_x,pos_y);
+		i++;
+		
 	}
+	printf("\n\n");
+	
 }
 
 

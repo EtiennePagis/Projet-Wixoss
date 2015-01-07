@@ -1,4 +1,3 @@
-
 #define MAX_PERSO 6
 #define MAX_LISTE 100
 
@@ -50,6 +49,9 @@ typedef struct { t_personnage perso[MAX_PERSO]; int nb_perso;} t_escouade;
 */
 typedef struct {int numero_perso ; t_personnage liste_perso[MAX_LISTE];} t_liste;
 
+t_escouade escouade1;
+t_escouade horde1;
+
 t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp);
 t_personnage charger_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp);
 void afficher_perso(t_personnage perso);
@@ -68,6 +70,7 @@ int est_present ( t_liste liste, t_personnage p);
 t_liste recrutement ( t_liste liste );
 void choix_recruter();
 void afficher_liste ( t_liste liste );
+void afficher_perso_uni ( t_personnage perso ) ;
 t_personnage recherche_membre_liste ( char* nom );
 int recherche_membre_escouade ( char* nom );
 t_escouade ajouter_membre (t_escouade escouade);
@@ -76,3 +79,6 @@ void init_liste();
 void init_escouade();
 t_liste mise_a_jour_liste (t_escouade escouade, t_liste liste);
 void menu_personnage();
+t_personnage changement_classe ( t_personnage personnage, t_stat stat, t_job job );
+t_escouade generer_horde ( t_escouade horde, int niveau );
+t_liste aide_chargement ( t_liste liste );

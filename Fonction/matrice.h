@@ -5,5 +5,5 @@
 #define MATRICE_H
 #endif
 void affichage();
-void placement();
+void placement(t_escouade escouade,t_escouade horde);
 void init();

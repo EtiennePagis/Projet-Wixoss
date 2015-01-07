@@ -63,16 +63,20 @@ int pilevide(int pile[],int sommet){
  *\brief Renvoie vrai si la premiere unite mise en parametre est enemis a la deuxieme unite mise en parametre 
  */
 int est_ennemi(int i,int j,int joueur){
-	if(joueur == 1){
-        if (mat[i][j] == 2 || mat[i][j] == 3 || mat[i][j] == 4 || mat[i][j] == 5){return(1);}
-    }else if(joueur == 2){
-        if (mat[i][j] == 1|| mat[i][j] == 6){return(1);}
-	}else if(joueur == 3){
-		if(mat[i][j] == 1 || mat[i][j] == 6){return(1);}
+	if (joueur != 0){
+		if(joueur == 1){
+			if (mat[i][j] == 2 || mat[i][j] == 3 || mat[i][j] == 4 || mat[i][j] == 5){return(1);}
+		}else if(joueur == 2){
+			if (mat[i][j] == 1|| mat[i][j] == 6){return(1);}
+		}else if(joueur == 3){
+			if(mat[i][j] == 1 || mat[i][j] == 6){return(1);}
+		}else{
+			return(-1);
+		}
+		return(0);
 	}else{
-        return(-1);
-    }
-    return(0);
+		return(-1);
+	}
 }
 
 /**
@@ -173,7 +177,28 @@ int est_tenaille_horizontal(int i,int j){
 */
 int est_tenaille_coin(int i,int j){
 	//pour le moment, dans les coins, on ne eput pas etre pris en tenaille
-		
+	if(i == 1 && j == 1){
+		if(est_ennemi(2,1,mat[1][1]) && est_ennemi(1,2,mat[1][1])){
+			printf("L'unite %i %i (%i) est en tenaille dans un coin\n",i,j,mat[i][j]);
+			return(1);
+		}
+	}else if(i == 1 && j == M-1){
+		if(est_ennemi(2,M-1,mat[1][M-1]) && est_ennemi(1,M-2,mat[1][M-1])){
+			printf("L'unite %i %i (%i) est en tenaille dans un coin\n",i,j,mat[i][j]);
+			return(1);
+		}
+	}else if(i == N-1 && j == 1){
+		if(est_ennemi(N-2,1,mat[N-1][1]) && est_ennemi(N-1,2,mat[N-1][1])){
+			printf("L'unite %i %i (%i) est en tenaille dans un coin\n",i,j,mat[i][j]);
+			return(1);
+		}
+	}else if(i == N-1 && j == M-1){
+		if(est_ennemi(N-2,M-1,mat[N-1][M-1]) && est_ennemi(N-1,M-2,mat[N-1][M-1])){
+			printf("L'unite %i %i (%i) est en tenaille dans un coin\n",i,j,mat[i][j]);
+			return(1);
+		}
+	}
+	printf("l'unite %i %i (%i) n'est pas en tenaille dans un coin\n",i,j,mat[i][j]);
 	return(0);
 	
 }
@@ -266,6 +291,7 @@ void attaque_joueur(int i,int j){
 	nb_ennemis = 0;
 	initpile(pile_att,&sommet_att);
 	
+	
 	if (i <= 7){
 		if (mat[i+1][j] == 2 || mat[i+1][j] == 3){
 			empiler(i+1,pile_att,&sommet_att);
@@ -330,6 +356,8 @@ void attaque_ennemis(int i,int j){
 	voisins = voisin(i,j);
 	initpile(pile_att,&sommet_att);
 	
+
+	
 	if (i <= 7){
 		if (mat[i+1][j] == 1){
 			empiler(i+1,pile_att,&sommet_att);
@@ -367,12 +395,12 @@ void attaque_ennemis(int i,int j){
 				depiler(&ej,pile_ennemi,&sommet_ennemi);
 				depiler(&ei,pile_ennemi,&sommet_ennemi);
 				mat[ei][ej] = 5;		
-				printf("L'ennemis en %i %i est mort car l'unité est prise en tenaille\n",ei,ej);
+				printf("L'allie en %i %i est mort car l'unité est prise en tenaille\n",ei,ej);
 			}
 		}else if(voisins > 0){
 			if (mat[ei][ej] == 1){
 				mat[ei][ej] = 5;		
-				printf("L'ennemis en %i %i est mort car l'ennemis en %i %i qui attaque a %i voisins\n",ei,ej,i,j,voisins);
+				printf("L'allie en %i %i est mort car l'ennemis en %i %i qui attaque a %i voisins\n",ei,ej,i,j,voisins);
 			}
 		}
 		nb_ennemis--;
@@ -393,6 +421,15 @@ void attaque_allie(){
 			}
 		}
 	}
+	if(mat[1][1] != 0 && est_tenaille(1,1)){
+		mat[1][1] = 5;
+	}else if(mat[1][M-1] != 0 && est_tenaille(1,M-1)){
+		mat[1][M-1] = 5;
+	}else if(mat[N-1][1] != 0 && est_tenaille(N-1,1)){
+		mat[N-1][1] = 5;
+	}else if(mat[N-1][M-1] != 0 && est_tenaille(N-1,M-1)){
+		mat[N-1][M-1] = 5;
+	}
 }
 
 /**
@@ -408,6 +445,15 @@ void attaque_nemesis(){
 				attaque_ennemis(i,j);
 			}
 		}
+	}
+	if(mat[1][1] != 0 && est_tenaille(1,1)){
+		mat[1][1] = 5;
+	}else if(mat[1][M-1] != 0 && est_tenaille(1,M-1)){
+		mat[1][M-1] = 5;
+	}else if(mat[N-1][1] != 0 && est_tenaille(N-1,1)){
+		mat[N-1][1] = 5;
+	}else if(mat[N-1][M-1] != 0 && est_tenaille(N-1,M-1)){
+		mat[N-1][M-1] = 5;
 	}
 	
 }
