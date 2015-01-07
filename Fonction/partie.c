@@ -26,9 +26,9 @@ int partie (void)
 	placement();
 	affichage();
 	deplacement_joueur();
-	attaque_allie();
-	resolve_attaque();
+	//attaque_allie();
+	//resolve_attaque();
 	deplacement_ennemi();
-	attaque_nemesis();
-	resolve_attaque();
+	//attaque_nemesis();
+	//resolve_attaque();
 }
