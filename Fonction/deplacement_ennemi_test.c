@@ -72,8 +72,8 @@ void dplct_ennemi_mltcib () // deplace les entites "chassant" lorsqu'il y a plus
 	int tenaille = 0;
 	
 	if(((joris == 1)||(joris == M-1))&&((ioris == 1)||(ioris == N-1))) //on est sur un coin
-	{
-		/*if(((mat[ioris][joris-1] == 4)||(mat[ioris][joris-1] == 2))&&((mat[ioris+1][joris] == 4)||(mat[ioris+1][joris] == 2)))
+	{/*
+		if(((mat[ioris][joris-1] == 4)||(mat[ioris][joris-1] == 2))&&((mat[ioris+1][joris] == 4)||(mat[ioris+1][joris] == 2)))
 		{
 			mat[ioris][joris] = 6;
 			tenaille = 1;
@@ -91,7 +91,7 @@ void dplct_ennemi_mltcib () // deplace les entites "chassant" lorsqu'il y a plus
 		{
 			mat[ioris][joris] = 6;
 			tenaille = 1;
-		}*/
+		}
 		if (est_tenaille(ioris,joris)){
 			mat[ioris][joris] = 6;
 			tenaille = 1;
@@ -154,7 +154,7 @@ void dplct_ennemi_mltcib () // deplace les entites "chassant" lorsqu'il y a plus
 						}
 						
 					}
-			/*	
+				
 			}else if((ioris == N) && (joris == M))
 			{
 				if((mat[ioris][joris-1] == 0))
@@ -167,9 +167,8 @@ void dplct_ennemi_mltcib () // deplace les entites "chassant" lorsqu'il y a plus
 					pos_x--;
 					pos_y = joris;
 				}
-				*/
-			}else if((ioris == 1)&&(joris == 1))
-			{
+				
+			}else if((ioris == 1)&&(joris == 1)){
 				if((mat[ioris][joris+1] == 0))
 				{
 					if(!((pos_x > 0)&&(pos_x < N))&&(pos_y > 0)&&(pos_y < M-1)){
@@ -190,16 +189,17 @@ void dplct_ennemi_mltcib () // deplace les entites "chassant" lorsqu'il y a plus
 			}
 				
 		}
-	}
-	else if (joris == 1 ||  joris==M-1 )//on est sur un bord vertical, et PAS sur un coin
+	*/
+	}else if (joris == 1 ||  joris==M-1 )//on est sur un bord vertical, et PAS sur un coin
 	{
+	/*
 			//if(((mat[ioris+1][joris] == 4)||(mat[ioris+1][joris] == 2))&&((mat[ioris-1][joris] == 4)||(mat[ioris-1][joris] == 2))){mat[ioris][joris]=6;tenaille = 1;}
 			if (est_tenaille(ioris,joris)){mat[ioris][joris]=6;tenaille = 1;}
 			else // la cible (qui est sur un bord vertical) n'est pas en tenaille
 			{
 				if((ioris < N-1)&&(ioris > 1))
 				{
-						/*if(mat[ioris][joris+1] == 0)
+						if(mat[ioris][joris+1] == 0)
 						{
 							pos_y++;
 							pos_x = ioris;
@@ -208,7 +208,7 @@ void dplct_ennemi_mltcib () // deplace les entites "chassant" lorsqu'il y a plus
 						{
 							pos_y--;
 							pos_x = ioris;
-						}*/
+						}
 						if(mat[ioris+1][joris] == 0)
 						{
 							if(!((pos_x > 0)&&(pos_x < N-1))&&(pos_y > 0)&&(pos_y < M)){
@@ -226,10 +226,23 @@ void dplct_ennemi_mltcib () // deplace les entites "chassant" lorsqu'il y a plus
 							
 						}
 				}	
+			}*/
+			if (!est_tenaille(ioris,joris)){
+				if (mat[pos_x+1][pos_y]==0){
+					pos_x++;
+				}else if (mat[pos_x-1][pos_y] ==0){
+					pos_x--;
+				}else{
+					mat[ioris][joris] = 6;
+					pos_x = 0;
+					pos_y = 0;
+				}
+			}else{
+				tenaille = 1;
 			}
 	}
 	else if ( ioris==1 || ioris == N-1 )  //on est sur un bord horizontal, et PAS sur un coin
-	{
+	{/*
 		//if(((mat[ioris][joris+1] == 4)||(mat[ioris][joris+1] == 2))&&((mat[ioris][joris-1] == 4)||(mat[ioris][joris-1] == 2))){mat[ioris][joris]=6;tenaille = 1;}
 		if (est_tenaille(ioris,joris)){mat[ioris][joris]=6;tenaille = 1;}
 		else 
@@ -252,7 +265,7 @@ void dplct_ennemi_mltcib () // deplace les entites "chassant" lorsqu'il y a plus
 					}
 					
 				}
-				/*else if(mat[ioris+1][joris] == 0)
+				else if(mat[ioris+1][joris] == 0)
 				{
 					pos_y = joris;
 					pos_x++;
@@ -261,18 +274,31 @@ void dplct_ennemi_mltcib () // deplace les entites "chassant" lorsqu'il y a plus
 				{
 					pos_y = joris;
 					pos_x--;
-				}*/
+				}
 			}		// la cible (qui est sur un bord horizontal) n'est pas en tenaille
-		}
+		}*/
+		if (!est_tenaille(ioris,joris)){
+				if (mat[pos_x][pos_y+1]==0){
+					pos_y++;
+				}else if (mat[pos_x][pos_y-1] ==0){
+					pos_y--;
+				}else{
+					mat[ioris][joris] = 6;
+					pos_x = 0;
+					pos_y = 0;
+				}
+			}else{
+				tenaille = 1;
+			}
 	}
 	/*else if(((((mat[ioris][joris+1] == 4)||(mat[ioris][joris+1] == 2))&&((mat[ioris][joris-1] == 4)||(mat[ioris][joris-1] == 2)))	|| 	(((mat[ioris+1][joris] == 4)||(mat[ioris+1][joris] == 2))&&((mat[ioris-1][joris] == 4)||(mat[ioris-1][joris] == 2)))))
 	{
 		mat[ioris][joris]=6;
 		tenaille = 1;
 	}*/
-	if (est_tenaille(ioris,joris)){mat[ioris][joris]=6;tenaille = 1;}
+	//if (est_tenaille(ioris,joris)){mat[ioris][joris]=6;tenaille = 1;}
 	else
-	{
+	{/*
 		if((((mat[ioris][joris+1] == 0)&&(mat[ioris][joris-1] == 0)))&&((joris < M-1)&&(joris > 2))) //la cible n'est pas en tenaille
 		{
 			if(!((pos_x > 0)&&(pos_x < N))&&(pos_y > 0)&&(pos_y < M-1)){
@@ -344,7 +370,20 @@ void dplct_ennemi_mltcib () // deplace les entites "chassant" lorsqu'il y a plus
 			
 		}
 		// tout ce qui precede permet le deplacement de l'ia dans la quasi totalité de la matrice
-			
+		*/	
+		if (!est_tenaille(ioris,joris)){
+				if (mat[pos_x+1][pos_y]==0){
+					pos_x++;
+				}else if (mat[pos_x-1][pos_y] ==0){
+					pos_x--;
+				}else{
+					mat[ioris][joris] = 6;
+					pos_x = 0;
+					pos_y = 0;
+				}
+			}else{
+				tenaille = 1;
+			}
 	}
 	
 	if (tenaille == 1) 
@@ -420,11 +459,12 @@ void deplacement_ennemi ()
 						
 						
 					
-							if (mat[pos_x][pos_y] == 0){
-								mat[pos_x][pos_y] = 4;
+							if (pos_x != 0 && pos_y != 0){
+								
 								mat[i][j] = 0 ;
+								mat[pos_x][pos_y] = 4;
 								printf("=====================elle se deplace en %i %i===================\n",pos_x,pos_y);
-							}else
+							}
 						
 						chercher_entite();
 						
