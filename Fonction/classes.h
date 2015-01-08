@@ -51,6 +51,7 @@ typedef struct {int numero_perso ; t_personnage liste_perso[MAX_LISTE];} t_liste
 
 t_escouade escouade1;
 t_escouade horde1;
+t_liste liste_personnage;
 
 t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp);
 t_personnage charger_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp);

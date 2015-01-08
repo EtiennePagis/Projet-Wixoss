@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "matrice.h"
+#include "classes.h"
 #define N 9
 #define M 7
 int mat[N][M];
@@ -196,12 +197,18 @@ void deplacement_joueur(){
 			printf("Donnez les coordonnées du personnage a deplacer : ");
 			scanf("%i%i",&i,&j);
 		}
-
+		iallie = 1;
+		while(tab_a[iallie] != i || tab_a[iallie+1] != j){
+			iallie = iallie + 3;
+		}
 		mat[i][j]=8;
 		system("clear");
+		
 		affichage();
 		while ((nb_dep<15)&&(dep!=5)){
-			
+			printf("Vous deplacez : ");
+			afficher_perso_uni(escouade1.perso[tab_a[iallie-1]]);
+			printf("\n\n");
 			printf("Selectionnez une direction \n");
 			printf("7 : up/left     |           8 : up           | 9 : up/right\n");
 			printf("4 : left        | 5 : Arreter le deplacement | 6 : right  \n");
@@ -211,6 +218,8 @@ void deplacement_joueur(){
 			
 		}
 		mat[i][j]=1;
+		tab_a[iallie] = i;
+		tab_a[iallie+1] = j;
 	}
 	affichage();
 }

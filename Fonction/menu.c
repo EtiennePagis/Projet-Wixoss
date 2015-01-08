@@ -26,8 +26,25 @@ int main ()
 {
 	srand(time(NULL));
 	int choix = 0; 
+	int choix3 = 0;
 	int niveau = 1;
+	
+	
 	system("clear");
+	
+	if(choix3 == 0){
+		printf(" 1 - Nouvelle Partie\n");
+		printf(" 2 - Charger une liste\n");
+		scanf("%i",&choix3);
+		if(choix3 == 1){
+			init_liste();
+			init_escouade();
+		}else{
+			liste_personnage = charger_liste(liste_personnage);
+			liste_personnage = aide_chargement(liste_personnage);
+		}
+		system("clear");
+	}
 	
 	do
 	{

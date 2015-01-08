@@ -213,7 +213,7 @@ void deplacement_ennemi ()
 					// s'il reste une cible
 					// ET ( case de la cible (pos_x pos_y) est valable 
 					// ET num ligne et num colonnes origine valides )
-					if((nb_cible > 0) && (ennemi > 0) && ((ioris >= 1)&&(ioris <= N-1)) && ((joris >= 1)&&(joris <= M-1)) )
+					if((nb_cible > 0) && (ennemi > 1) && ((ioris >= 1)&&(ioris <= N-1)) && ((joris >= 1)&&(joris <= M-1)) )
 					{
 						printf("===================L'unite a deplacer est en %i %i ====================\n",i,j);
 							
@@ -225,9 +225,14 @@ void deplacement_ennemi ()
 						
 					
 							if (pos_x != 0 && pos_y != 0){
-								
+								iennemi = 1;
+								while(tab_e[iennemi] != i || tab_e[iennemi+1] != j){
+									iennemi = iennemi + 3;
+								}						
 								mat[i][j] = 0 ;
 								mat[pos_x][pos_y] = 4;
+								tab_e[iennemi] = pos_x;
+								tab_e[iennemi+1] = pos_y;
 								printf("=====================elle se deplace en %i %i===================\n",pos_x,pos_y);
 							}
 						

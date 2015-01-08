@@ -1708,6 +1708,7 @@ void afficher_perso_uni ( t_personnage perso ) {
 		case Cure : printf("/ Remedy"); break;
 
 	}
+	printf(" / %.0f PV",perso.stat.HP);
 }
 
 
@@ -1923,7 +1924,7 @@ t_escouade generer_horde ( t_escouade horde, int niveau ){
 	
 	int i;
 	int j = rand()%(5) + 2;
-	
+	horde.nb_perso = 0;
 	for ( i = 0 ; i < j ; i++ ){
 		horde.perso[i] = generer_ennemi(niveau);
 		horde.nb_perso++;
@@ -1964,8 +1965,8 @@ void menu_personnage(){
 			case 4: system("clear"); afficher_escouade(escouade1); break;
 			case 5: system("clear"); afficher_liste(liste_personnage); escouade1 = ajouter_membre(escouade1); break;
 			case 6: system("clear"); escouade1 = retirer_membre(escouade1); break;
-			case 7: system("clear"); main(); break;
-			case 8: break;
+			case 7: system("clear"); choix_recruter(); break;
+			case 8: system("clear"); main(); break;
 			default: printf("Erreur: votre choix doit être compris entre 1 et 8\n");
 		}
 	}
