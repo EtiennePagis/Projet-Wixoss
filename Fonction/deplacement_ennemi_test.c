@@ -205,9 +205,6 @@ void deplacement_ennemi ()
                if(mat[i][j] == 2)
                 {
 					chercher_entite();
-					
-						
-					
 					assert((pos_x > 0)&&(pos_x < N));
 					assert((pos_y > 0)&&(pos_y < M));
 					// s'il reste une cible
@@ -221,10 +218,12 @@ void deplacement_ennemi ()
 						
 						ennemi--;
 						
-						
-						
-					
 							if (pos_x != 0 && pos_y != 0){
+								assert((pos_x > 0)&&(pos_x < N));
+								assert((pos_y > 0)&&(pos_y < M));
+								// s'il reste une cible
+								// ET ( case de la cible (pos_x pos_y) est valable 
+								// ET num ligne et num colonnes origine valides )
 								iennemi = 1;
 								while(tab_e[iennemi] != i || tab_e[iennemi+1] != j){
 									iennemi = iennemi + 3;

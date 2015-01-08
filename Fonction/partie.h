@@ -10,6 +10,9 @@
 #ifndef CLASSES_H
 #define CLASSES_H
 #endif
+#ifndef VOISIN_H
+#define VOISIN_H
+#endif
 
 void partie (int niveau) ;
 

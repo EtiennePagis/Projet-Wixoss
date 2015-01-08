@@ -96,8 +96,8 @@ t_escouade escouade1;
 t_escouade horde1;	
 t_liste liste_personnage;
 
-t_personnage Grace = {"Grace", Pony, Mage, Arc, Neutre, B, Init_Archer_Stats, 1, 100000};
-t_personnage Bahl = {"Bahl", Neko_Girl, Warrior, Epee, Neutre, B, Init_Warrior_Stats, 1, 100000};
+t_personnage Grace = {"Grace", Pony, Mage, Arc, Neutre, B, Init_Archer_Stats, 1, 0};
+t_personnage Bahl = {"Bahl", Neko_Girl, Warrior, Epee, Neutre, B, Init_Warrior_Stats, 1, 0};
 
 /**
 *\fn t_personnage creer_perso(char* nom, t_race race, t_job job, t_arme arme, t_attribut attribut, t_rank rank, t_stat stat, int level ,int exp)
@@ -1313,7 +1313,7 @@ t_personnage montee_level ( t_personnage p ){
 		}
 	}
     
-	if(temp_level != p.level){ printf("\n%s est monté(e) level %i !", p.nom, p.level); }
+	if(temp_level != p.level){ printf("\n%s est monté(e) level %i !\n", p.nom, p.level); }
 	
 	if((p.job == Archer || p.job == Warrior || p.job == Brawler || p.job == Lancer || p.job == Mage) && p.level > 39) {
 		
@@ -1422,7 +1422,7 @@ t_escouade xp(t_escouade escouade, float xp){
         escouade.perso[i].exp = escouade.perso[i].exp + xp;
     }
 	
-    printf("\nVos personnages ont tous gagné %.0f xp durant ce combat.", xp);
+    printf("\nVos personnages ont tous gagné %.0f xp durant ce combat.\n", xp);
     
     return(escouade);
 	

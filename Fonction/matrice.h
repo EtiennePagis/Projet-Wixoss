@@ -7,6 +7,9 @@
 #ifndef CLASSES_H
 #define CLASSES_H
 #endif
+#ifndef VOISIN_H
+#define VOISIN_H
+#endif
 
 int tab_a[20];
 int nombre_a;

@@ -56,7 +56,7 @@ int partie (int niveau)
 			{
 				if(mat[i][j] == 1){
 					iallie = 1;
-					while(tab_a[iallie] != i || tab_a[iallie+1] != j){
+					while((tab_a[iallie] != i || tab_a[iallie+1] != j)&&(iallie < 20)){
 						iallie = iallie + 3;
 					}
 					afficher_perso_uni(escouade1.perso[tab_a[iallie-1]]);
@@ -64,7 +64,7 @@ int partie (int niveau)
 					lose = 0;
 				}else if (mat[i][j] == 2){
 					iennemi = 1;
-					while(tab_e[iennemi] != i || tab_e[iennemi+1] != j){
+					while((tab_e[iennemi] != i || tab_e[iennemi+1] != j)&&(iennemi < 20)){
 						iennemi = iennemi + 3;
 					}
 					afficher_perso_uni(horde1.perso[tab_e[iennemi-1]]);
@@ -79,7 +79,8 @@ int partie (int niveau)
 	}
 	system("clear");
 	if (win == 1){
-		printf("You Rock !!\n");	
+		printf("You Rock !!\n");
+		liste_personnage = mise_a_jour_liste(escouade1,liste_personnage);
 	}else if (lose == 1){
 		printf("You Lose, try harder next time \n");
 	}

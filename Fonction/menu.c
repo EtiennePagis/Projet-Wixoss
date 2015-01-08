@@ -7,7 +7,7 @@
 #define N 9
 #define M 7
 int mat[N][M];
-
+int choix3 = 0;
 //#include "personnage.h"
 
 /**
@@ -26,25 +26,12 @@ int main ()
 {
 	srand(time(NULL));
 	int choix = 0; 
-	int choix3 = 0;
+
 	int niveau = 1;
 	
 	
 	system("clear");
 	
-	if(choix3 == 0){
-		printf(" 1 - Nouvelle Partie\n");
-		printf(" 2 - Charger une liste\n");
-		scanf("%i",&choix3);
-		if(choix3 == 1){
-			init_liste();
-			init_escouade();
-		}else{
-			liste_personnage = charger_liste(liste_personnage);
-			liste_personnage = aide_chargement(liste_personnage);
-		}
-		system("clear");
-	}
 	
 	do
 	{
@@ -62,7 +49,7 @@ int main ()
 		{
 			case 1 : system("clear");if(escouade1.nb_perso >= 2){ partie(niveau);}else{printf("Vous devez avoir au moins 2 personnage dans votre escouade\n");}; break;
 			case 2 : system("clear"); menu_personnage(); break;
-			case 3 : system("clear");printf("Veuillez choisir la difficulté :\n1 : Tres facil \n2 : Facil \n3 : Moyen \n4 : Difficil \n5 : Tres Difficil\n");scanf("%i",&niveau);break;
+			case 3 : system("clear");printf("Veuillez choisir la difficulté :\n1 : Tres facile \n2 : Facile \n3 : Moyen \n4 : Difficile \n5 : Tres Difficile\n");scanf("%i",&niveau);break;
 			case 4 : break;
 			default : printf("Your choice is undefined , your must put a number between 1 to 4 \n");
 		

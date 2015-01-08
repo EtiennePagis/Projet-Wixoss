@@ -12,6 +12,7 @@ int mat[N][M];
 int boss_mort = 0;
 int pile_ennemi[TMAX];
 int sommet_ennemi =-1;
+float experiencetotal = 0;
 /**
 *\file voisin.c
 *\brief Projet 
@@ -341,14 +342,17 @@ void attaque_joueur(int i,int j){
 					if((iallie != 20)&&(iennemi !=20)){
 						afficher_perso_uni(horde1.perso[tab_e[iennemi-1]]);
 						printf(" Il est maintenant ");
-						if (escouade1.perso[tab_a[iallie]].stat.attack >= escouade1.perso[tab_a[iallie]].stat.mattack){
-							horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.attack*50)/(horde1.perso[tab_e[iennemi-1]].stat.def))+2)*4;
+						if (escouade1.perso[tab_a[iallie-1]].stat.attack >= escouade1.perso[tab_a[iallie-1]].stat.mattack){
+							horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie-1]].level*0.4+2)*escouade1.perso[tab_a[iallie-1]].stat.attack*40)/(horde1.perso[tab_e[iennemi-1]].stat.def*50))+2)*4;
 						}else{
-							horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.mattack*50)/(horde1.perso[tab_e[iennemi-1]].stat.mdef))+2)*4;
+							horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie-1]].level*0.4+2)*escouade1.perso[tab_a[iallie-1]].stat.mattack*40)/(horde1.perso[tab_e[iennemi-1]].stat.mdef*50))+2)*4;
 						}
 						if (horde1.perso[tab_e[iennemi-1]].stat.HP <= 0){
-							mat[ei][ej] = 5;		
+							mat[ei][ej] = 5;
 							printf("L'ennemis en %i %i est mort\n",ei,ej);
+							experiencetotal = experiencetotal + horde1.perso[tab_e[iennemi-1]].exp;
+							xp(escouade1,experiencetotal);	
+							escouade1 = montee_level_escouade(escouade1);
 						}else{
 							printf("a %.0f PV\n",horde1.perso[tab_e[iennemi-1]].stat.HP);
 						}
@@ -417,27 +421,29 @@ void attaque_ennemis(int i,int j){
 				depiler(&ej,pile_ennemi,&sommet_ennemi);
 				depiler(&ei,pile_ennemi,&sommet_ennemi);
 				iallie = 1;
-				while((tab_a[iallie] != i || tab_a[iallie+1] != j)&&(iallie<20)){
+				while((tab_a[iallie] != ei || tab_a[iallie+1] != ej)&&(iallie<20)){
 					iallie = iallie + 3;
 				}
 				iennemi = 1;
-				while((tab_e[iennemi] != ei || tab_e[iennemi+1] != ej)&&(iennemi<20)){
+				while((tab_e[iennemi] != i || tab_e[iennemi+1] != j)&&(iennemi<20)){
 					iennemi = iennemi + 3;
 				}
 				if((iallie != 20)&&(iennemi !=20)){
 					
 					afficher_perso_uni(escouade1.perso[tab_a[iallie-1]]);
 					printf(" Il est maintenant ");
-					if (horde1.perso[tab_a[iallie]].stat.attack >= horde1.perso[tab_a[iallie]].stat.mattack){
-						escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.attack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.def))+2)*(voisins +1);
+					if (horde1.perso[tab_e[iennemi-1]].stat.attack >= horde1.perso[tab_e[iennemi-1]].stat.mattack){
+						
+						escouade1.perso[tab_a[iallie-1]].stat.HP = escouade1.perso[tab_a[iallie-1]].stat.HP-(((((horde1.perso[tab_e[iennemi-1]].level*0.4+2)*horde1.perso[tab_e[iennemi-1]].stat.attack*10)/(escouade1.perso[tab_a[iallie-1]].stat.def*50))+2)*(voisins +1));
 					}else{
-						escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.mattack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.mdef))+2)*(voisins +1);
+						
+						escouade1.perso[tab_a[iallie-1]].stat.HP = escouade1.perso[tab_a[iallie-1]].stat.HP-(((((horde1.perso[tab_e[iennemi-1]].level*0.4+2)*horde1.perso[tab_e[iennemi-1]].stat.mattack*10)/(escouade1.perso[tab_a[iallie-1]].stat.mdef*50))+2)*(voisins +1));
 					}
-					if (escouade1.perso[tab_e[iennemi-1]].stat.HP <= 0){
+					if (escouade1.perso[tab_a[iallie-1]].stat.HP <= 0){
 						mat[ei][ej] = 5;		
 						printf("L'allie en %i %i est mort\n",ei,ej);
 					}else{
-						printf("a %.0f PV\n",escouade1.perso[tab_e[iennemi-1]].stat.HP);
+						printf("a %.0f PV\n",escouade1.perso[tab_a[iallie-1]].stat.HP);
 					}
 				}else{
 					printf("Erreur cible non trouvé\n");
@@ -463,7 +469,7 @@ void attaque_allie(){
 			}
 		}
 	}
-	
+	/*
 	if(mat[1][1] != 0 && est_tenaille(1,1)){
 		iallie = 1;
 		while((tab_a[iallie] != 2 || tab_a[iallie+1] != 1)&&(iallie<20)){
@@ -477,13 +483,13 @@ void attaque_allie(){
 			afficher_perso_uni(horde1.perso[tab_e[iennemi-1]]);
 			printf(" Il est maintenant ");
 			if (escouade1.perso[tab_a[iallie]].stat.attack >= escouade1.perso[tab_a[iallie]].stat.mattack){
-				horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.attack*50)/(horde1.perso[tab_e[iennemi-1]].stat.def))+2)*4;
+				horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.attack*50)/(horde1.perso[tab_e[iennemi-1]].stat.def*50))+2)*4;
 			}else{
-				horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.mattack*50)/(horde1.perso[tab_e[iennemi-1]].stat.mdef))+2)*4;
+				horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.mattack*50)/(horde1.perso[tab_e[iennemi-1]].stat.mdef*50))+2)*4;
 			}
 			if (horde1.perso[tab_e[iennemi-1]].stat.HP <= 0){
-				mat[ei][ej] = 5;		
-				printf("L'ennemis en %i %i est mort\n",ei,ej);
+				mat[1][1] = 5;		
+				printf("L'ennemis en 1 1 est mort\n");
 			}else{
 				printf("a %.0f PV\n",horde1.perso[tab_e[iennemi-1]].stat.HP);
 			}
@@ -503,13 +509,13 @@ void attaque_allie(){
 			afficher_perso_uni(horde1.perso[tab_e[iennemi-1]]);
 			printf(" Il est maintenant ");
 			if (escouade1.perso[tab_a[iallie]].stat.attack >= escouade1.perso[tab_a[iallie]].stat.mattack){
-				horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.attack*50)/(horde1.perso[tab_e[iennemi-1]].stat.def))+2)*4;
+				horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.attack*50)/(horde1.perso[tab_e[iennemi-1]].stat.def*50))+2)*4;
 			}else{
-				horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.mattack*50)/(horde1.perso[tab_e[iennemi-1]].stat.mdef))+2)*4;
+				horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.mattack*50)/(horde1.perso[tab_e[iennemi-1]].stat.mdef*50))+2)*4;
 			}
 			if (horde1.perso[tab_e[iennemi-1]].stat.HP <= 0){
-				mat[ei][ej] = 5;		
-				printf("L'ennemis en %i %i est mort\n",ei,ej);
+				mat[1][M-1] = 5;		
+				printf("L'ennemis en 1 6 est mort\n");
 			}else{
 				printf("a %.0f PV\n",horde1.perso[tab_e[iennemi-1]].stat.HP);
 			}
@@ -529,13 +535,13 @@ void attaque_allie(){
 			afficher_perso_uni(horde1.perso[tab_e[iennemi-1]]);
 			printf(" Il est maintenant ");
 			if (escouade1.perso[tab_a[iallie]].stat.attack >= escouade1.perso[tab_a[iallie]].stat.mattack){
-				horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.attack*50)/(horde1.perso[tab_e[iennemi-1]].stat.def))+2)*4;
+				horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.attack*50)/(horde1.perso[tab_e[iennemi-1]].stat.def*50))+2)*4;
 			}else{
-				horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.mattack*50)/(horde1.perso[tab_e[iennemi-1]].stat.mdef))+2)*4;
+				horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.mattack*50)/(horde1.perso[tab_e[iennemi-1]].stat.mdef*50))+2)*4;
 			}
 			if (horde1.perso[tab_e[iennemi-1]].stat.HP <= 0){
-				mat[ei][ej] = 5;		
-				printf("L'ennemis en %i %i est mort\n",ei,ej);
+				mat[N-1][1] = 5;		
+				printf("L'ennemis en 8 1 est mort\n");
 			}else{
 				printf("a %.0f PV\n",horde1.perso[tab_e[iennemi-1]].stat.HP);
 			}
@@ -555,20 +561,20 @@ void attaque_allie(){
 			afficher_perso_uni(horde1.perso[tab_e[iennemi-1]]);
 			printf(" Il est maintenant ");
 			if (escouade1.perso[tab_a[iallie]].stat.attack >= escouade1.perso[tab_a[iallie]].stat.mattack){
-				horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.attack*50)/(horde1.perso[tab_e[iennemi-1]].stat.def))+2)*4;
+				horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.attack*50)/(horde1.perso[tab_e[iennemi-1]].stat.def*50))+2)*4;
 			}else{
-				horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.mattack*50)/(horde1.perso[tab_e[iennemi-1]].stat.mdef))+2)*4;
+				horde1.perso[tab_e[iennemi-1]].stat.HP = horde1.perso[tab_e[iennemi-1]].stat.HP-((((escouade1.perso[tab_a[iallie]].level*0.4+2)*escouade1.perso[tab_a[iallie]].stat.mattack*50)/(horde1.perso[tab_e[iennemi-1]].stat.mdef*50))+2)*4;
 			}
 			if (horde1.perso[tab_e[iennemi-1]].stat.HP <= 0){
-				mat[ei][ej] = 5;		
-				printf("L'ennemis en %i %i est mort\n",ei,ej);
+				mat[N-1][M-1] = 5;		
+				printf("L'ennemis en 8 6 est mort\n");
 			}else{
 				printf("a %.0f PV\n",horde1.perso[tab_e[iennemi-1]].stat.HP);
 			}
 		}else{
 			printf("Erreur cible non trouvé\n");
 		}
-	}
+	}*/
 }
 
 /**
@@ -577,14 +583,15 @@ void attaque_allie(){
 */
 void attaque_nemesis(){
 	int i,j;
+	int voisins;
 	for(i=1 ; i< N;i++){
 		for(j = 1; j < M; j++){
-			if(mat[i][j] == 2||mat[i][j] == 3){
+			if(mat[i][j] == 2){
 				printf("\n\n ===================== attaque du perso en %i %i (%i) pour l'équipe Bot ===================== \n\n", i, j ,mat[i][j]);
 				attaque_ennemis(i,j);
 			}
 		}
-	}
+	}/*
 	if(mat[1][1] != 0 && est_tenaille(1,1)){
 		iallie = 1;
 		while((tab_a[iallie] != 1 || tab_a[iallie+1] != 1)&&(iallie<20)){
@@ -595,17 +602,17 @@ void attaque_nemesis(){
 			iennemi = iennemi + 3;
 		}
 		if((iallie != 20)&&(iennemi !=20)){
-			
+			voisins = voisin(2,1);
 			afficher_perso_uni(escouade1.perso[tab_a[iallie-1]]);
 			printf(" Il est maintenant ");
 			if (horde1.perso[tab_a[iallie]].stat.attack >= horde1.perso[tab_a[iallie]].stat.mattack){
-				escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.attack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.def))+2)*(voisins +1);
+				escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.attack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.def*50))+2)*(voisins +1);
 			}else{
-				escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.mattack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.mdef))+2)*(voisins +1);
+				escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.mattack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.mdef*50))+2)*(voisins +1);
 			}
 			if (escouade1.perso[tab_e[iennemi-1]].stat.HP <= 0){
-				mat[ei][ej] = 5;		
-				printf("L'allie en %i %i est mort\n",ei,ej);
+				mat[1][1] = 5;		
+				printf("L'allie en 1 1 est mort\n");
 			}else{
 				printf("a %.0f PV\n",escouade1.perso[tab_e[iennemi-1]].stat.HP);
 			}
@@ -622,17 +629,17 @@ void attaque_nemesis(){
 			iennemi = iennemi + 3;
 		}
 		if((iallie != 20)&&(iennemi !=20)){
-			
+			voisins = voisin(2,M-1);
 			afficher_perso_uni(escouade1.perso[tab_a[iallie-1]]);
 			printf(" Il est maintenant ");
 			if (horde1.perso[tab_a[iallie]].stat.attack >= horde1.perso[tab_a[iallie]].stat.mattack){
-				escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.attack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.def))+2)*(voisins +1);
+				escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.attack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.def*50))+2)*(voisins +1);
 			}else{
-				escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.mattack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.mdef))+2)*(voisins +1);
+				escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.mattack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.mdef*50))+2)*(voisins +1);
 			}
 			if (escouade1.perso[tab_e[iennemi-1]].stat.HP <= 0){
-				mat[ei][ej] = 5;		
-				printf("L'allie en %i %i est mort\n",ei,ej);
+				mat[1][M-1] = 5;		
+				printf("L'allie en 1 6 est mort\n");
 			}else{
 				printf("a %.0f PV\n",escouade1.perso[tab_e[iennemi-1]].stat.HP);
 			}
@@ -649,17 +656,17 @@ void attaque_nemesis(){
 			iennemi = iennemi + 3;
 		}
 		if((iallie != 20)&&(iennemi !=20)){
-			
+			voisins = voisin(N-2,1);
 			afficher_perso_uni(escouade1.perso[tab_a[iallie-1]]);
 			printf(" Il est maintenant ");
 			if (horde1.perso[tab_a[iallie]].stat.attack >= horde1.perso[tab_a[iallie]].stat.mattack){
-				escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.attack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.def))+2)*(voisins +1);
+				escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.attack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.def*50))+2)*(voisins +1);
 			}else{
-				escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.mattack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.mdef))+2)*(voisins +1);
+				escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.mattack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.mdef*50))+2)*(voisins +1);
 			}
 			if (escouade1.perso[tab_e[iennemi-1]].stat.HP <= 0){
-				mat[ei][ej] = 5;		
-				printf("L'allie en %i %i est mort\n",ei,ej);
+				mat[N-1][1] = 5;		
+				printf("L'allie en 8 1 est mort\n");
 			}else{
 				printf("a %.0f PV\n",escouade1.perso[tab_e[iennemi-1]].stat.HP);
 			}
@@ -676,24 +683,24 @@ void attaque_nemesis(){
 			iennemi = iennemi + 3;
 		}
 		if((iallie != 20)&&(iennemi !=20)){
-			
+			voisins = voisin(N-2,M-1);
 			afficher_perso_uni(escouade1.perso[tab_a[iallie-1]]);
 			printf(" Il est maintenant ");
 			if (horde1.perso[tab_a[iallie]].stat.attack >= horde1.perso[tab_a[iallie]].stat.mattack){
-				escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.attack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.def))+2)*(voisins +1);
+				escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.attack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.def*50))+2)*(voisins +1);
 			}else{
-				escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.mattack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.mdef))+2)*(voisins +1);
+				escouade1.perso[tab_e[iennemi-1]].stat.HP = escouade1.perso[tab_e[iennemi-1]].stat.HP-((((horde1.perso[tab_a[iallie]].level*0.4+2)*horde1.perso[tab_a[iallie]].stat.mattack*10)/(escouade1.perso[tab_e[iennemi-1]].stat.mdef*50))+2)*(voisins +1);
 			}
 			if (escouade1.perso[tab_e[iennemi-1]].stat.HP <= 0){
-				mat[ei][ej] = 5;		
-				printf("L'allie en %i %i est mort\n",ei,ej);
+				mat[N-1][M-1] = 5;		
+				printf("L'allie en 8 6 est mort\n");
 			}else{
 				printf("a %.0f PV\n",escouade1.perso[tab_e[iennemi-1]].stat.HP);
 			}
 		}else{
 			printf("Erreur cible non trouvé\n");
 		}
-	}
+	}*/
 	
 }
 

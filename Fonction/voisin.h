@@ -1,9 +1,14 @@
 #ifndef MATRICE_H
 #define MATRICE_H
 #endif
-#ifndef VOISIN_H
-#define VOISIN_H
+#ifndef CLASSES_H
+#define CLASSES_H
 #endif
+#ifndef DEPLACEMENT_H
+#define DEPLACEMENT_H
+#endif
+
+
 
 void initpile(int pile[],int* sommet);
 void empiler(int e,int pile[],int* sommet);
